@@ -16,8 +16,10 @@ module.exports = (io, socket) => {
         var player = new Player({ socket, username });
         room.addPlayer(player);
         socket.player = player;
+        socket.room = roomId;
         rooms[roomId] = room;
-        io.to(roomId).emit('updatePlayers', roomId, room.getPlayers());
+        socket.emit('successJoiningRoom', roomId, room.getPlayers());
+        socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers());
         socket.emit('youAreTheHost');
     });
 
@@ -38,7 +40,9 @@ module.exports = (io, socket) => {
             var player = new Player({ socket, username });
             room.addPlayer(player);
             socket.player = player;
-            io.to(roomId).emit('updatePlayers', roomId, room.getPlayers());
+            socket.room = roomId;
+            socket.emit('successJoiningRoom', roomId, room.getPlayers());
+            socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers());
         }
     });
 };
