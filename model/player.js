@@ -3,6 +3,7 @@ module.exports = class Player {
         // { socket, username }
         this.socket = options.socket;
         this.username = options.username;
+        this.symbol = '';
         // power up info
     }
 };

@@ -5,6 +5,10 @@ const server = require('http').Server(app);
 const initSocket = require('./socketio/socketioController.js');
 initSocket(server);
 
+// global dictionary of all rooms
+rooms = {};
+
+// replace this with frontend
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
   });

@@ -1,8 +1,13 @@
-// global variables
+// default values
 const MAX_PLAYERS_DEFAULT = 6;
 const MAX_BOARDS_DEFAULT = 3;
 const NO_OF_BOARDS_TO_WIN_DEFAULT = 3;
 const BOARD_SIZE_DEFAULT = 3;
+const SYMBOLS = ['X', 'O', '@', '*', '&', '#']
+
+// room status, 0 and above indicate the respective user's turn
+const LOBBY = -1;
+const GAMEOVER = -2;
 
 module.exports = class Room {
     constructor(options) {
@@ -10,7 +15,7 @@ module.exports = class Room {
         this.io = options.io;
         this.roomId = options.roomId;
         this.players = [];
-        this.status = "lobby";
+        this.status = LOBBY;
 
         // room settings
         this.maxPlayers = MAX_PLAYERS_DEFAULT;
@@ -32,7 +37,15 @@ module.exports = class Room {
     }
 
     getPlayers() {
-        return this.players.map(x => x.username);
+        return this.players.map((x, i) => [SYMBOLS[i], x.username]);
+    }
+
+    getHost() {
+        if (!this.isEmpty()) {
+            return this.players[0].socket.id;
+        } else {
+            return undefined;
+        }
     }
 
     isFull() {
@@ -41,5 +54,9 @@ module.exports = class Room {
 
     isEmpty() {
         return this.players.length == 0;
+    }
+
+    isLobby() {
+        return this.status == LOBBY;
     }
 };
