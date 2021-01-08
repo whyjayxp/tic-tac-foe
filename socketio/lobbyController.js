@@ -20,7 +20,7 @@ module.exports = (io, socket) => {
         rooms[roomId] = room;
         socket.emit('successJoiningRoom', roomId, room.getPlayers());
         socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers());
-        socket.emit('youAreTheHost');
+        // socket.emit('youAreTheHost');
     });
 
     socket.on('joinRoom', (username, roomId) => {

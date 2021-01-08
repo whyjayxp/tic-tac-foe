@@ -1,71 +1,60 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import './index.css';
 import Create from './create/Create'
-import Game from './games/Game'
 import Waiting from './waitingRoom/waitingRoom'
-import socketClient  from "socket.io-client"
+import Game from './games/Game'
+import socketClient from 'socket.io-client'
 
 const SERVER = "http://localhost:8080"
 
-let socket
-
-function createRoom(input) {
-    socket.emit('createRoom', input.value)
-}
-
 class App extends React.Component {
-    componentDidMount() {
-        socket = socketClient(SERVER, {transports: ["websocket"]})
-        socket.on('connection', () => {
-            console.log(`I'm connected with the back-end`);
-        });
-        socket.on('youAreTheHost', () => {
-            alert("You are the host");
-        });
-
-        // socket.on('updatePlayers', (room, arr) => {
-        //     form.remove();
-        //     form2.remove();
-        //     list.innerHTML = "";
-        //     roomId.innerHTML = `Room ID: <b>${room}</b>`;
-        //     arr.forEach((player) => {
-        //         var li = document.createElement("li");
-        //         //li.appendChild(document.createTextNode(player[1]));
-        //         li.innerHTML = `<b>${player[0]}</b> ${player[1]}`;
-        //         list.appendChild(li);
-        //     });
-        // });
+    constructor(props) {
+        super(props);
+        this.updateRoom = this.updateRoom.bind(this);
+        this.joinRoom = this.joinRoom.bind(this);
+        this.startGame = this.startGame.bind(this);
+        this.state = {
+            socket: socketClient(SERVER, {transports: ["websocket"]}),
+            room: null,
+            status: 'home'
+        };
     }
+
+    joinRoom(roomId, players, isHost) {
+    // players: [{ username: x.username, symbol: x.symbol, wins: x.wins, skips: x.skips }]
+        this.setState({ room: {roomId, players, isHost}, status: 'lobby' })
+    }
+
+    startGame() {
+        this.setState({ status: 'game' })
+    }
+
+    updateRoom(room) {
+        this.setState({room});
+    }
+
+    componentDidMount() {
+    }
+
     render() {
+        const socket = this.state.socket;
+        const room = this.state.room;
+        const status = this.state.status;
+        let page;
+        if (status === 'home') {
+            page = <Create socket={socket} joinRoom={this.joinRoom} />
+        } else if (status === 'lobby') {
+            page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} />
+        } else {
+            page = <Game room={room} socket={socket} />
+        }
         return (
-            <BrowserRouter>
-                <Switch>
-                    <Route exact path='/'>
-                        <Create value={createRoom}/>
-                    </Route>
-                    <Route exact path='/waiting'>
-                        <Waiting />
-                    </Route>
-                    <Route exact path='/games'>
-                        <Game />
-                    </Route>
-                    {/* <Route exact path='/join'>
-                        <Join />
-                    </Route> */}
-                    <Route path='/'>
-                        <Game />
-                    </Route>
-                </Switch>
-            </ BrowserRouter>
-        )
+            <div>
+                { page }
+            </div>
+        );
     }
 }
 
-// ========================================
-
-ReactDOM.render(
-<App />,
-document.getElementById('root')
-);
+ReactDOM.render(<App />, document.getElementById('root'));
