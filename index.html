@@ -75,7 +75,7 @@
             arr.forEach((player) => {
                 var li = document.createElement("li");
                 //li.appendChild(document.createTextNode(player[1]));
-                li.innerHTML = `<b>${player[0]}</b> ${player[1]}`;
+                li.innerHTML = `<b>${player.symbol}</b> ${player.username}`;
                 list.appendChild(li);
             });
         });

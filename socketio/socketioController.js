@@ -1,5 +1,6 @@
 const socketio = require('socket.io');
 const initLobby = require('./lobbyController');
+const initGame = require('./gameController');
 
 module.exports = server => {
     const options = {}; // for socketio server
@@ -9,6 +10,7 @@ module.exports = server => {
         socket.emit('connection', null)
 
         initLobby(io, socket);
+        initGame(io, socket);
 
         socket.on('disconnecting', (reason) => {
             // before socket.rooms is wiped out, handle existing game room
@@ -16,12 +18,16 @@ module.exports = server => {
                 socket.rooms.forEach(roomId => {
                     if (roomId != socket.id) {
                         var room = rooms[roomId];
+                        if (!room) continue; // game ended, room disappeared
                         room.removePlayer(socket.player);
                         if (room.isEmpty()) {
                             delete rooms[roomId]; // socketio room is automatically closed, just clear dictionary
                         } else if (room.isLobby()) {
                             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
                             io.to(room.getHost()).emit('youAreTheHost');
+                        } else { // middle of a game
+                            socket.to(roomId).emit('playerDisconnected', socket.player.username);
+                            socket.to(roomId).emit('newGameState', room.getGameState());
                         }
                     }
                 });

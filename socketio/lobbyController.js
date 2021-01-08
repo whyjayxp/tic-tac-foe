@@ -26,11 +26,11 @@ module.exports = (io, socket) => {
         // check if roomId exists
         var room = rooms[roomId];
         if (!room) {
-            socket.emit('errorJoiningRoom', `room ${roomId} does not exist!`);
-            console.log(`room ${roomId} does not exist!`);
+            socket.emit('errorJoiningRoom', `Room ${roomId} does not exist!`);
         } else if (room.isFull()) {
-            socket.emit('errorJoiningRoom', `room ${roomId} is full!`);
-            console.log(`room ${roomId} is full!`);
+            socket.emit('errorJoiningRoom', `Room ${roomId} is full!`);
+        } else if (!room.isLobby()) {
+            socket.emit('errorJoiningRoom', `Room ${roomId} has already started the game!`);
         } else {
             socket.join(roomId);
             console.log(io.sockets.adapter.rooms);
