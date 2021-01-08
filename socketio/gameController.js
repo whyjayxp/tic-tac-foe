@@ -7,7 +7,7 @@ module.exports = (io, socket) => {
         room.setConcurBoards(concurrBoards);
         room.setNumBoardsToWin(numBoardsToWin);
         var firstPlayer = room.startGame();
-        io.to(roomId).emit('startGame', roomId, room.getPlayers());
+        io.to(roomId).emit('startGame', roomId, room.getGameState());
         io.to(firstPlayer).emit('itsYourTurn');
     });
 

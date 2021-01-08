@@ -18,7 +18,7 @@ module.exports = server => {
                 socket.rooms.forEach(roomId => {
                     if (roomId != socket.id) {
                         var room = rooms[roomId];
-                        if (!room) continue; // game ended, room disappeared
+                        if (!room) return; // game ended, room disappeared
                         room.removePlayer(socket.player);
                         if (room.isEmpty()) {
                             delete rooms[roomId]; // socketio room is automatically closed, just clear dictionary

@@ -14,11 +14,11 @@ const NUM_OF_POWERS = 4;
 
 module.exports = class Board {
     constructor(row, col) {
-        this.symbols = createBoard(row, col);
-        this.powers = createBoard(row, col);
+        this.symbols = this.createBoard(row, col);
+        this.powers = this.createBoard(row, col);
         this.row = row;
         this.col = col;
-        randomizePowers();
+        this.randomizePowers();
         // this.symbols = Array.from(Array(options.row), () => new Array(options.col));
     }
 
@@ -41,7 +41,7 @@ module.exports = class Board {
     getRandomPower() {
         var r = Math.random();
         var sum = 0;
-        for (i in POWER_PROB) {
+        for (var i in POWER_PROB) {
             sum += POWER_PROB[i];
             if (r <= sum) return i;
         }
@@ -56,7 +56,7 @@ module.exports = class Board {
             var nextBox = this.getRandomFromBucket(buckets);
             var r = Math.floor(nextBox / this.col);
             var c = nextBox % this.col;
-            this.powers[r][c] = getRandomPower();
+            this.powers[r][c] = this.getRandomPower();
         }
     }
 
@@ -90,11 +90,11 @@ module.exports = class Board {
             }
         }
         this.powers[i][j] = -1; // remove the power
-        result.winner = getWinner();
+        result.winner = this.getWinner();
         if (result.winner != -1) {
             result.hasEnded = true;
         } else {
-            result.hasEnded = hasBoardEnded();
+            result.hasEnded = this.hasBoardEnded();
         }
         return result;
     }
