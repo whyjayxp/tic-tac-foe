@@ -25,16 +25,16 @@ class Game extends React.Component {
 
         this.props.socket.on('gameOver', (winner) => {
             alert(`${this.props.room.players[winner].username} is the winner!`);
-            // this.props.updateStatus('home');
-            //this.props.resetRoom(this.props.room.roomId);
-            window.location.reload();
+            this.props.updateStatus('home');
+            this.props.resetRoom(this.props.room.roomId);
+            // window.location.reload();
         });
 
         this.props.socket.on('disconnectedPlayer', (burden) => {
             alert(`${burden} disconnected. Moving back to home page...`);
-            // this.props.updateStatus('home');
-            //this.props.resetRoom(this.props.room.roomId);
-            window.location.reload();
+            this.props.updateStatus('home');
+            this.props.resetRoom(this.props.room.roomId);
+            // window.location.reload();
         });
 
 
@@ -53,6 +53,17 @@ class Game extends React.Component {
         this.props.socket.on('curseUsed', () => {
             this.props.enqueueSnackbar(`A curse has been applied!`, { autoHideDuration: 2000 });
         });
+    }
+
+    componentWillUnmount() {
+        this.props.socket.off('newGameState');
+        this.props.socket.off('boardOver');
+        this.props.socket.off('gameOver');
+        this.props.socket.off('disconnectedPlayer');
+        this.props.socket.off('skipUsed');
+        this.props.socket.off('removeUsed');
+        this.props.socket.off('bombUsed');
+        this.props.socket.off('curseUsed');
     }
 
     render() {

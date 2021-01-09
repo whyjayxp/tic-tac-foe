@@ -84,6 +84,14 @@ class Inventory extends React.Component {
 
   }
 
+  componentWillUnmount() {
+    this.props.socket.off('itsYourTurn');
+    this.props.socket.off('newPower');
+    this.props.socket.off('bombed');
+    this.props.socket.off('joked');
+    this.props.socket.off('cursed');
+  }
+
   render() {
     const listPowerups = this.state.powerups.map((power, idx) =>
     <Button key={idx} onClick={() => this.pressPowerup(idx)}>

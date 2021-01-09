@@ -58,6 +58,11 @@ class Create extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.socket.off('errorJoiningRoom');
+    this.props.socket.off('successJoiningRoom');
+  }
+
   render() {
     return (
       <div>
@@ -66,14 +71,14 @@ class Create extends React.Component {
             <h1>Welcome To Tic Tac Foe!</h1>
         </div>
         <form className="create" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-          <TextField placeholder="User Name" variant="outlined" value={this.state.username} onChange={(e) => this._updateUsername(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.createRoom() }}} />
+          <TextField size="small" placeholder="User Name" variant="outlined" value={this.state.username} onChange={(e) => this._updateUsername(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.createRoom() }}} />
           <Button className="home-button" variant="outlined" onClick={this.createRoom}>
                 Create Room!
           </Button>
           </form>
           <br/>
           <form className="create" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-          <TextField placeholder="Room Code" align-self="left" variant="outlined" value={this.state.roomId} onChange={(e) => this._updateRoomId(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.joinRoom() }}} />
+          <TextField size="small" placeholder="Room Code" align-self="left" variant="outlined" value={this.state.roomId} onChange={(e) => this._updateRoomId(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.joinRoom() }}} />
             <Button className="home-button" variant="outlined" onClick={this.joinRoom}>
                 Join Room!
             </Button>

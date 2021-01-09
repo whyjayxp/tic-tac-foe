@@ -14,11 +14,13 @@ module.exports = server => {
         socket.on('leaveRoom', (roomId) => {
             var room = rooms[roomId];
             socket.leave(roomId);
+            if (!room) return;
             room.removePlayer(socket.player);
-            socket.player = null;
-            socket.room = null;
             if (room.isEmpty()) {
                 delete rooms[roomId];
+            } else {
+                socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
+                io.to(room.getHost()).emit('youAreTheHost');
             }
         });
 

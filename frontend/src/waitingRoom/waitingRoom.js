@@ -37,8 +37,9 @@ class Waiting extends React.Component {
   }
 
   pressLeave() {
-    // this.props.socket.emit('leaveRoom', this.props.room.roomId);
-    window.location.reload();
+    this.props.socket.emit('leaveRoom', this.props.room.roomId);
+    this.props.updateStatus('home');
+    // window.location.reload();
   }
 
   componentDidMount() {
@@ -56,6 +57,12 @@ class Waiting extends React.Component {
     this.props.socket.on('startGame', (roomId, gameState) => {
       this.props.startGame(roomId, gameState);
     });
+  }
+
+  componentWillUnmount() {
+    this.props.socket.off('youAreTheHost');
+    this.props.socket.off('updatePlayers');
+    this.props.socket.off('startGame');
   }
 
   render() {

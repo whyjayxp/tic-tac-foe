@@ -7,8 +7,8 @@ import Game from './games/Game'
 import socketClient from 'socket.io-client'
 import { SnackbarProvider } from 'notistack';
 
-// const SERVER = "http://localhost:8080" // use this if calling 'npm start' from frontend folder
-const SERVER = "/" // use this if using static files in build folder after 'npm run build' (goes through proxy in package.json)
+// const SERVER = "http://localhost:8080" // use this if calling 'npm start' from frontend folder, access via localhost:3000
+const SERVER = "/" // use this if using static files in build folder after 'npm run build', access via localhost:8080
 
 class App extends React.Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class App extends React.Component {
         this.updateRoom = this.updateRoom.bind(this);
         this.updateStatus = this.updateStatus.bind(this);
         this.joinRoom = this.joinRoom.bind(this);
-        // this.resetRoom = this.resetRoom.bind(this);
+        this.resetRoom = this.resetRoom.bind(this);
         this.startGame = this.startGame.bind(this);
         this.state = {
             socket: socketClient(SERVER, {transports: ["websocket"]}),
@@ -38,10 +38,10 @@ class App extends React.Component {
             status: 'game' });
     }
 
-    // resetRoom(roomId) {
-    //     this.state.socket.emit('leaveRoom', roomId);
-    //     this.setState({ status: 'home', room: null });
-    // }
+    resetRoom(roomId) {
+        this.state.socket.emit('leaveRoom', roomId);
+        this.setState({ status: 'home', room: null });
+    }
 
     updateStatus(status) {
         this.setState({status});
@@ -64,7 +64,7 @@ class App extends React.Component {
         } else if (status === 'lobby') {
             page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} updateStatus={this.updateStatus} />
         } else {
-            page = <Game room={room} socket={socket} status={status} updateRoom={this.updateRoom} updateStatus={this.updateStatus} />
+            page = <Game room={room} socket={socket} status={status} updateRoom={this.updateRoom} updateStatus={this.updateStatus} resetRoom={this.resetRoom} />
         }
         return (<div>
                 { page }
