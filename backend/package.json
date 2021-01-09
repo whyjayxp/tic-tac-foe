@@ -2,11 +2,7 @@
     "name": "tic-tac-foe",
     "version": "0.0.1",
     "scripts": {
-        "start": "cd backend && npm install && npm start",
-        "heroku-postbuild": "cd frontend && npm install && npm run build"
-      },
-    "engines": {
-        "node": "10.17.0"
+        "start": "node app.js"
     },
     "description": "",
     "dependencies": {

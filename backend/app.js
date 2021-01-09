@@ -1,6 +1,8 @@
 const PORT = process.env.PORT || 8080
 
-const app = require('express')();
+const express = require('express');
+const app = express();
+const path = require('path');
 const cors = require('cors');
 app.use(cors())
 const server = require('http').Server(app);
@@ -15,8 +17,8 @@ rooms = {};
 //     res.sendFile(__dirname + '/index.html');
 //   });
 
-// app.use(express.static(path.join(__dirname, './frontend/build')));
-app.get('/', (req, res, next) => res.sendFile(__dirname + '/index.html'))
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../frontend/build/index.html')));
 
 server.listen(PORT, () => {
     console.log(`socketio listening on port ${PORT}`);
