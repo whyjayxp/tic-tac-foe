@@ -13,6 +13,7 @@ class Waiting extends React.Component {
   constructor(props) {
     super(props);
     this.pressStart = this.pressStart.bind(this);
+    this.pressLeave = this.pressLeave.bind(this);
     this.state = {
       concurBoards: 2,
       boardsToWin: 3
@@ -33,6 +34,11 @@ class Waiting extends React.Component {
     } else {
       this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin);
     }
+  }
+
+  pressLeave() {
+    // this.props.socket.emit('leaveRoom', this.props.room.roomId);
+    window.location.reload();
   }
 
   componentDidMount() {
@@ -94,6 +100,11 @@ class Waiting extends React.Component {
       <div>
         <div id="roomId">{ this.props.room.roomId }</div>
         <ul id="playerList">{ listPlayers }</ul>
+        <div id="leaveRoomButton">
+        <Button variant="outlined" onClick={this.pressLeave}>
+            Leave Room!
+        </Button>
+        </div>
         { hostFeatures }
         <Rules />
       </div>

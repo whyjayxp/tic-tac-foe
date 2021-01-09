@@ -12,9 +12,14 @@ module.exports = server => {
         initGame(io, socket);
 
         socket.on('leaveRoom', (roomId) => {
+            var room = rooms[roomId];
             socket.leave(roomId);
+            room.removePlayer(socket.player);
             socket.player = null;
             socket.room = null;
+            if (room.isEmpty()) {
+                delete rooms[roomId];
+            }
         });
 
         socket.on('disconnecting', (reason) => {

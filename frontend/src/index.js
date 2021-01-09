@@ -7,8 +7,8 @@ import Game from './games/Game'
 import socketClient from 'socket.io-client'
 import { SnackbarProvider } from 'notistack';
 
-//const SERVER = "http://localhost:8080"
-const SERVER = "/"
+// const SERVER = "http://localhost:8080" // use this if calling 'npm start' from frontend folder
+const SERVER = "/" // use this if using static files in build folder after 'npm run build' (goes through proxy in package.json)
 
 class App extends React.Component {
     constructor(props) {
@@ -62,7 +62,7 @@ class App extends React.Component {
         if (status === 'home') {
             page = <Create socket={socket} joinRoom={this.joinRoom} />
         } else if (status === 'lobby') {
-            page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} />
+            page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} updateStatus={this.updateStatus} />
         } else {
             page = <Game room={room} socket={socket} status={status} updateRoom={this.updateRoom} updateStatus={this.updateStatus} />
         }
