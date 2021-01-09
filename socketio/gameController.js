@@ -24,6 +24,11 @@ module.exports = (io, socket) => {
             io.to(roomId).emit('boardOver', result.winner); // use for broadcast & update view
         }
         socket.emit('newPower', result.power);
+        if (result.power === 4) {
+            socket.to(roomId).emit('bombed', socket.player.username);
+        } else if (result.power === 5) {
+            socket.to(roomId).emit('joked', socket.player.username);
+        }
         var nextPlayer = room.nextTurn();
         io.to(roomId).emit('newGameState', roomId, room.getGameState());
         // console.log(room.getGameState());

@@ -18,12 +18,12 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('gameOver', (winner) => {
-            this.props.enqueueSnackbar(`${this.props.room.players[winner].username} is the winner!`);
+            alert(`${this.props.room.players[winner].username} is the winner!`);
             this.props.updateStatus('home');
         });
 
         this.props.socket.on('disconnectedPlayer', (burden) => {
-            this.props.enqueueSnackbar(`${burden} disconnected. Moving back to home page...`);
+            alert(`${burden} disconnected. Moving back to home page...`);
             this.props.updateStatus('home');
         });
 

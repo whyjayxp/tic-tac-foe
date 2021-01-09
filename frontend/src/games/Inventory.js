@@ -56,7 +56,16 @@ class Inventory extends React.Component {
             return;
         }
         this.setState({ powerups: this.state.powerups.concat([pow]) });
+    });
+
+    this.props.socket.on('bombed', (user) => {
+        this.props.enqueueSnackbar(`${user} got bombed! Their symbol is gone :(`);
+    });
+
+    this.props.socket.on('joked', (user) => {
+        this.props.enqueueSnackbar(`${user} got the joker! Their symbol was placed randomly :p`);
     })
+
   }
 
   render() {
