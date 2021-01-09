@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "start": "node app.js",
-        "heroku-postbuild": "cd frontend && npm install %% npm run build"
+        "heroku-postbuild": "cd frontend && npm install && npm run build"
       },
     "description": "",
     "dependencies": {
