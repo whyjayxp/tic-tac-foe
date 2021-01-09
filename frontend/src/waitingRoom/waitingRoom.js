@@ -4,8 +4,9 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import FormControl from '@material-ui/core/FormControl'
+import { withSnackbar } from 'notistack';
 
-const MAX_BOARDS = 30;
+const MAX_BOARDS = 15;
 
 class Waiting extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class Waiting extends React.Component {
 
   pressStart() {
     if (this.props.room.players.length < 2) {
-      alert("There must be at least 2 players to start!");
+      this.props.enqueueSnackbar("There must be at least 2 players to start!");
     } else {
       this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin);
     }
@@ -99,4 +100,4 @@ class Waiting extends React.Component {
   
 }
 
-export default Waiting
+export default withSnackbar(Waiting);

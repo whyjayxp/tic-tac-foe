@@ -5,6 +5,7 @@ import Create from './create/Create'
 import Waiting from './waitingRoom/waitingRoom'
 import Game from './games/Game'
 import socketClient from 'socket.io-client'
+import { SnackbarProvider } from 'notistack';
 
 const SERVER = "http://localhost:8080"
 
@@ -64,4 +65,4 @@ class App extends React.Component {
     }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<SnackbarProvider maxSnack={3}><App /></SnackbarProvider>, document.getElementById('root'));

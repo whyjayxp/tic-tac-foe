@@ -1,6 +1,7 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { withSnackbar } from 'notistack';
 
 class Create extends React.Component {
   constructor(props) {
@@ -25,7 +26,7 @@ class Create extends React.Component {
   createRoom() {
     const username = this.state.username;
     if (username === '') {
-      alert("Please input your name!");
+      this.props.enqueueSnackbar("Please input your name!");
       return;
     }
     this.setState({ isHost: true });
@@ -36,11 +37,11 @@ class Create extends React.Component {
     const username = this.state.username;
     const roomId = this.state.roomId.toUpperCase();
     if (username === '') {
-      alert("Please input your name!");
+      this.props.enqueueSnackbar("Please input your name!");
       return;
     }
     if (roomId === '') {
-      alert("Please input a room ID!");
+      this.props.enqueueSnackbar("Please input a room ID!");
       return;
     }
     this.setState({ isHost: false });
@@ -49,7 +50,7 @@ class Create extends React.Component {
 
   componentDidMount() {
     this.props.socket.on('errorJoiningRoom', (msg) => {
-      alert(msg);
+      this.props.enqueueSnackbar(msg);
     });
 
     this.props.socket.on('successJoiningRoom', (roomId, players) => {
@@ -83,4 +84,4 @@ class Create extends React.Component {
   
 }
 
-export default Create
+export default withSnackbar(Create);

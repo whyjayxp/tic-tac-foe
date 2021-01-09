@@ -2,6 +2,7 @@ import React from 'react'
 import Players from './Players'
 import Inventory from './Inventory'
 import Boards from './Boards'
+import { withSnackbar } from 'notistack';
 
 class Game extends React.Component {
     constructor(props) {
@@ -17,30 +18,30 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('gameOver', (winner) => {
-            alert(`${this.props.room.players[winner].username} is the winner!`);
+            this.props.enqueueSnackbar(`${this.props.room.players[winner].username} is the winner!`);
             this.props.updateStatus('home');
         });
 
         this.props.socket.on('disconnectedPlayer', (burden) => {
-            alert(`${burden} disconnected. Moving back to home page...`);
+            this.props.enqueueSnackbar(`${burden} disconnected. Moving back to home page...`);
             this.props.updateStatus('home');
         });
 
 
         this.props.socket.on('skipUsed', (playerIdx) => {
-            alert(`${this.props.room.players[playerIdx].username}'s turn will be skipped!`);
+            this.props.enqueueSnackbar(`${this.props.room.players[playerIdx].username}'s turn will be skipped!`);
         });
 
         this.props.socket.on('removeUsed', () => {
-            alert(`A symbol has been removed!`);
+            this.props.enqueueSnackbar(`A symbol has been removed!`);
         });
 
         this.props.socket.on('bombUsed', () => {
-            alert(`A bomb has been planted!`);
+            this.props.enqueueSnackbar(`A bomb has been planted!`);
         });
 
         this.props.socket.on('curseUsed', () => {
-            alert(`A curse has been applied!`);
+            this.props.enqueueSnackbar(`A curse has been applied!`);
         });
     }
 
@@ -61,4 +62,4 @@ class Game extends React.Component {
     }
 }
 
-export default Game
+export default withSnackbar(Game)

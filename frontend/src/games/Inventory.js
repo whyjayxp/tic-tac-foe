@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import { withSnackbar } from 'notistack';
 
 // 0 : skip next player
 // 1 : remove piece
@@ -46,12 +47,12 @@ class Inventory extends React.Component {
             return;
         }
         if (pow === 4) {
-            alert('You got bombed! Your symbol is gone :(');
+            this.props.enqueueSnackbar('You got bombed! Your symbol is gone :(');
             return;
         }
 
         if (pow === 5) {
-            alert('You got the joker! Your symbol was placed randomly :p');
+            this.props.enqueueSnackbar('You got the joker! Your symbol was placed randomly :p');
             return;
         }
         this.setState({ powerups: this.state.powerups.concat([pow]) });
@@ -74,4 +75,4 @@ class Inventory extends React.Component {
   
 }
 
-export default Inventory
+export default withSnackbar(Inventory);
