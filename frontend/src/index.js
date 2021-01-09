@@ -7,7 +7,8 @@ import Game from './games/Game'
 import socketClient from 'socket.io-client'
 import { SnackbarProvider } from 'notistack';
 
-const SERVER = "http://localhost:8080"
+//const SERVER = "http://localhost:8080"
+const SERVER = "http://192.168.68.107:8080"
 
 class App extends React.Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class App extends React.Component {
         this.updateRoom = this.updateRoom.bind(this);
         this.updateStatus = this.updateStatus.bind(this);
         this.joinRoom = this.joinRoom.bind(this);
+        // this.resetRoom = this.resetRoom.bind(this);
         this.startGame = this.startGame.bind(this);
         this.state = {
             socket: socketClient(SERVER, {transports: ["websocket"]}),
@@ -35,6 +37,11 @@ class App extends React.Component {
             {roomId, players: gameState.players, boards: gameState.boards, turn: gameState.turn}, 
             status: 'game' });
     }
+
+    // resetRoom(roomId) {
+    //     this.state.socket.emit('leaveRoom', roomId);
+    //     this.setState({ status: 'home', room: null });
+    // }
 
     updateStatus(status) {
         this.setState({status});

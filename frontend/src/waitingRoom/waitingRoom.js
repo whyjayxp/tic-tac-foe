@@ -28,7 +28,7 @@ class Waiting extends React.Component {
 
   pressStart() {
     if (this.props.room.players.length < 2) {
-      this.props.enqueueSnackbar("There must be at least 2 players to start!");
+      this.props.enqueueSnackbar("There must be at least 2 players to start!", { autoHideDuration: 2000 });
     } else {
       this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin);
     }

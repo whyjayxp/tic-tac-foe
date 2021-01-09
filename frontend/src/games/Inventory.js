@@ -47,23 +47,23 @@ class Inventory extends React.Component {
             return;
         }
         if (pow === 4) {
-            this.props.enqueueSnackbar('You got bombed! Your symbol is gone :(');
+            this.props.enqueueSnackbar('You got bombed! Your symbol is gone :(', { autoHideDuration: 2000 });
             return;
         }
 
         if (pow === 5) {
-            this.props.enqueueSnackbar('You got the joker! Your symbol was placed randomly :p');
+            this.props.enqueueSnackbar('You got the joker! Your symbol was placed randomly :p', { autoHideDuration: 2000 });
             return;
         }
         this.setState({ powerups: this.state.powerups.concat([pow]) });
     });
 
     this.props.socket.on('bombed', (user) => {
-        this.props.enqueueSnackbar(`${user} got bombed! Their symbol is gone :(`);
+        this.props.enqueueSnackbar(`${user} got bombed! Their symbol is gone :(`, { autoHideDuration: 2000 });
     });
 
     this.props.socket.on('joked', (user) => {
-        this.props.enqueueSnackbar(`${user} got the joker! Their symbol was placed randomly :p`);
+        this.props.enqueueSnackbar(`${user} got the joker! Their symbol was placed randomly :p`, { autoHideDuration: 2000 });
     })
 
   }

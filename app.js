@@ -1,4 +1,4 @@
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 
 const app = require('express')();
 const cors = require('cors');
@@ -12,7 +12,7 @@ rooms = {};
 
 // replace this with frontend
 // app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/frontend/public/index.html');
+//     res.sendFile(__dirname + '/index.html');
 //   });
 
 server.listen(PORT, () => {
