@@ -15,6 +15,9 @@ rooms = {};
 //     res.sendFile(__dirname + '/index.html');
 //   });
 
+app.use(express.static(path.join(__dirname, './frontend/build')));
+app.get('/', (req, res, next) => res.sendFile(__dirname + './index.html'))
+
 server.listen(PORT, () => {
     console.log(`socketio listening on port ${PORT}`);
 })
