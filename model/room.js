@@ -120,6 +120,12 @@ module.exports = class Room {
         return playerIdx;
     }
 
+    skipPlayer(onIdx) {
+        var player = this.players[onIdx];
+        player.addSkip();
+        return onIdx;
+    }
+
     removePiece(props) {
         // props: { board, row, col }
         this.boards[props.board].clearBox(props.row, props.col);

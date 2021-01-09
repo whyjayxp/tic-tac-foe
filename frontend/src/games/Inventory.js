@@ -6,7 +6,7 @@ import { withSnackbar } from 'notistack';
 // 1 : remove piece
 // 2 : good bomb
 // 3 : good curse
-const POWERS = ["Skip Next Player", "Remove One Piece", "Plant A Bomb", "Curse Jeff"];
+const POWERS = { 0: "Skip Next Player", 1: "Remove One Piece", 2: "Plant A Bomb", 3: "Cast A Curse", 6: "Skip Chosen Player" };
 
 class Inventory extends React.Component {
   constructor(props) {
@@ -29,9 +29,19 @@ class Inventory extends React.Component {
             // 1 : remove piece  { board, row, col }
             // 2 : good bomb     { board, row, col }
             // 3 : good curse    { cursedBy, onIdx }
+            // 6 : skip any player { onIdx }
         if (pow === 0) {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
         } else {
+            if (pow === 1) {
+              this.props.enqueueSnackbar('Choose a symbol on the boards to remove it!', { autoHideDuration: 2000 });
+            } else if (pow === 2) {
+              this.props.enqueueSnackbar('Choose an empty box on the boards to plant a bomb!', { autoHideDuration: 2000 });
+            } else if (pow === 3) {
+              this.props.enqueueSnackbar('Choose a player to curse!', { autoHideDuration: 2000 });
+            } else if (pow === 6) {
+              this.props.enqueueSnackbar('Choose a player to skip their turn!', { autoHideDuration: 2000 });
+            }
             this.props.updateStatus(`use_power_${pow}`);
         }
     }
@@ -40,6 +50,7 @@ class Inventory extends React.Component {
   componentDidMount() {
     this.props.socket.on('itsYourTurn', () => {
       this.props.updateStatus('turn');
+      this.props.enqueueSnackbar('It\'s your turn!', { autoHideDuration: 2000 });
     });
 
     this.props.socket.on('newPower', (pow) => {
@@ -55,6 +66,7 @@ class Inventory extends React.Component {
             this.props.enqueueSnackbar('You got the joker! Your symbol was placed randomly :p', { autoHideDuration: 2000 });
             return;
         }
+        this.props.enqueueSnackbar('You got a powerup!', { autoHideDuration: 2000 });
         this.setState({ powerups: this.state.powerups.concat([pow]) });
     });
 
@@ -72,7 +84,7 @@ class Inventory extends React.Component {
     const listPowerups = this.state.powerups.map((power, idx) =>
     <Button key={idx} onClick={() => this.pressPowerup(idx)}>
       <li><b>{POWERS[power]}</b></li>
-      <img src={`/images/${power}.svg`} alt={"home"} height={'20'} margin-left="10px"/>
+      <img src={`/images/${power}.svg`} alt={"power"} height={'20'} margin-left="10px"/>
     </Button>
     );
     return (

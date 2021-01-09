@@ -40,6 +40,7 @@ module.exports = (io, socket) => {
         // 1 : remove piece  { board, row, col }
         // 2 : good bomb     { board, row, col }
         // 3 : good curse    { cursedBy, onIdx }
+        // 6 : skip any player { onIdx }
         var room = rooms[roomId];
         if (pow == 0) {
             var playerIdx = room.skipNextPlayer();
@@ -55,6 +56,10 @@ module.exports = (io, socket) => {
         } else if (pow == 3) {
             room.placeCurse(props);
             io.to(roomId).emit('curseUsed'); // can use to broadcast
+        } else if (pow == 6) {
+            var playerIdx = room.skipPlayer(props.onIdx);
+            io.to(roomId).emit('skipUsed', playerIdx);
+            io.to(roomId).emit('newGameState', roomId, room.getGameState());
         }
     })
 

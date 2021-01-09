@@ -18,7 +18,9 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('boardOver', (winner) => {
-            this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 2000 });
+            if (winner > -1) {
+                this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 2000 });
+            }
         });
 
         this.props.socket.on('gameOver', (winner) => {

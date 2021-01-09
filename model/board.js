@@ -1,10 +1,11 @@
-const POWER_PROB = [0.2, 0.2, 0.1, 0.1, 0.2, 0.2];
+const POWER_PROB = [0.1, 0.2, 0.1, 0.1, 0.2, 0.2, 0.1];
     // 0 : skip next player
     // 1 : remove piece
     // 2 : good bomb
     // 3 : good curse
     // 4 : bad bomb
     // 5 : bad curse
+    // 6 : skip any player
 const CHECKS = [  // only for 3x3
     [[0,0], [0,1], [0,2]], [[1,0], [1,1], [1,2]], [[2,0], [2,1], [2,2]], // rows
     [[0,0], [1,0], [2,0]], [[0,1], [1,1], [2,1]], [[0,2], [1,2], [2,2]], // cols
