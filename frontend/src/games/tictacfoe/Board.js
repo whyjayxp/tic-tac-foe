@@ -1,5 +1,6 @@
 import React from 'react'
 import Square from './Square'
+import { withSnackbar } from 'notistack';
   
 class Board extends React.Component {
     constructor(props) {
@@ -17,16 +18,22 @@ class Board extends React.Component {
             if (!hasSymbol) {
                 this.props.socket.emit('chooseGrid', this.props.room.roomId, { board: this.props.idx, row, col });
                 this.props.updateStatus('game');
+            } else {
+                this.props.enqueueSnackbar(`This box is already taken!`, { autoHideDuration: 2000 });
             }
         } else if (this.props.status === 'use_power_1') { // remove piece
             if (hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 1, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
+            } else {
+                this.props.enqueueSnackbar(`This box has no symbol to remove!`, { autoHideDuration: 2000 });
             }
         } else if (this.props.status === 'use_power_2') { // plant bomb
             if (!hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 2, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
+            } else {
+                this.props.enqueueSnackbar(`Bomb must be planted on an empty box!`, { autoHideDuration: 2000 });
             }
         }
     }
@@ -66,4 +73,4 @@ class Board extends React.Component {
     }
 }
 
-export default Board
+export default withSnackbar(Board);

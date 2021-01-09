@@ -81,12 +81,12 @@ module.exports = class Room {
         if (thisPlayer.checkCurse()) {
             var cursedBy = thisPlayer.removeCurse();
             result = this.boards[board].fillBoxWith(row, col, this.status, cursedBy);
-            // result.wasCursed = true;
+            result.cursedBy = cursedBy;
         } else {
             result = this.boards[board].fillBoxWith(row, col, this.status, -1);
-            // result.wasCursed = false;
+            result.cursedBy = -1;
         }
-        // result: { power, winner, hasEnded }
+        // result: { power, winner, hasEnded, cursedBy }
         result.gameOver = false;
         if (result.hasEnded) {
             if (result.winner != -1) {

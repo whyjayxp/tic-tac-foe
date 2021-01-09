@@ -4,7 +4,7 @@ const POWER_PROB = [0.1, 0.2, 0.1, 0.1, 0.2, 0.2, 0.1];
     // 2 : good bomb
     // 3 : good curse
     // 4 : bad bomb
-    // 5 : bad curse
+    // 5 : joker
     // 6 : skip any player
 const CHECKS = [  // only for 3x3
     [[0,0], [0,1], [0,2]], [[1,0], [1,1], [1,2]], [[2,0], [2,1], [2,2]], // rows
@@ -76,10 +76,14 @@ module.exports = class Board {
             // bad bomb
             // exploded and gone
         } else if (power == 5) {
-            // bad curse (jump to random box)
+            // joker (jump to random box)
             var buckets = this.getEmptyBoxes();
             var box = this.getRandomFromBucket(buckets);
-            this.symbols[Math.floor(box / 3)][box % 3] = val;
+            if (cursedBy == -1) {
+                this.symbols[Math.floor(box / 3)][box % 3] = val;
+            } else {
+                this.symbols[Math.floor(box / 3)][box % 3] = cursedBy;
+            }
         } else { // boring box
             if (cursedBy == -1) {
                 this.symbols[i][j] = val;

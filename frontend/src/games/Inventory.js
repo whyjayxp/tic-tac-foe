@@ -78,6 +78,10 @@ class Inventory extends React.Component {
         this.props.enqueueSnackbar(`${user} got the joker! Their symbol was placed randomly :p`, { autoHideDuration: 2000 });
     })
 
+    this.props.socket.on('cursed', (user, by) => {
+        this.props.enqueueSnackbar(`${user} was cursed by ${ this.props.room.players[by].username }!`, { autoHideDuration: 2000 });
+    });
+
   }
 
   render() {

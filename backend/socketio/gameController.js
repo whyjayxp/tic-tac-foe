@@ -14,7 +14,7 @@ module.exports = (io, socket) => {
     socket.on('chooseGrid', (roomId, props) => {
         var room = rooms[roomId];
         var result = room.chooseGrid(props);
-        // result:{ power, winner, hasEnded, gameOver }
+        // result:{ power, winner, hasEnded, cursedBy, gameOver }
         if (result.gameOver) {
             io.to(roomId).emit('gameOver', result.winner);
             delete rooms[roomId]; 
@@ -22,6 +22,9 @@ module.exports = (io, socket) => {
         }
         if (result.hasEnded) {
             io.to(roomId).emit('boardOver', result.winner); // use for broadcast & update view
+        }
+        if (result.cursedBy > -1) {
+            io.to(roomId).emit('cursed', socket.player.username, result.cursedBy);
         }
         socket.emit('newPower', result.power);
         if (result.power === 4) {
