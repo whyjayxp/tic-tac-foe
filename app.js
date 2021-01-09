@@ -11,9 +11,9 @@ initSocket(server);
 rooms = {};
 
 // replace this with frontend
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/frontend/public/index.html');
-//   });
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+  });
 
 server.listen(PORT, () => {
     console.log(`socketio listening on port ${PORT}`);
