@@ -4,81 +4,9 @@
     <title>Test</title>
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
-      #players { list-style-type: none; margin: 0; padding: 0; }
-      #players > li { padding: 0.5rem 1rem; }
-      #players > li:nth-child(odd) { background: #efefef; }
-      #roomId { font-size: 20px; }
-
-      #buttonID { display: none; }
     </style>
   </head>
   <body>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" placeholder="Name" /><button>Create Room</button>
-    </form>
-    <form id="form2" action="">
-      <input id="input2" autocomplete="off" placeholder="Room ID" /><button>Join Room</button>
-    </form>
-
-    <button id="buttonID">Start Game</button>
-
-    <div id="roomId"></div>
-    <ul id="players"></ul>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io();
-        var form = document.getElementById('form');
-        var input = document.getElementById('input');
-        var form2 = document.getElementById('form2');
-        var input2 = document.getElementById('input2');
-        var list = document.getElementById('players');
-        var roomId = document.getElementById('roomId');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!input.value) {
-                alert("Please input your name!");
-                return;
-            }
-            socket.emit('createRoom', input.value);
-        });
-
-        form2.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!input.value) {
-                alert("Please input your name!");
-                return;
-            }
-            if (!input2.value) {
-                alert("Please input a room ID!");
-                return;
-            }
-            socket.emit('joinRoom', input.value, input2.value);
-        });
-
-        socket.on('errorJoiningRoom', (msg) => {
-            alert(msg);
-        });
-
-        socket.on('youAreTheHost', () => {
-            alert("You are the host");
-            document.getElementById("buttonID").style.display = "block";
-        });
-
-        socket.on('updatePlayers', (room, arr) => {
-            form.remove();
-            form2.remove();
-            list.innerHTML = "";
-            roomId.innerHTML = `Room ID: <b>${room}</b>`;
-            arr.forEach((player) => {
-                var li = document.createElement("li");
-                //li.appendChild(document.createTextNode(player[1]));
-                li.innerHTML = `<b>${player.symbol}</b> ${player.username}`;
-                list.appendChild(li);
-            });
-        });
-    </script>
+    Looking for something?
   </body>
 </html>
