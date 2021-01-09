@@ -94,13 +94,16 @@ class Inventory extends React.Component {
 
   render() {
     const listPowerups = this.state.powerups.map((power, idx) =>
+    <span>
     <Button key={idx} onClick={() => this.pressPowerup(idx)}>
-      <li><b>{POWERS[power]}</b></li>
-      <img src={`/images/${power}.svg`} alt={"power"} height={'20'} margin-left="10px"/>
+      <li><b>{POWERS[power]}</b> <img src={`/images/${power}.svg`} alt={"power"} height={'20'} margin-left="10px"/></li>
+      
     </Button>
+    <br />
+    </span>
     );
     return (
-      <div>
+      <div id="powerupList">
         <ul>{ listPowerups }</ul>
       </div>
     );

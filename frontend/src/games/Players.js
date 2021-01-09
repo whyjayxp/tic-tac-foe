@@ -24,11 +24,11 @@ class Players extends React.Component {
   componentDidMount() {
   }
 
-  render() { // TODO: highlight current turn user
+  render() {
     const listPlayers = this.props.room.players.map((player, idx) => 
     (idx === this.props.room.turn) ? 
-    (<Button color="primary" key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
-      <li id="playerGrid"><div id="playerSymbol">{player.symbol}</div> <div>{player.username}</div> <div>{player.wins} <img src={'/images/win.svg'} alt={"win"} height={'15'} /> {player.skips} <img src={`/images/0.svg`} alt={"skip"} height={'15'} /> </div></li>
+    (<Button key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
+      <li id="playerGridTurn"><div id="playerSymbol">{player.symbol}</div> <div>{player.username}</div> <div>{player.wins} <img src={'/images/win.svg'} alt={"win"} height={'15'} /> {player.skips} <img src={`/images/0.svg`} alt={"skip"} height={'15'} /> </div></li>
     </Button>) :
     (<Button key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
       <li id="playerGrid"><div id="playerSymbol">{player.symbol}</div> <div>{player.username}</div> <div>{player.wins} <img src={'/images/win.svg'} alt={"win"} height={'15'} /> {player.skips} <img src={`/images/0.svg`} alt={"skip"} height={'15'} /></div></li>
