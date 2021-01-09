@@ -11,8 +11,11 @@ initSocket(server);
 rooms = {};
 
 // replace this with frontend
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '/index.html');
+//   });
+app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
   });
 
 server.listen(PORT, () => {
