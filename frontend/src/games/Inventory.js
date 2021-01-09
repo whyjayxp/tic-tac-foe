@@ -45,8 +45,13 @@ class Inventory extends React.Component {
         if (pow === -1) {
             return;
         }
-        if (pow === 4 || pow === 5) {
-            alert('Haha you got bombed/cursed XP');
+        if (pow === 4) {
+            alert('You got bombed! Your symbol is gone :(');
+            return;
+        }
+
+        if (pow === 5) {
+            alert('You got the joker! Your symbol was placed randomly :p');
             return;
         }
         this.setState({ powerups: this.state.powerups.concat([pow]) });

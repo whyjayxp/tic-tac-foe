@@ -17,8 +17,15 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('gameOver', (winner) => {
-            alert(`${winner} is the winner!`);
+            alert(`${this.props.room.players[winner].username} is the winner!`);
+            this.props.updateStatus('home');
         });
+
+        this.props.socket.on('disconnectedPlayer', (burden) => {
+            alert(`${burden} disconnected. Moving back to home page...`);
+            this.props.updateStatus('home');
+        });
+
 
         this.props.socket.on('skipUsed', (playerIdx) => {
             alert(`${this.props.room.players[playerIdx].username}'s turn will be skipped!`);
@@ -32,7 +39,7 @@ class Game extends React.Component {
             alert(`A bomb has been planted!`);
         });
 
-        this.props.socket.on('cursedUsed', () => {
+        this.props.socket.on('curseUsed', () => {
             alert(`A curse has been applied!`);
         });
     }

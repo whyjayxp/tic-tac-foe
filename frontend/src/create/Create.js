@@ -1,12 +1,6 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import Paper from '@material-ui/core/Paper';
 
 class Create extends React.Component {
   constructor(props) {
@@ -40,7 +34,7 @@ class Create extends React.Component {
 
   joinRoom() {
     const username = this.state.username;
-    const roomId = this.state.roomId;
+    const roomId = this.state.roomId.toUpperCase();
     if (username === '') {
       alert("Please input your name!");
       return;

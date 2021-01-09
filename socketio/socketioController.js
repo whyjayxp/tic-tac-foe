@@ -25,7 +25,9 @@ module.exports = server => {
                             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
                             io.to(room.getHost()).emit('youAreTheHost');
                         } else { // middle of a game
-                            socket.to(roomId).emit('newGameState', room.getGameState());
+                            delete rooms[roomId];
+                            socket.to(roomId).emit('disconnectedPlayer', socket.player.username);
+                            // socket.to(roomId).emit('newGameState', room.getGameState());
                         }
                     }
                 });

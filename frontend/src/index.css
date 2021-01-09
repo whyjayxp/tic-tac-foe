@@ -1,6 +1,6 @@
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 0px;
+    margin-bottom: 50px;
   }
 
   #roomId {
@@ -108,11 +108,13 @@ body {
     display: flex;
     width: auto;
   }
+  
   .home-button{
     background: '#3f51b5';
     color: 'white';
     margin-left: 100px;
   }
+
   .players-list{
     display: flex;
     flex-direction: column;

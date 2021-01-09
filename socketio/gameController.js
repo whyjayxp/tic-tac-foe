@@ -8,7 +8,6 @@ module.exports = (io, socket) => {
         room.setNumBoardsToWin(numBoardsToWin);
         var firstPlayer = room.startGame();
         io.to(roomId).emit('startGame', roomId, room.getGameState());
-        console.log(room.getGameState());
         io.to(firstPlayer).emit('itsYourTurn');
     });
 
@@ -27,7 +26,7 @@ module.exports = (io, socket) => {
         socket.emit('newPower', result.power);
         var nextPlayer = room.nextTurn();
         io.to(roomId).emit('newGameState', roomId, room.getGameState());
-        console.log(room.getGameState());
+        // console.log(room.getGameState());
         io.to(nextPlayer).emit('itsYourTurn');
     });
 
@@ -53,6 +52,5 @@ module.exports = (io, socket) => {
             io.to(roomId).emit('curseUsed'); // can use to broadcast
         }
     })
-
 
 };

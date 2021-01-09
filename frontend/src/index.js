@@ -29,7 +29,7 @@ class App extends React.Component {
 
     startGame(roomId, gameState) {
     // gameState: { boards: this.getBoards(), players: this.getPlayers(), turn: this.status };
-    console.log(gameState);
+    //console.log(gameState);
         this.setState({ room: 
             {roomId, players: gameState.players, boards: gameState.boards, turn: gameState.turn}, 
             status: 'game' });
