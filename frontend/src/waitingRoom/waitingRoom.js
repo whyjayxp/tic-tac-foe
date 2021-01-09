@@ -1,6 +1,11 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
+import FormControl from '@material-ui/core/FormControl'
+
+const MAX_BOARDS = 30;
 
 class Waiting extends React.Component {
   constructor(props) {
@@ -11,6 +16,14 @@ class Waiting extends React.Component {
       boardsToWin: 3
     };
   }
+
+  handleNumBoardsChange = (event) => {
+      this.setState({ concurBoards: event.target.value })
+  };
+
+  handleNumWinningBoardsChange = (event) => {
+      this.setState({ boardsToWin: event.target.value })
+  };
 
   pressStart() {
     if (this.props.room.players.length < 2) {
@@ -32,30 +45,53 @@ class Waiting extends React.Component {
       this.props.updateRoom({ roomId, players, isHost });
     });
 
-    this.props.socket.on('startGame', (roomId, players) => {
-      this.props.startGame(roomId, players);
+    this.props.socket.on('startGame', (roomId, gameState) => {
+      this.props.startGame(roomId, gameState);
     });
   }
 
   render() {
+    const boardsMenuItems = []
+    for (let i = 1; i < MAX_BOARDS; i++) {
+        boardsMenuItems.push(<MenuItem className="menuItem" key={i} value={i}>{i}</MenuItem>)
+    }
     const listPlayers = this.props.room.players.map((player) =>
-      <li>{player.username}</li>
+      <li key={player.username}>{player.username}</li>
     );
     const hostFeatures = this.props.room.isHost ? (
-      <form className="create" noValidate autoComplete="off">
-      {/* <TextField id="outlined-basic" label="User Name" variant="outlined" /> */}
-      <TextField id="outlined-basic" label="Number of Boards" variant="outlined" />
-      <TextField id="outlined-basic" label="Number of Boards to Win" variant="outlined" />
-      {/* <TextField id="outlined-basic" label="Enter Room Code" variant="outlined" /> */}
-        <Button className="home-button" onClick={this.pressStart}>
+      <form className="waiting" noValidate autoComplete="off">
+          {/* <FormControl className={classes.formControl}> */}
+          <b>Host Settings</b><br />
+          <FormControl>
+            Concurrent Boards: <InputLabel id="demo-simple-select-label" />
+            <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={this.state.concurBoards}
+            onChange={this.handleNumBoardsChange}>
+            {boardsMenuItems}
+            </Select>
+          </FormControl>
+          <br/>
+          <FormControl>
+            Boards to Win: <InputLabel id="demo-simple-select-label" />
+            <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={this.state.boardsToWin}
+            onChange={this.handleNumWinningBoardsChange}>
+            {boardsMenuItems}
+            </Select>
+          </FormControl><br/>
+        <Button variant="outlined" onClick={this.pressStart}>
             Start Game!
         </Button>
     </form>
     ) : null;
     return (
       <div>
-        <b>{ this.props.room.roomId }</b>
-        <ul>{ listPlayers }</ul>
+        <div id="roomId">{ this.props.room.roomId }</div>
+        <ul id="playerList">{ listPlayers }</ul>
         { hostFeatures }
       </div>
     );

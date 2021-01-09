@@ -68,14 +68,14 @@ module.exports = class Room {
         }
         // generate boards
         for (var i = 0; i < this.maxConcurBoards; i++) {
-            this.boards[i] = new Board(this.boardSize, this.boardSize);
+            this.boards.push(new Board(this.boardSize, this.boardSize));
         }
         this.status = 0; // first player's turn
         return this.players[0].socket.id;
     }
 
     chooseGrid(props) {
-        // props: { board, row, col }
+        var { board, row, col } = props;
         var thisPlayer = this.players[this.status];
         var result;
         if (thisPlayer.checkCurse()) {
@@ -130,7 +130,7 @@ module.exports = class Room {
     }
 
     placeCurse(props) {
-        this.players[props.onIdx].setCurse(props.symbol);
+        this.players[props.onIdx].setCurse(props.cursedBy);
     }
 
     getHost() {

@@ -8,39 +8,43 @@ module.exports = (io, socket) => {
         room.setNumBoardsToWin(numBoardsToWin);
         var firstPlayer = room.startGame();
         io.to(roomId).emit('startGame', roomId, room.getGameState());
+        console.log(room.getGameState());
         io.to(firstPlayer).emit('itsYourTurn');
     });
 
     socket.on('chooseGrid', (roomId, props) => {
         var room = rooms[roomId];
         var result = room.chooseGrid(props);
-        // { power, winner, hasEnded, gameOver }
+        // result:{ power, winner, hasEnded, gameOver }
         if (result.gameOver) {
-            io.to(roomId).emit('gameOver', winner);
+            io.to(roomId).emit('gameOver', result.winner);
             delete rooms[roomId]; 
             return;
         }
         if (result.hasEnded) {
-            io.to(roomId).emit('boardOver', winner); // use for broadcast & update view
+            io.to(roomId).emit('boardOver', result.winner); // use for broadcast & update view
         }
-        socket.emit('newPower', power);
+        socket.emit('newPower', result.power);
         var nextPlayer = room.nextTurn();
-        io.to(roomId).emit('newGameState', room.getGameState());
+        io.to(roomId).emit('newGameState', roomId, room.getGameState());
+        console.log(room.getGameState());
         io.to(nextPlayer).emit('itsYourTurn');
     });
 
-    socket.on('usePowerup', (roomId, powIdx, props) => {
-        var pow = socket.player.usePowerup(powIdx);
+    socket.on('usePowerup', (roomId, pow, props) => {
         // 0 : skip next player
         // 1 : remove piece  { board, row, col }
         // 2 : good bomb     { board, row, col }
-        // 3 : good curse    { symbol, onIdx }
+        // 3 : good curse    { cursedBy, onIdx }
+        var room = rooms[roomId];
         if (pow == 0) {
-            room.skipNextPlayer();
+            var playerIdx = room.skipNextPlayer();
             io.to(roomId).emit('skipUsed', playerIdx); // can use to broadcast who got skipped & update view
+            io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 1) {
             room.removePiece(props);
             io.to(roomId).emit('removeUsed', props); // can use to broadcast & update view
+            io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 2) {
             room.placeBomb(props);
             io.to(roomId).emit('bombUsed'); // can use to broadcast

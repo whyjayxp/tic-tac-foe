@@ -12,6 +12,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.updateRoom = this.updateRoom.bind(this);
+        this.updateStatus = this.updateStatus.bind(this);
         this.joinRoom = this.joinRoom.bind(this);
         this.startGame = this.startGame.bind(this);
         this.state = {
@@ -26,8 +27,16 @@ class App extends React.Component {
         this.setState({ room: {roomId, players, isHost}, status: 'lobby' })
     }
 
-    startGame() {
-        this.setState({ status: 'game' })
+    startGame(roomId, gameState) {
+    // gameState: { boards: this.getBoards(), players: this.getPlayers(), turn: this.status };
+    console.log(gameState);
+        this.setState({ room: 
+            {roomId, players: gameState.players, boards: gameState.boards, turn: gameState.turn}, 
+            status: 'game' });
+    }
+
+    updateStatus(status) {
+        this.setState({status});
     }
 
     updateRoom(room) {
@@ -47,13 +56,11 @@ class App extends React.Component {
         } else if (status === 'lobby') {
             page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} />
         } else {
-            page = <Game room={room} socket={socket} />
+            page = <Game room={room} socket={socket} status={status} updateRoom={this.updateRoom} updateStatus={this.updateStatus} />
         }
-        return (
-            <div>
+        return (<div>
                 { page }
-            </div>
-        );
+        </div>);
     }
 }
 

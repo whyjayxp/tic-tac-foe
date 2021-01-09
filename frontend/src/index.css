@@ -2,9 +2,46 @@ body {
     font: 14px "Century Gothic", Futura, sans-serif;
     margin: 0px;
   }
+
+  #roomId {
+    font-size: 80px;
+    text-align: center;
+    margin-top: 20px;
+    background: #ddd;
+  }
   
-  ol, ul {
-    padding-left: 30px;
+  #playerList {
+    font-size: 20px;
+    text-align: center;
+    padding: 5px;
+    line-height: 25px;
+  }
+
+  #playerGrid {
+    font-size: 20px;
+    text-align: center;
+    background: #ddd;
+    padding: 20px;
+    line-height: 25px;
+  }
+
+  #playerSymbol {
+    font-size: 40px;
+    font-weight: bold;
+    vertical-align: center;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .waiting {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #999;
+    padding: 10px;
   }
   
   .board-row:after {
@@ -59,14 +96,25 @@ body {
   }
   .create {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     display: 'flex';
     flex-direction: 'column';
     align-items: 'center';
   }
+
+  .menuItem {
+    display: flex;
+    width: auto;
+  }
   .home-button{
-    background-color: '#3f51b5';
-    color: 'white',
+    background: '#3f51b5';
+    color: 'white';
+    margin-left: 100px;
+  }
+  .players-list{
+    display: flex;
+    flex-direction: column;
+    justify-self: right;
   }

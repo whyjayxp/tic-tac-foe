@@ -5,7 +5,7 @@ module.exports = class Player {
         this.username = options.username;
         this.symbol = '';
         this.wins = 0;
-        this.powerups = [];
+        //this.powerups = [];
         this.curses = -1;
         this.skips = 0;
     }
@@ -40,19 +40,19 @@ module.exports = class Player {
         return this.skips > 0;
     }
 
-    addPowerup(pup) {
-        this.powerups.push(pup);
-    }
+    // addPowerup(pup) {
+    //     this.powerups.push(pup);
+    // }
 
-    usePowerup(idx) {
-        var pup = this.powerups[idx];
-        this.powerups.splice(pup, 1);
-        return pup;
-    }
+    // usePowerup(idx) {
+    //     var pup = this.powerups[idx];
+    //     this.powerups.splice(pup, 1);
+    //     return pup;
+    // }
     
-    getPowerups() {
-        return this.powerups;
-    }
+    // getPowerups() {
+    //     return this.powerups;
+    // }
 
     addWin() {
         this.wins = this.wins + 1;

@@ -1,12 +1,49 @@
 import React from 'react'
-import Board from './tictacfoe/Board'
+import Players from './Players'
+import Inventory from './Inventory'
+import Boards from './Boards'
 
 class Game extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        };
+      }
+
+    componentDidMount() {
+        this.props.socket.on('newGameState', (roomId, gameState) => {
+          var room = {roomId, players: gameState.players, boards: gameState.boards, turn: gameState.turn};
+          this.props.updateRoom(room);
+        });
+
+        this.props.socket.on('gameOver', (winner) => {
+            alert(`${winner} is the winner!`);
+        });
+
+        this.props.socket.on('skipUsed', (playerIdx) => {
+            alert(`${this.props.room.players[playerIdx].username}'s turn will be skipped!`);
+        });
+
+        this.props.socket.on('removeUsed', () => {
+            alert(`A symbol has been removed!`);
+        });
+
+        this.props.socket.on('bombUsed', () => {
+            alert(`A bomb has been planted!`);
+        });
+
+        this.props.socket.on('cursedUsed', () => {
+            alert(`A curse has been applied!`);
+        });
+    }
+
     render() {
         return (
         <div className="game">
             <div className="game-board">
-            <Board />
+            <Players className="players-list" socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
+            <Inventory socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
+            <Boards socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             </div>
             <div className="game-info">
             <div>{/* status */}</div>

@@ -7,7 +7,6 @@ module.exports = server => {
     const io = socketio(server, options); 
     io.on('connection', (socket) => {
         console.log(`${socket.id} just connected`);
-        socket.emit('connection', null)
 
         initLobby(io, socket);
         initGame(io, socket);
@@ -26,7 +25,6 @@ module.exports = server => {
                             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
                             io.to(room.getHost()).emit('youAreTheHost');
                         } else { // middle of a game
-                            socket.to(roomId).emit('playerDisconnected', socket.player.username);
                             socket.to(roomId).emit('newGameState', room.getGameState());
                         }
                     }

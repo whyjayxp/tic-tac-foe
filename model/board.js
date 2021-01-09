@@ -43,7 +43,7 @@ module.exports = class Board {
         var sum = 0;
         for (var i in POWER_PROB) {
             sum += POWER_PROB[i];
-            if (r <= sum) return i;
+            if (r <= sum) return Number(i);
         }
     }
 
@@ -65,7 +65,7 @@ module.exports = class Board {
         var power = this.powers[i][j];
         result.power = power;
         if (power == 0 || power == 1 || power == 2 || power == 3) {
-            this.players[this.status].addPowerup(power);
+            //this.players[this.status].addPowerup(power);
             if (cursedBy == -1) {
                 this.symbols[i][j] = val;
             } else {
@@ -75,13 +75,10 @@ module.exports = class Board {
             // bad bomb
             // exploded and gone
         } else if (power == 5) {
-            // bad curse
-            // we randomize symbol for now, but can let player choose also
-            var buckets = [];
-            for (var i = 0; i < this.players.length; i++) {
-                if (i != this.status) buckets.push(i);
-            }
-            this.symbols[i][j] = this.getRandomFromBucket(buckets);
+            // bad curse (jump to random box)
+            var buckets = this.getEmptyBoxes();
+            var box = this.getRandomFromBucket(buckets);
+            this.symbols[Math.floor(box / 3)][box % 3] = val;
         } else { // boring box
             if (cursedBy == -1) {
                 this.symbols[i][j] = val;
@@ -99,6 +96,18 @@ module.exports = class Board {
         return result;
     }
 
+    getEmptyBoxes() {
+        var boxes = [];
+        for (var i = 0; i < this.row; i++) {
+            for (var j = 0; j < this.col; j++) {
+                if (this.symbols[i][j] == -1) {
+                    boxes.push(i * 3 + j);
+                }
+            }
+        }
+        return boxes;
+    }
+
     clearBox(i, j) {
         this.symbols[i][j] = -1;
     }
@@ -114,7 +123,7 @@ module.exports = class Board {
 
     getWinner() {
         // check if there is a row, col, diagonal
-        for (var i = 0; i < checks.length; i++) {
+        for (var i = 0; i < CHECKS.length; i++) {
             var toCheck = CHECKS[i];
             if (this.symbols[toCheck[0][0]][toCheck[0][1]] == this.symbols[toCheck[1][0]][toCheck[1][1]] &&
                 this.symbols[toCheck[1][0]][toCheck[1][1]] == this.symbols[toCheck[2][0]][toCheck[2][1]]) {
