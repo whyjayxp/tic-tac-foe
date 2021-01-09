@@ -26,7 +26,7 @@ class Create extends React.Component {
   createRoom() {
     const username = this.state.username;
     if (username === '') {
-      this.props.enqueueSnackbar("Please input your name!");
+      this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 2000 });
       return;
     }
     this.setState({ isHost: true });
@@ -37,11 +37,11 @@ class Create extends React.Component {
     const username = this.state.username;
     const roomId = this.state.roomId.toUpperCase();
     if (username === '') {
-      this.props.enqueueSnackbar("Please input your name!");
+      this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 2000 });
       return;
     }
     if (roomId === '') {
-      this.props.enqueueSnackbar("Please input a room ID!");
+      this.props.enqueueSnackbar("Please input a room ID!", { autoHideDuration: 2000 });
       return;
     }
     this.setState({ isHost: false });
@@ -50,7 +50,7 @@ class Create extends React.Component {
 
   componentDidMount() {
     this.props.socket.on('errorJoiningRoom', (msg) => {
-      this.props.enqueueSnackbar(msg);
+      this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
     });
 
     this.props.socket.on('successJoiningRoom', (roomId, players) => {
