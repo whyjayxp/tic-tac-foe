@@ -11,6 +11,12 @@ module.exports = server => {
         initLobby(io, socket);
         initGame(io, socket);
 
+        socket.on('leaveRoom', (roomId) => {
+            socket.leave(roomId);
+            socket.player = null;
+            socket.room = null;
+        });
+
         socket.on('disconnecting', (reason) => {
             // before socket.rooms is wiped out, handle existing game room
             if (socket.hasOwnProperty('player')) {
