@@ -28,6 +28,7 @@ class ChatRoom extends React.Component {
 
   componentDidMount() {
     this.props.socket.on('newMessage', (msg) => {
+      this.props.showNewMsg();
       this.addToChat(msg);
     });
   }

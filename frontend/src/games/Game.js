@@ -17,12 +17,14 @@ class Game extends React.Component {
         this.closeLogs = this.closeLogs.bind(this);
         this.closeChat = this.closeChat.bind(this);
         this.addToLog = this.addToLog.bind(this);
+        this.showNewMsg = this.showNewMsg.bind(this);
         this.state = {
             prevBoard: [],
             dialogOpen: false,
             winner: { },
             logs: [],
             logsOpen: false,
+            hasNewMsg: false,
             chatOpen: false
         };
       }
@@ -40,11 +42,15 @@ class Game extends React.Component {
     }
 
     closeChat() {
-        this.setState({ chatOpen: false });
+        this.setState({ chatOpen: false, hasNewMsg: false });
     }
 
     addToLog(msg) {
         this.setState({ logs: this.state.logs.concat(msg) });
+    }
+
+    showNewMsg() {
+        this.setState({ hasNewMsg: true });
     }
 
     componentDidMount() {
@@ -148,13 +154,13 @@ class Game extends React.Component {
                     <center><i>Click outside to dismiss</i></center>
             </Dialog>
             <Logs onClose={this.closeLogs} open={ this.state.logsOpen } logs={ this.state.logs } />
-            <ChatRoom socket={this.props.socket} roomId={this.props.room.roomId} onClose={this.closeChat} open={ this.state.chatOpen } />
+            <ChatRoom socket={this.props.socket} roomId={this.props.room.roomId} onClose={this.closeChat} open={ this.state.chatOpen } showNewMsg={ this.showNewMsg } />
             <Players socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             <div>
             <Button style={{ 'margin-right': '5px' }} variant="outlined" onClick={() => this.setState({ logsOpen: true })}>
                     Check Logs
             </Button>
-            <Button style={{ 'margin-left': '5px' }} variant="outlined" onClick={() => this.setState({ chatOpen: true })}>
+            <Button style={{ 'margin-left': '5px' }} variant={ (this.state.hasNewMsg) ? "contained" : "outlined"} color={ (this.state.hasNewMsg) ? "primary" : "default"} onClick={() => this.setState({ chatOpen: true })}>
                     Open Chat
             </Button>
             </div>
