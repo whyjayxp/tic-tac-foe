@@ -131,14 +131,24 @@ module.exports = class Room {
     skipNextPlayer() {
         var playerIdx = (this.status + 1) % this.players.length;
         var nextPlayer = this.players[playerIdx];
-        nextPlayer.addSkip();
-        return playerIdx;
+        if (nextPlayer.checkShield()) {
+            nextPlayer.setShield(false);
+            return { from: this.status, to: playerIdx, shield: true };
+        } else {
+            nextPlayer.addSkip();
+            return { from: this.status, to: playerIdx, shield: false };
+        }
     }
 
     skipPlayer(onIdx) {
         var player = this.players[onIdx];
-        player.addSkip();
-        return onIdx;
+        if (player.checkShield()) {
+            player.setShield(false);
+            return { from: this.status, to: onIdx, shield: true };
+        } else {
+            player.addSkip();
+            return { from: this.status, to: onIdx, shield: false };
+        }
     }
 
     removePiece(props) {
@@ -151,7 +161,14 @@ module.exports = class Room {
     }
 
     placeCurse(props) {
-        this.players[props.onIdx].setCurse(props.cursedBy);
+        var player = this.players[props.onIdx];
+        if (player.checkShield()) {
+            player.setShield(false);
+            return { from: props.cursedBy, to: props.onIdx, shield: true };
+        } else {
+            player.setCurse(props.cursedBy);
+            return { from: props.cursedBy, to: props.onIdx, shield: false };
+        }
     }
 
     randomizeReplacePiece(props) {
@@ -175,6 +192,14 @@ module.exports = class Room {
 
     getPowerAt(props) {
         return this.boards[props.board].getPowerAt(props.row, props.col);
+    }
+
+    shieldCurrentPlayer() {
+        this.players[this.status].setShield(true);
+    }
+
+    deflectCurrentPlayer() {
+        this.players[this.status].setDeflect(true);
     }
 
     getHost() {

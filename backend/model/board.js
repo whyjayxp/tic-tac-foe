@@ -1,4 +1,4 @@
-const POWER_PROB = [0.1, 0.05, 0.2, 0.1, 0.1, 0.2, 0.1, 0.15];
+const POWER_PROB = [0.1, 0.05, 0.2, 0.1, 0.1, 0.2, 0.1, 0.15]; // 0-7 only currently
     // 0 : skip next player
     // 1 : remove piece
     // 2 : good bomb
@@ -8,6 +8,8 @@ const POWER_PROB = [0.1, 0.05, 0.2, 0.1, 0.1, 0.2, 0.1, 0.15];
     // 6 : skip any player
     // 7 : randomize replace
     // 8 : unbox the box
+    // 9 : shield
+    // 10: deflect
 const CHECKS = [  // only for 3x3
     [[0,0], [0,1], [0,2]], [[1,0], [1,1], [1,2]], [[2,0], [2,1], [2,2]], // rows
     [[0,0], [1,0], [2,0]], [[0,1], [1,1], [2,1]], [[0,2], [1,2], [2,2]], // cols

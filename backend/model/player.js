@@ -9,14 +9,12 @@ module.exports = class Player {
         //this.powerups = [];
         this.curses = -1;
         this.skips = 0;
+        this.hasShield = false;
+        this.hasDeflect = false;
     }
 
     setSymbol(sym) {
         this.symbol = sym;
-    }
-
-    setCurse(cursedBy) {
-        this.curses = cursedBy;
     }
 
     setOffline() {
@@ -25,6 +23,26 @@ module.exports = class Player {
 
     isOffline() {
         return !this.online;
+    }
+
+    setShield(haveOrNot) {
+        this.hasShield = haveOrNot;
+    }
+
+    checkShield() {
+        return this.hasShield;
+    }
+
+    setDeflect(haveOrNot) {
+        this.hasDeflect = haveOrNot;
+    }
+
+    checkDeflect() {
+        return this.hasDeflect;
+    }
+
+    setCurse(cursedBy) {
+        this.curses = cursedBy;
     }
 
     removeCurse() {

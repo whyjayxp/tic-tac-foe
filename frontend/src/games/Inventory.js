@@ -10,7 +10,9 @@ const POWERS = {
   3: "Cast A Curse", 
   6: "Skip Chosen Player",
   7: "Randomly Replace Piece",
-  8: "Unbox A Box" };
+  8: "Unbox A Box",
+  9: "Use A Shield",
+  10: "Activate Deflect" };
 const DESCS = {
   0: "The next player will lose a turn.",
   1: "Choose any existing symbol on the board to remove. The powerup is wasted if an empty tile is chosen.",
@@ -18,14 +20,16 @@ const DESCS = {
   3: "Choose any player to curse. The next tile placed by that player will become your symbol instead.",
   6: "Choose any player to skip so that they will lose a turn.",
   7: "Choose any existing symbol on the board to randomly replace it with another symbol. The powerup is wasted if an empty tile is chosen.",
-  8: "Choose any empty tile on the board to reveal what is hidden underneath."
+  8: "Choose any empty tile on the board to reveal what is hidden underneath.",
+  9: "Protect against a Skip or Curse powerup from other players. Effect cannot be stacked.",
+  10: "The next player who tries to use a Skip or Curse powerup against you will have the power used against them instead. Effect cannot be stacked."
 };
 
 class Inventory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        powerups: []
+        powerups: [9]
     };
   }
 
@@ -36,8 +40,15 @@ class Inventory extends React.Component {
         var pow = this.state.powerups[idx];
         this.setState({ powerups: this.state.powerups.filter((v, i) => i !== idx) });
 
-        if (pow === 0) {
+        if (pow === 0 || pow === 9 || pow === 10) {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
+            if (pow === 9) {
+              this.props.enqueueSnackbar('Shield has been activated!', { autoHideDuration: 2000 });
+              this.props.addToLog('Shield has been activated!');
+            } else if (pow === 10) {
+              this.props.enqueueSnackbar('Deflect has been activated!', { autoHideDuration: 2000 });
+              this.props.addToLog('Deflect has been activated!');
+            }
         } else {
             if (pow === 1) {
               this.props.enqueueSnackbar('Choose a symbol on the boards to remove it!', { autoHideDuration: 3000 });

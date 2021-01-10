@@ -50,10 +50,13 @@ module.exports = (io, socket) => {
         // 6 : skip any player { onIdx }
         // 7 : randomize replace { board, row, col }
         // 8 : unbox the box { board, row, col }
+        // 9 : shield
+        // 10 : deflect
         var room = rooms[roomId];
         if (pow == 0) {
-            var playerIdx = room.skipNextPlayer();
-            io.to(roomId).emit('skipUsed', playerIdx); // can use to broadcast who got skipped & update view
+            // res { from, to, shield }
+            var res = room.skipNextPlayer();
+            io.to(roomId).emit('skipUsed', res); // can use to broadcast who got skipped & update view
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 1) {
             var symbol = room.removePiece(props);
@@ -63,11 +66,12 @@ module.exports = (io, socket) => {
             room.placeBomb(props);
             io.to(roomId).emit('bombUsed'); // can use to broadcast
         } else if (pow == 3) {
-            room.placeCurse(props);
-            io.to(roomId).emit('curseUsed'); // can use to broadcast
+            var res = room.placeCurse(props);
+            io.to(roomId).emit('curseUsed', res); // can use to broadcast
         } else if (pow == 6) {
-            var playerIdx = room.skipPlayer(props.onIdx);
-            io.to(roomId).emit('skipUsed', playerIdx);
+            // res { from, to, shield }
+            var res = room.skipPlayer(props.onIdx);
+            io.to(roomId).emit('skipUsed', res);
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 7) {
             // result = { from, to, gameOver, winner, hasEnded }
@@ -87,6 +91,10 @@ module.exports = (io, socket) => {
         } else if (pow == 8) {
             var power = room.getPowerAt(props);
             socket.emit('unboxResult', power);
+        } else if (pow == 9) {
+            room.shieldCurrentPlayer();
+        } else if (pow == 10) {
+            room.deflectCurrentPlayer();
         }
     })
 

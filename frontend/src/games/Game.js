@@ -94,9 +94,17 @@ class Game extends React.Component {
         });
 
 
-        this.props.socket.on('skipUsed', (playerIdx) => {
-            this.props.enqueueSnackbar(`${this.props.room.players[playerIdx].username}'s turn will be skipped!`, { autoHideDuration: 2000 });
-            this.addToLog(`${this.props.room.players[playerIdx].username}'s turn will be skipped!`);
+        this.props.socket.on('skipUsed', ({ from, to, shield }) => {
+            var fromName = this.props.room.players[from].username;
+            var toName = this.props.room.players[to].username;
+            var msg;
+            if (shield) {
+                msg = `${toName} was shielded from ${fromName}'s skip!`;
+            } else {
+                msg = `${fromName} skipped ${toName}'s turn!`;
+            }
+            this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
+            this.addToLog(msg);
         });
 
         this.props.socket.on('removeUsed', ({ board, symbol }) => {
@@ -114,9 +122,17 @@ class Game extends React.Component {
             this.addToLog(`A bomb has been planted!`);
         });
 
-        this.props.socket.on('curseUsed', () => {
-            this.props.enqueueSnackbar(`A curse has been applied!`, { autoHideDuration: 2000 });
-            this.addToLog(`A curse has been applied!`);
+        this.props.socket.on('curseUsed', ({ from, to, shield }) => {
+            var fromName = this.props.room.players[from].username;
+            var toName = this.props.room.players[to].username;
+            var msg;
+            if (shield) {
+                msg = `${toName} was shielded from ${fromName}'s curse!`;
+            } else {
+                msg = `A curse has been applied!`;
+            }
+            this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
+            this.addToLog(msg);
         });
     }
 
