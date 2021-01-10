@@ -58,7 +58,6 @@ class Waiting extends React.Component {
       const roomId = this.props.room.roomId;
       const players = this.props.room.players;
       this.props.updateRoom({ roomId, players, isHost: true });
-      this.props.enqueueSnackbar("You are now the host!", { autoHideDuration: 2000 });
     });
 
     this.props.socket.on('updatePlayers', (roomId, players) => {
