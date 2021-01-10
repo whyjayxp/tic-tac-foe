@@ -75,7 +75,7 @@ class Inventory extends React.Component {
     });
 
     this.props.socket.on('joked', (user) => {
-        this.props.enqueueSnackbar(`${user} got the joker! Their symbol was placed randomly :p`, { autoHideDuration: 2000 });
+        this.props.enqueueSnackbar(`${user} encountered the joker! Their symbol was placed randomly :p`, { autoHideDuration: 2000 });
     })
 
     this.props.socket.on('cursed', (user, by) => {
@@ -93,7 +93,10 @@ class Inventory extends React.Component {
   }
 
   render() {
-    const listPowerups = this.state.powerups.map((power, idx) =>
+    const listPowerups = (this.state.powerups.length === 0) ? (
+      <li>You do not have any powerups :(<br />You might find some hidden on the board!</li>
+    ) : 
+    (this.state.powerups.map((power, idx) =>
     <span>
     <Button key={idx} onClick={() => this.pressPowerup(idx)}>
       <li><b>{POWERS[power]}</b> <img src={`/images/${power}.svg`} alt={"power"} height={'20'} margin-left="10px"/></li>
@@ -101,9 +104,11 @@ class Inventory extends React.Component {
     </Button>
     <br />
     </span>
-    );
+    ));
     return (
       <div id="powerupList">
+        <b>Your Powerups</b><br />
+        <i>Click on a powerup to use it!</i>
         <ul>{ listPowerups }</ul>
       </div>
     );

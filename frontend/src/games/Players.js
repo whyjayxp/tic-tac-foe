@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 
 class Players extends React.Component {
   constructor(props) {
@@ -28,14 +29,14 @@ class Players extends React.Component {
     const listPlayers = this.props.room.players.map((player, idx) => 
     (idx === this.props.room.turn) ? 
     (<Button key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
-      <li id="playerGridTurn"><div id="playerSymbol">{player.symbol}</div> <div>{player.username}</div> <div>{player.wins} <img src={'/images/win.svg'} alt={"win"} height={'15'} /> {player.skips} <img src={`/images/0.svg`} alt={"skip"} height={'15'} /> </div></li>
+      <li id="playerGridTurn"><div id="playerSymbol">{player.symbol}</div> <div>{player.username}</div> <div>{player.wins} <img src={'/images/win.svg'} alt={"win"} height={'15'} /> {player.skips} <Tooltip title="Skips"><img src={`/images/0.svg`} alt={"skip"} height={'15'} /></Tooltip> </div></li>
     </Button>) :
     (<Button key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
-      <li id="playerGrid"><div id="playerSymbol">{player.symbol}</div> <div>{player.username}</div> <div>{player.wins} <img src={'/images/win.svg'} alt={"win"} height={'15'} /> {player.skips} <img src={`/images/0.svg`} alt={"skip"} height={'15'} /></div></li>
+      <li id="playerGrid"><div id="playerSymbol">{player.symbol}</div> <div>{player.username}</div> <div>{player.wins} <img src={'/images/win.svg'} alt={"win"} height={'15'} /> {player.skips} <Tooltip title="Skips"><img src={`/images/0.svg`} alt={"skip"} height={'15'} /></Tooltip> </div></li>
     </Button>)
     );
     return (
-      <div>
+      <div id="playerGridList">
         <ul>{ listPlayers }</ul>
       </div>
     );

@@ -1,6 +1,7 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Changelog from './Changelog'
 import { withSnackbar } from 'notistack';
 
 class Create extends React.Component {
@@ -24,6 +25,10 @@ class Create extends React.Component {
   }
 
   createRoom() {
+    if (this.props.socket.disconnected) {
+      this.props.enqueueSnackbar("Server is down! :(", { autoHideDuration: 2000, variant: 'error' });
+      return;
+    }
     const username = this.state.username;
     if (username === '') {
       this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 2000 });
@@ -34,6 +39,10 @@ class Create extends React.Component {
   }
 
   joinRoom() {
+    if (this.props.socket.disconnected) {
+      this.props.enqueueSnackbar("Server is down! :(", { autoHideDuration: 2000, variant: 'error' });
+      return;
+    }
     const username = this.state.username;
     const roomId = this.state.roomId.toUpperCase();
     if (username === '') {
@@ -83,6 +92,9 @@ class Create extends React.Component {
                 Join Room!
             </Button>
         </form>
+        <br /><br />
+        <center>Created by <a href="https://github.com/whyjayxp">Yue Jun</a> & <a href="https://github.com/qing-yuan">Qing Yuan</a> for HackNRoll 2021</center>
+        <Changelog />
       </div>
     );
   }

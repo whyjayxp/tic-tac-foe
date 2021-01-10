@@ -7,8 +7,8 @@ import Game from './games/Game'
 import socketClient from 'socket.io-client'
 import { SnackbarProvider } from 'notistack';
 
-// const SERVER = "http://localhost:8080" // use this if calling 'npm start' from frontend folder, access via localhost:3000
-const SERVER = "/" // use this if using static files in build folder after 'npm run build', access via localhost:8080
+const SERVER = "http://192.168.68.107:8080" // use this if calling 'npm start' from frontend folder, access via localhost:3000
+//const SERVER = "/" // use this if using static files in build folder after 'npm run build', access via localhost:8080
 
 class App extends React.Component {
     constructor(props) {
@@ -52,12 +52,16 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.state.socket.on('newConnection', () => {
+        this.state.socket.on('disconnect', (reason) => {
             if (this.state.hasOwnProperty('status') && this.state.status !== 'home') {
-                alert('You disconnected!');
+                alert('You disconnected from the room!');
             }
             this.setState({status: 'home', room: null });
         });
+    }
+
+    componentWillUnmount() {
+        this.props.socket.off('disconnect');
     }
 
     render() {

@@ -69,15 +69,9 @@ class Game extends React.Component {
     render() {
         return (
         <div className="game">
-            <div className="game-board">
-            <Players className="players-list" socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
+            <Players socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             <Inventory socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             <Boards socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
-            </div>
-            <div className="game-info">
-            <div>{/* status */}</div>
-            <ol>{/* TODO */}</ol>
-            </div>
         </div>
         );
     }
