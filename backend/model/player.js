@@ -5,6 +5,7 @@ module.exports = class Player {
         this.username = options.username;
         this.symbol = '';
         this.wins = 0;
+        this.online = true;
         //this.powerups = [];
         this.curses = -1;
         this.skips = 0;
@@ -16,6 +17,14 @@ module.exports = class Player {
 
     setCurse(cursedBy) {
         this.curses = cursedBy;
+    }
+
+    setOffline() {
+        this.online = false;
+    }
+
+    isOffline() {
+        return !this.online;
     }
 
     removeCurse() {

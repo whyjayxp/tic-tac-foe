@@ -27,19 +27,8 @@ class Players extends React.Component {
 
   render() {
     const listPlayers = this.props.room.players.map((player, idx) => 
-    (idx === this.props.room.turn) ? 
     (<Button key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
-      <li id="playerGridTurn">
-        <div id="playerSymbol">{player.symbol}</div> 
-        <div>{player.username}</div> 
-        <div>
-          {player.wins} <Tooltip title="Wins"><img src={'/images/win.svg'} alt={"win"} height={'15'} /></Tooltip>
-          {player.skips} <Tooltip title="Skips"><img src={`/images/0.svg`} alt={"skip"} height={'15'} /></Tooltip> 
-        </div>
-      </li>
-    </Button>) :
-    (<Button key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
-      <li id="playerGrid">
+      <li id={(!player.isOnline) ? "playerGridOffline" : (idx === this.props.room.turn) ? "playerGridTurn" : "playerGrid"}>
         <div id="playerSymbol">{player.symbol}</div> 
         <div>{player.username}</div> 
         <div>

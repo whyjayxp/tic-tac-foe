@@ -39,9 +39,18 @@ module.exports = class Room {
         if (index > -1) this.players.splice(index, 1);
     }
 
+    setDisconnectedPlayer(player) {
+        player.setOffline();
+        const index = this.players.indexOf(player);
+        if (this.status === index) { // move to next turn
+            return this.nextTurn();
+        }
+        return null;
+    }
+
     getPlayers() {
         return this.players.map(x => { 
-            return { username: x.username, symbol: x.symbol, wins: x.wins, skips: x.skips } 
+            return { username: x.username, symbol: x.symbol, wins: x.wins, skips: x.skips, isOnline: x.online } 
         });
     }
 
@@ -111,7 +120,7 @@ module.exports = class Room {
     nextTurn() {
         this.status = (this.status + 1) % this.players.length;
         var nextPlayer = this.players[this.status];
-        while (nextPlayer.checkSkip()) {
+        while (nextPlayer.checkSkip() || nextPlayer.isOffline()) {
             nextPlayer.removeSkip();
             this.status = (this.status + 1) % this.players.length;
             nextPlayer = this.players[this.status];
@@ -177,7 +186,11 @@ module.exports = class Room {
     }
 
     isEmpty() {
-        return this.players.length == 0;
+        return this.players.filter(x => x.online).length == 0;
+    }
+
+    isLastPerson() {
+        return this.players.filter(x => x.online).length == 1;
     }
 
     isLobby() {

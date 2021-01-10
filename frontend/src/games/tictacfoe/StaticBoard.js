@@ -39,7 +39,6 @@ class StaticBoard extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         if (this.props.grid === undefined || this.props.grid.length === 0) return null;
         const winLine = this.getWinningLine();
         return (

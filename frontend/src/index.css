@@ -128,6 +128,15 @@ body {
     line-height: 25px;
   }
 
+  #playerGridOffline {
+    font-size: 20px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+    background: #383838;
+    padding: 20px;
+    line-height: 25px;
+  }
+
   #playerSymbol {
     font-size: 40px;
     font-weight: bold;

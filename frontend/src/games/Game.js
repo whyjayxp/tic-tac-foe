@@ -86,8 +86,10 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('disconnectedPlayer', (burden) => {
-            alert(`${burden} disconnected. Moving back to home page...`);
-            this.props.resetRoom(this.props.room.roomId);
+            this.props.enqueueSnackbar(`${burden} has disconnected.`, { autoHideDuration: 2000 });
+            this.addToLog(`${burden} has disconnected.`);
+            // alert(`${burden} disconnected. Moving back to home page...`);
+            // this.props.resetRoom(this.props.room.roomId);
             // window.location.reload();
         });
 
@@ -149,7 +151,7 @@ class Game extends React.Component {
         return (
         <div className="game">
             <Dialog onClose={this.closeDialog} open={ this.state.dialogOpen }>
-                    <div style={{ "font-size": "20px" }}><center><b>{ this.state.winner.username }</b> won a board!</center></div>
+                    <div style={{ "fontSize": "20px" }}><center><b>{ this.state.winner.username }</b> won a board!</center></div>
                     <StaticBoard display="flex" justify-content="center" closeDialog={this.closeDialog} grid={ this.state.prevBoard } room={this.props.room} />
                     <center><i>Click outside to dismiss</i></center>
             </Dialog>
@@ -157,10 +159,10 @@ class Game extends React.Component {
             <ChatRoom socket={this.props.socket} roomId={this.props.room.roomId} onClose={this.closeChat} open={ this.state.chatOpen } showNewMsg={ this.showNewMsg } />
             <Players socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             <div>
-            <Button style={{ 'margin-right': '5px' }} variant="outlined" onClick={() => this.setState({ logsOpen: true })}>
+            <Button style={{ 'marginRight': '5px' }} variant="outlined" onClick={() => this.setState({ logsOpen: true })}>
                     Check Logs
             </Button>
-            <Button style={{ 'margin-left': '5px' }} variant={ (this.state.hasNewMsg) ? "contained" : "outlined"} color={ (this.state.hasNewMsg) ? "primary" : "default"} onClick={() => this.setState({ chatOpen: true })}>
+            <Button style={{ 'marginLeft': '5px' }} variant={ (this.state.hasNewMsg) ? "contained" : "outlined"} color={ (this.state.hasNewMsg) ? "primary" : "default"} onClick={() => this.setState({ chatOpen: true })}>
                     Open Chat
             </Button>
             </div>

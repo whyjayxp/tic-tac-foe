@@ -15,7 +15,7 @@ class Logs extends React.Component {
     return (
       <Dialog maxWidth={false} onClose={this.props.onClose} open={ this.props.open }>
         <div id="logs">
-        <div style={{ 'max-height': '50vh', 'overflow-y': 'auto', 'margin-bottom': '10px' }}>
+        <div style={{ 'maxHeight': '50vh', 'overflowY': 'auto', 'marginBottom': '10px' }}>
             <ul className="rulesList">{ logItems }</ul>
         </div>
         <center><i>Click outside to dismiss</i></center>

@@ -44,7 +44,7 @@ class ChatRoom extends React.Component {
     return (
       <Dialog maxWidth={false} onClose={this.props.onClose} open={ this.props.open }>
         <div id="logs">
-        <div style={{ 'max-height': '50vh', 'overflow-y': 'auto', 'margin-bottom': '10px' }}>
+        <div style={{ 'maxHeight': '50vh', 'overflowY': 'auto', 'marginBottom': '10px' }}>
             <ul className="logList">{ chatItems }</ul>
         </div>
         <form className="chatRoom" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>

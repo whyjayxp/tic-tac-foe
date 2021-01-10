@@ -36,17 +36,23 @@ module.exports = server => {
                     if (roomId != socket.id) {
                         var room = rooms[roomId];
                         if (!room) return; // game ended, room disappeared
-                        room.removePlayer(socket.player);
-                        if (room.isEmpty()) {
-                            delete rooms[roomId]; // socketio room is automatically closed, just clear dictionary
-                        } else if (room.isLobby()) {
+                        if (room.isLobby()) {
+                            room.removePlayer(socket.player);
                             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
                             io.to(room.getHost()).emit('youAreTheHost');
-                        } else { // middle of a game
-                            delete rooms[roomId];
-                            socket.to(roomId).emit('disconnectedPlayer', socket.player.username);
-                            // socket.to(roomId).emit('newGameState', room.getGameState());
+                            return;
                         }
+                        if (room.isLastPerson()) {
+                            delete rooms[roomId]; // socketio room is automatically closed, just clear dictionary
+                            return;
+                        }
+                        // middle of a game
+                        var nextPlayer = room.setDisconnectedPlayer(socket.player);
+                        if (nextPlayer !== null) {
+                            io.to(nextPlayer).emit('itsYourTurn');
+                        }
+                        socket.to(roomId).emit('disconnectedPlayer', socket.player.username);
+                        socket.to(roomId).emit('newGameState', roomId, room.getGameState());
                     }
                 });
             }
