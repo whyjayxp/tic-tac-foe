@@ -7,6 +7,7 @@ const POWER_PROB = [0.1, 0.05, 0.2, 0.1, 0.1, 0.2, 0.1, 0.15];
     // 5 : joker
     // 6 : skip any player
     // 7 : randomize replace
+    // 8 : unbox the box
 const CHECKS = [  // only for 3x3
     [[0,0], [0,1], [0,2]], [[1,0], [1,1], [1,2]], [[2,0], [2,1], [2,2]], // rows
     [[0,0], [1,0], [2,0]], [[0,1], [1,1], [2,1]], [[0,2], [1,2], [2,2]], // cols

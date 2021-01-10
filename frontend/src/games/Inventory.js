@@ -9,14 +9,16 @@ const POWERS = {
   2: "Plant A Bomb", 
   3: "Cast A Curse", 
   6: "Skip Chosen Player",
-  7: "Randomly Replace Piece" };
+  7: "Randomly Replace Piece",
+  8: "Unbox A Box" };
 const DESCS = {
   0: "The next player will lose a turn.",
   1: "Choose any existing symbol on the board to remove. The powerup is wasted if an empty tile is chosen.",
   2: "Choose any empty tile on the board to plant a bomb. The next symbol placed there will disappear.",
   3: "Choose any player to curse. The next tile placed by that player will become your symbol instead.",
   6: "Choose any player to skip so that they will lose a turn.",
-  7: "Choose any existing symbol on the board to randomly replace it with another symbol. The powerup is wasted if an empty tile is chosen."
+  7: "Choose any existing symbol on the board to randomly replace it with another symbol. The powerup is wasted if an empty tile is chosen.",
+  8: "Choose any empty tile on the board to reveal what is hidden underneath."
 };
 
 class Inventory extends React.Component {
@@ -34,14 +36,6 @@ class Inventory extends React.Component {
         var pow = this.state.powerups[idx];
         this.setState({ powerups: this.state.powerups.filter((v, i) => i !== idx) });
 
-        // socket.on('usePowerup', (roomId, powIdx, props) => {
-        //     var pow = socket.player.usePowerup(powIdx);
-            // 0 : skip next player
-            // 1 : remove piece  { board, row, col }
-            // 2 : good bomb     { board, row, col }
-            // 3 : good curse    { cursedBy, onIdx }
-            // 6 : skip any player { onIdx }
-            // 7 : randomize replace { board, row, col }
         if (pow === 0) {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
         } else {
@@ -55,6 +49,8 @@ class Inventory extends React.Component {
               this.props.enqueueSnackbar('Choose a player to skip their turn!', { autoHideDuration: 3000 });
             } else if (pow === 7) {
               this.props.enqueueSnackbar('Choose a symbol on the boards to randomly replace it!', { autoHideDuration: 3000 });
+            } else if (pow === 8) {
+              this.props.enqueueSnackbar('Choose an empty box on the boards to reveal what is hidden underneath!', { autoHideDuration: 3000 });
             }
             this.props.updateStatus(`use_power_${pow}`);
         }
@@ -103,6 +99,20 @@ class Inventory extends React.Component {
         this.props.addToLog(`${user} was cursed by ${ this.props.room.players[by].username }!`);
     });
 
+    this.props.socket.on('unboxResult', (res) => {
+        var msg;
+        if (res === -1) {
+          msg = "Nothing is hiding underneath the chosen box.";
+        } else if (res === 4) {
+          msg = "A bomb trap is hiding underneath the chosen box.";
+        } else if (res === 5) {
+          msg = "A joker is hiding underneath the chosen box.";
+        } else {
+          msg = `A "${POWERS[res]}" powerup is hiding underneath the chosen box.`;
+        }
+        this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
+        this.props.addToLog(msg);
+    });
   }
 
   componentWillUnmount() {
@@ -111,6 +121,7 @@ class Inventory extends React.Component {
     this.props.socket.off('bombed');
     this.props.socket.off('joked');
     this.props.socket.off('cursed');
+    this.props.socket.off('unboxResult');
   }
 
   render() {

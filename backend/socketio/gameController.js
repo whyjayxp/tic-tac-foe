@@ -49,6 +49,7 @@ module.exports = (io, socket) => {
         // 3 : good curse    { cursedBy, onIdx }
         // 6 : skip any player { onIdx }
         // 7 : randomize replace { board, row, col }
+        // 8 : unbox the box { board, row, col }
         var room = rooms[roomId];
         if (pow == 0) {
             var playerIdx = room.skipNextPlayer();
@@ -83,6 +84,9 @@ module.exports = (io, socket) => {
                 io.to(roomId).emit('boardOver', result.winner); // use for broadcast & update view
             }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
+        } else if (pow == 8) {
+            var power = room.getPowerAt(props);
+            socket.emit('unboxResult', power);
         }
     })
 

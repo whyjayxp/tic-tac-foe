@@ -48,6 +48,13 @@ class Board extends React.Component {
             // } else {
             //     this.props.enqueueSnackbar(`This box has no symbol to randomly replace!`, { autoHideDuration: 2000 });
             // }
+        } else if (this.props.status === 'use_power_8') { // unbox the box
+            if (!hasSymbol) {
+                this.props.socket.emit('usePowerup', this.props.room.roomId, 8, { board: this.props.idx, row, col });
+                this.props.updateStatus('turn');
+            } else {
+                this.props.enqueueSnackbar(`You can only unbox a box without a symbol!`, { autoHideDuration: 2000 });
+            }
         }
     }
 

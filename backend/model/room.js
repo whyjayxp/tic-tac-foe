@@ -173,6 +173,10 @@ module.exports = class Room {
         return result;
     }
 
+    getPowerAt(props) {
+        return this.boards[props.board].getPowerAt(props.row, props.col);
+    }
+
     getHost() {
         if (!this.isEmpty()) {
             return this.players[0].socket.id;
