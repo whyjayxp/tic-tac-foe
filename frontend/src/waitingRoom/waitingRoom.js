@@ -122,7 +122,7 @@ class Waiting extends React.Component {
           </FormControl>
           <br />
         <Button variant="outlined" onClick={this.pressStart}>
-            Start Game!
+            Start Game
         </Button>
     </form>
     ) : null;
@@ -132,7 +132,7 @@ class Waiting extends React.Component {
         <ul id="playerList">{ listPlayers }</ul>
         <div id="leaveRoomButton">
         <Button variant="outlined" onClick={this.pressLeave}>
-            Leave Room!
+            Leave Room
         </Button>
         </div>
         { hostFeatures }

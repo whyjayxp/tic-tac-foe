@@ -78,18 +78,17 @@ class Create extends React.Component {
         <div className="home">
             <img src={"/images/home.svg"} alt={"home"} height={'300'}/>
             <h1>Welcome To Tic Tac Foe!</h1>
-        </div>
+        </div><br />
         <form className="create" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-          <TextField size="small" placeholder="User Name" variant="outlined" value={this.state.username} onChange={(e) => this._updateUsername(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.createRoom() }}} />
-          <Button className="home-button" variant="outlined" onClick={this.createRoom}>
-                Create Room!
+          <TextField size="small" label="User Name" variant="filled" value={this.state.username} onChange={(e) => this._updateUsername(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.createRoom() }}} />
+          <Button style={{width:'150px'}} className="home-button" variant="outlined" onClick={this.createRoom}>
+                Create Room
           </Button>
           </form>
-          <br/>
           <form className="create" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-          <TextField size="small" placeholder="Room Code" align-self="left" variant="outlined" value={this.state.roomId} onChange={(e) => this._updateRoomId(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.joinRoom() }}} />
-            <Button className="home-button" variant="outlined" onClick={this.joinRoom}>
-                Join Room!
+          <TextField size="small" label="Room Code" align-self="left" variant="filled" value={this.state.roomId} onChange={(e) => this._updateRoomId(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.joinRoom() }}} />
+            <Button style={{width:'150px'}} className="home-button" variant="outlined" onClick={this.joinRoom}>
+                Join Room
             </Button>
         </form>
         <br /><br />
