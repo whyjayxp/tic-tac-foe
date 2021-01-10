@@ -7,6 +7,7 @@ module.exports = server => {
     const io = socketio(server, options); 
     io.on('connection', (socket) => {
         console.log(`${socket.id} just connected`);
+        socket.emit('newConnection');
 
         initLobby(io, socket);
         initGame(io, socket);

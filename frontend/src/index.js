@@ -52,6 +52,12 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+        this.state.socket.on('newConnection', () => {
+            if (this.state.hasOwnProperty('status') && this.state.status !== 'home') {
+                alert('You disconnected!');
+            }
+            this.setState({status: 'home', room: null });
+        });
     }
 
     render() {
