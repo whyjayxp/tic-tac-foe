@@ -114,6 +114,7 @@ body {
     font-size: 40px;
     font-weight: bold;
     vertical-align: center;
+    padding-bottom: 5px;
   }
 
   #powerupList {

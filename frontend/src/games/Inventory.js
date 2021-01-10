@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 import { withSnackbar } from 'notistack';
 
 // 0 : skip next player
@@ -7,6 +8,13 @@ import { withSnackbar } from 'notistack';
 // 2 : good bomb
 // 3 : good curse
 const POWERS = { 0: "Skip Next Player", 1: "Remove One Piece", 2: "Plant A Bomb", 3: "Cast A Curse", 6: "Skip Chosen Player" };
+const DESCS = {
+  0: "The next player will lose a turn.",
+  1: "Choose any existing symbol on the board to remove.",
+  2: "Choose any empty tile on the board to plant a bomb. The next symbol placed there will disappear.",
+  3: "Choose any player to curse. The next tile placed by that player will become your symbol instead.",
+  6: "Choose any player to skip so that they will lose a turn."
+};
 
 class Inventory extends React.Component {
   constructor(props) {
@@ -58,12 +66,12 @@ class Inventory extends React.Component {
             return;
         }
         if (pow === 4) {
-            this.props.enqueueSnackbar('You got bombed! Your symbol is gone :(', { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar('A bomb was on this tile! Your symbol has exploded :(', { autoHideDuration: 2000 });
             return;
         }
 
         if (pow === 5) {
-            this.props.enqueueSnackbar('You got the joker! Your symbol was placed randomly :p', { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar('A joker was hiding on this tile! Your symbol was placed randomly :p', { autoHideDuration: 2000 });
             return;
         }
         this.props.enqueueSnackbar('You got a powerup!', { autoHideDuration: 2000 });
@@ -98,10 +106,12 @@ class Inventory extends React.Component {
     ) : 
     (this.state.powerups.map((power, idx) =>
     <span>
+      <Tooltip arrow title={DESCS[power]}>
     <Button key={idx} onClick={() => this.pressPowerup(idx)}>
       <li><b>{POWERS[power]}</b> <img src={`/images/${power}.svg`} alt={"power"} height={'20'} margin-left="10px"/></li>
       
     </Button>
+    </Tooltip>
     <br />
     </span>
     ));
