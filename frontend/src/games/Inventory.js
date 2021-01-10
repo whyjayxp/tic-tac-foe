@@ -3,24 +3,27 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withSnackbar } from 'notistack';
 
-// 0 : skip next player
-// 1 : remove piece
-// 2 : good bomb
-// 3 : good curse
-const POWERS = { 0: "Skip Next Player", 1: "Remove One Piece", 2: "Plant A Bomb", 3: "Cast A Curse", 6: "Skip Chosen Player" };
+const POWERS = { 
+  0: "Skip Next Player", 
+  1: "Remove One Piece", 
+  2: "Plant A Bomb", 
+  3: "Cast A Curse", 
+  6: "Skip Chosen Player",
+  7: "Randomly Replace Piece" };
 const DESCS = {
   0: "The next player will lose a turn.",
-  1: "Choose any existing symbol on the board to remove.",
+  1: "Choose any existing symbol on the board to remove. The powerup is wasted if an empty tile is chosen.",
   2: "Choose any empty tile on the board to plant a bomb. The next symbol placed there will disappear.",
   3: "Choose any player to curse. The next tile placed by that player will become your symbol instead.",
-  6: "Choose any player to skip so that they will lose a turn."
+  6: "Choose any player to skip so that they will lose a turn.",
+  7: "Choose any existing symbol on the board to randomly replace it with another symbol. If the tile is empty, any symbol may appear."
 };
 
 class Inventory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        powerups: []
+        powerups: [7]
     };
   }
 
@@ -38,6 +41,7 @@ class Inventory extends React.Component {
             // 2 : good bomb     { board, row, col }
             // 3 : good curse    { cursedBy, onIdx }
             // 6 : skip any player { onIdx }
+            // 7 : randomize replace { board, row, col }
         if (pow === 0) {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
         } else {
@@ -49,6 +53,8 @@ class Inventory extends React.Component {
               this.props.enqueueSnackbar('Choose a player to curse!', { autoHideDuration: 2000 });
             } else if (pow === 6) {
               this.props.enqueueSnackbar('Choose a player to skip their turn!', { autoHideDuration: 2000 });
+            } else if (pow === 7) {
+              this.props.enqueueSnackbar('Choose a symbol on the boards to randomly replace it!', { autoHideDuration: 2000 });
             }
             this.props.updateStatus(`use_power_${pow}`);
         }
@@ -118,6 +124,7 @@ class Inventory extends React.Component {
     return (
       <div id="powerupList">
         <b>Your Powerups</b><br />
+        <i>Hover over a powerup to see more details!</i><br />
         <i>Click on a powerup to use it!</i>
         <ul>{ listPowerups }</ul>
       </div>

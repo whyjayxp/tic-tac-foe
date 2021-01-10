@@ -10,7 +10,7 @@ class Game extends React.Component {
         super(props);
         this.pressLeave = this.pressLeave.bind(this);
         this.state = {
-            winner: { symbol: "X", username: "YJ" }
+            winner: { }
         };
       }
 
@@ -52,6 +52,10 @@ class Game extends React.Component {
             this.props.enqueueSnackbar(`A symbol has been removed from board ${board}!`, { autoHideDuration: 2000 });
         });
 
+        this.props.socket.on('randomizeReplaceUsed', ({ board, row, col }) => {
+            this.props.enqueueSnackbar(`A symbol has been randomly replaced on board ${board}!`, { autoHideDuration: 2000 });
+        });
+
         this.props.socket.on('bombUsed', () => {
             this.props.enqueueSnackbar(`A bomb has been planted!`, { autoHideDuration: 2000 });
         });
@@ -68,6 +72,7 @@ class Game extends React.Component {
         this.props.socket.off('disconnectedPlayer');
         this.props.socket.off('skipUsed');
         this.props.socket.off('removeUsed');
+        this.props.socket.off('randomizeReplaceUsed');
         this.props.socket.off('bombUsed');
         this.props.socket.off('curseUsed');
     }

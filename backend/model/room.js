@@ -144,6 +144,11 @@ module.exports = class Room {
         this.players[props.onIdx].setCurse(props.cursedBy);
     }
 
+    randomizeReplacePiece(props) {
+        var players = this.players.map((x,i) => i);
+        this.boards[props.board].randomizeReplaceBox(props.row, props.col, players);
+    }
+
     getHost() {
         if (!this.isEmpty()) {
             return this.players[0].socket.id;

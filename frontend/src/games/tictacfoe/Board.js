@@ -35,6 +35,13 @@ class Board extends React.Component {
             } else {
                 this.props.enqueueSnackbar(`Bomb must be planted on an empty box!`, { autoHideDuration: 2000 });
             }
+        } else if (this.props.status === 'use_power_7') { // randomize replace
+            // if (hasSymbol) {
+                this.props.socket.emit('usePowerup', this.props.room.roomId, 7, { board: this.props.idx, row, col });
+                this.props.updateStatus('turn');
+            // } else {
+            //     this.props.enqueueSnackbar(`This box has no symbol to randomly replace!`, { autoHideDuration: 2000 });
+            // }
         }
     }
 
