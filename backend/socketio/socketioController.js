@@ -25,6 +25,10 @@ module.exports = server => {
             }
         });
 
+        socket.on('newMessage', (roomId, msg) => {
+            io.to(roomId).emit('newMessage', `${socket.player.username}: ${msg}`);
+        });
+
         socket.on('disconnecting', (reason) => {
             // before socket.rooms is wiped out, handle existing game room
             if (socket.hasOwnProperty('player')) {

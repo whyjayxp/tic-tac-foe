@@ -5,6 +5,7 @@ import Players from './Players'
 import Inventory from './Inventory'
 import Boards from './Boards'
 import Logs from './Logs'
+import ChatRoom from './ChatRoom'
 import StaticBoard from './tictacfoe/StaticBoard'
 import { withSnackbar } from 'notistack';
 
@@ -14,13 +15,15 @@ class Game extends React.Component {
         this.pressLeave = this.pressLeave.bind(this);
         this.closeDialog = this.closeDialog.bind(this);
         this.closeLogs = this.closeLogs.bind(this);
+        this.closeChat = this.closeChat.bind(this);
         this.addToLog = this.addToLog.bind(this);
         this.state = {
             prevBoard: [],
             dialogOpen: false,
             winner: { },
             logs: [],
-            logsOpen: false
+            logsOpen: false,
+            chatOpen: false
         };
       }
 
@@ -34,6 +37,10 @@ class Game extends React.Component {
 
     closeLogs() {
         this.setState({ logsOpen: false });
+    }
+
+    closeChat() {
+        this.setState({ chatOpen: false });
     }
 
     addToLog(msg) {
@@ -141,10 +148,17 @@ class Game extends React.Component {
                     <center><i>Click outside to dismiss</i></center>
             </Dialog>
             <Logs onClose={this.closeLogs} open={ this.state.logsOpen } logs={ this.state.logs } />
+            <ChatRoom socket={this.props.socket} roomId={this.props.room.roomId} onClose={this.closeChat} open={ this.state.chatOpen } />
             <Players socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
-            <Button variant="outlined" onClick={() => this.setState({ logsOpen: true })}>
+            <div>
+            <Button style={{ 'margin-right': '5px' }} variant="outlined" onClick={() => this.setState({ logsOpen: true })}>
                     Check Logs
-                </Button><br />
+            </Button>
+            <Button style={{ 'margin-left': '5px' }} variant="outlined" onClick={() => this.setState({ chatOpen: true })}>
+                    Open Chat
+            </Button>
+            </div>
+            <br />
             <Inventory socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} addToLog={this.addToLog} />
             {gameEnded}
             <Boards socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />

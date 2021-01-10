@@ -13,6 +13,7 @@ class Changelog extends React.Component {
         <div id="changelog" onClick={() => (this.state.showItems) ? this.setState({showItems: false}) : this.setState({showItems: true})}>
           <b>Changelog (click to show/hide)</b>
           <ul className="logList" style={{ display: (this.state.showItems) ? 'block' : 'none' }}>
+            <li><b>v1.4 (11 Jan 2021)</b>: Chat Room and Logs.</li>
             <li><b>v1.3 (10 Jan 2021)</b>: Highly requested feature: the winning boards are now displayed. 🙂</li>
             <li><b>v1.2 (10 Jan 2021)</b>: New powerup: Randomized Replace. Starting Powerups. Powerup/trap probabilities have been modified. Proper Game Over page added to honour the winner.</li>
             <li><b>v1.1 (10 Jan 2021)</b>: Emoji Mode. Up to 9 players. UI/UX has been enhanced. Server connection issues are now handled better. Changelog was added.</li>
