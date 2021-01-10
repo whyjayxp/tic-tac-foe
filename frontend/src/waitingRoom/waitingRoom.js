@@ -49,7 +49,6 @@ class Waiting extends React.Component {
   }
 
   pressLeave() {
-    this.props.socket.emit('leaveRoom', this.props.room.roomId);
     this.props.resetRoom(this.props.room.roomId);
     // window.location.reload();
   }
@@ -59,6 +58,7 @@ class Waiting extends React.Component {
       const roomId = this.props.room.roomId;
       const players = this.props.room.players;
       this.props.updateRoom({ roomId, players, isHost: true });
+      this.props.enqueueSnackbar("You are now the host!", { autoHideDuration: 2000 });
     });
 
     this.props.socket.on('updatePlayers', (roomId, players) => {
@@ -82,8 +82,8 @@ class Waiting extends React.Component {
     for (let i = 1; i <= MAX_BOARDS; i++) {
         boardsMenuItems.push(<MenuItem className="menuItem" key={i} value={i}>{i}</MenuItem>)
     }
-    const listPlayers = this.props.room.players.map((player) =>
-      <li key={player.username}>{player.username}</li>
+    const listPlayers = this.props.room.players.map((player, i) =>
+      <li key={player.username}>{player.username} { (i === 0) ? "(Host)" : ""}</li>
     );
     const hostFeatures = this.props.room.isHost ? (
       <form className="waiting" noValidate autoComplete="off">
