@@ -1,21 +1,30 @@
 import React from 'react'
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
 import Players from './Players'
 import Inventory from './Inventory'
 import Boards from './Boards'
+import StaticBoard from './tictacfoe/StaticBoard'
 import { withSnackbar } from 'notistack';
 
 class Game extends React.Component {
     constructor(props) {
         super(props);
         this.pressLeave = this.pressLeave.bind(this);
+        this.closeDialog = this.closeDialog.bind(this);
         this.state = {
+            prevBoard: [],
+            dialogOpen: false,
             winner: { }
         };
       }
 
     pressLeave() {
         this.props.resetRoom(this.props.room.roomId);
+    }
+
+    closeDialog() {
+        this.setState({ dialogOpen: false });
     }
 
     componentDidMount() {
@@ -34,14 +43,15 @@ class Game extends React.Component {
             this.props.enqueueSnackbar(`You need to clear ${numBoards} ${board} to win the game!`, { autoHideDuration: 5000, variant: 'info' });
         });
 
-        this.props.socket.on('boardOver', (winner) => {
+        this.props.socket.on('boardOver', (winner, prevBoard) => {
             if (winner > -1) {
-                this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 2000 });
+                this.setState({ winner: this.props.room.players[winner], prevBoard: prevBoard, dialogOpen: true });
+                // this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 2000 });
             }
         });
 
         this.props.socket.on('gameOver', (winner) => {
-            this.setState({ winner: this.props.room.players[winner] });
+            this.setState({ winner: this.props.room.players[winner], prevBoard: [], dialogOpen: false });
             this.props.updateStatus('gameover');
             // this.props.resetRoom(this.props.room.roomId);
             // window.location.reload();
@@ -105,6 +115,11 @@ class Game extends React.Component {
         ) : null;
         return (
         <div className="game">
+            <Dialog onClose={this.closeDialog} open={ this.state.dialogOpen }>
+                <div style={{ "font-size": "20px" }}><center><b>{ this.state.winner.username }</b> won a board!</center></div>
+                <StaticBoard display="flex" justify-content="center" closeDialog={this.closeDialog} grid={ this.state.prevBoard } room={this.props.room} />
+                <center>Click outside to dismiss</center>
+            </Dialog>
             <Players socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             <Inventory socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             {gameEnded}

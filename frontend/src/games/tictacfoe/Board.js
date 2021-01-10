@@ -66,9 +66,9 @@ class Board extends React.Component {
         var board = this.props.room.boards[this.props.idx];
         for (var i = 0; i < CHECKS.length; i++) {
             var toCheck = CHECKS[i];
-            if (board[toCheck[0][0]][toCheck[0][1]] == board[toCheck[1][0]][toCheck[1][1]] &&
-                board[toCheck[1][0]][toCheck[1][1]] == board[toCheck[2][0]][toCheck[2][1]]) {
-                    if (board[toCheck[0][0]][toCheck[0][1]] != -1) {
+            if (board[toCheck[0][0]][toCheck[0][1]] === board[toCheck[1][0]][toCheck[1][1]] &&
+                board[toCheck[1][0]][toCheck[1][1]] === board[toCheck[2][0]][toCheck[2][1]]) {
+                    if (board[toCheck[0][0]][toCheck[0][1]] !== -1) {
                         return [toCheck[0][0] * 3 + toCheck[0][1], toCheck[1][0] * 3 + toCheck[1][1], toCheck[2][0] * 3 + toCheck[2][1]];
                     }
                 }

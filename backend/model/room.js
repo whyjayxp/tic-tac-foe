@@ -102,6 +102,7 @@ module.exports = class Room {
                     return result;
                 }
             }
+            result.prevBoard = this.boards[board].symbols;
             this.boards[board] = new Board(this.boardSize, this.boardSize);
         }
         return result;

@@ -24,7 +24,9 @@ module.exports = (io, socket) => {
             return;
         }
         if (result.hasEnded) {
-            io.to(roomId).emit('boardOver', result.winner); // use for broadcast & update view
+            // result.prevBoard contains the prev board to display winning line
+            console.log(result.prevBoard);
+            io.to(roomId).emit('boardOver', result.winner, result.prevBoard); // use for broadcast & update view
         }
         if (result.cursedBy > -1) {
             io.to(roomId).emit('cursed', socket.player.username, result.cursedBy);
