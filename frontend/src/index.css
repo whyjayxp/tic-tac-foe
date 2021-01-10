@@ -127,11 +127,18 @@ body {
 
   #boardsList {
     padding-top: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+
   } 
 
   #big-board { /* each board */
     background: rgb(243, 243, 243);
     padding: 10px;
+    margin: 10px;
     border: 1px solid #ddd;
   }
 

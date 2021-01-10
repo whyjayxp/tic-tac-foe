@@ -13,7 +13,7 @@ class Boards extends React.Component {
     const boards = this.props.room.boards.map((board, idx) =>
     <span key={idx}>
       <Board display="flex" justify-content="center" idx={idx} socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
-    <br /></span>
+    </span>
     );
     return (
       <div id="boardsList">
