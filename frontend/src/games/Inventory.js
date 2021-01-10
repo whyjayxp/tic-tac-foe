@@ -29,7 +29,7 @@ class Inventory extends React.Component {
 
   pressPowerup(idx) {
     if (this.props.status !== 'turn') {
-        // do nothing
+        this.props.enqueueSnackbar('You can only use powerups during your turn!', { autoHideDuration: 2000 });
     } else {
         var pow = this.state.powerups[idx];
         this.setState({ powerups: this.state.powerups.filter((v, i) => i !== idx) });
