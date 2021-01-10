@@ -22,12 +22,12 @@ class Board extends React.Component {
                 this.props.enqueueSnackbar(`This box is already taken!`, { autoHideDuration: 2000 });
             }
         } else if (this.props.status === 'use_power_1') { // remove piece
-            if (hasSymbol) {
+            // if (hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 1, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
-            } else {
-                this.props.enqueueSnackbar(`This box has no symbol to remove!`, { autoHideDuration: 2000 });
-            }
+            // } else {
+            //     this.props.enqueueSnackbar(`This box has no symbol to remove!`, { autoHideDuration: 2000 });
+            // }
         } else if (this.props.status === 'use_power_2') { // plant bomb
             if (!hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 2, { board: this.props.idx, row, col });
