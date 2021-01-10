@@ -30,8 +30,8 @@ class Game extends React.Component {
           });
 
         this.props.socket.on('numBoardsToWin', (numBoards) => {
-            console.log('test');
-            this.props.enqueueSnackbar(`You need to clear ${numBoards} boards to win the game!`, { autoHideDuration: 2000, variant: 'info' });
+            var board = (numBoards === 1) ? "board" : "boards";
+            this.props.enqueueSnackbar(`You need to clear ${numBoards} ${board} to win the game!`, { autoHideDuration: 5000, variant: 'info' });
         });
 
         this.props.socket.on('boardOver', (winner) => {

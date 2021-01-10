@@ -18,6 +18,7 @@ module.exports = (io, socket) => {
         var result = room.chooseGrid(props);
         // result:{ power, winner, hasEnded, cursedBy, gameOver }
         if (result.gameOver) {
+            io.to(roomId).emit('newGameState', roomId, room.getGameState());
             io.to(roomId).emit('gameOver', result.winner);
             delete rooms[roomId]; 
             return;
@@ -36,7 +37,6 @@ module.exports = (io, socket) => {
         }
         var nextPlayer = room.nextTurn();
         io.to(roomId).emit('newGameState', roomId, room.getGameState());
-        // console.log(room.getGameState());
         io.to(nextPlayer).emit('itsYourTurn');
     });
 
@@ -72,6 +72,7 @@ module.exports = (io, socket) => {
             if (result === null) return;
             io.to(roomId).emit('randomizeReplaceUsed', { board: props.board, from: result.from, to: result.to });
             if (result.gameOver) {
+                io.to(roomId).emit('newGameState', roomId, room.getGameState());
                 io.to(roomId).emit('gameOver', result.winner);
                 delete rooms[roomId]; 
                 return;

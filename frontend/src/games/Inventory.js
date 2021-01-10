@@ -126,7 +126,7 @@ class Inventory extends React.Component {
       <div id="powerupList">
         <b>Your Powerups</b><br />
         <i>Hover or hold over a powerup to see more details!</i><br />
-        <i>Click on a powerup to use it!</i>
+        <i>Click on a powerup before placing your symbol to use it!</i>
         <ul>{ listPowerups }</ul>
       </div>
     );
