@@ -146,7 +146,21 @@ module.exports = class Room {
 
     randomizeReplacePiece(props) {
         var players = this.players.map((x,i) => i);
-        this.boards[props.board].randomizeReplaceBox(props.row, props.col, players);
+        //  result { from, to, winner, hasEnded }
+        var result = this.boards[props.board].randomizeReplaceBox(props.row, props.col, players);
+        result.gameOver = false;
+        if (result.hasEnded) {
+            if (result.winner != -1) {
+                var wins = this.players[result.winner].addWin();
+                if (wins >= this.numBoardsToWin) {
+                    this.status = GAMEOVER;
+                    result.gameOver = true;
+                    return result;
+                }
+            }
+            this.boards[props.board] = new Board(this.boardSize, this.boardSize);
+        }
+        return result;
     }
 
     getHost() {

@@ -16,14 +16,14 @@ const DESCS = {
   2: "Choose any empty tile on the board to plant a bomb. The next symbol placed there will disappear.",
   3: "Choose any player to curse. The next tile placed by that player will become your symbol instead.",
   6: "Choose any player to skip so that they will lose a turn.",
-  7: "Choose any existing symbol on the board to randomly replace it with another symbol. If the tile is empty, any symbol may appear."
+  7: "Choose any existing symbol on the board to randomly replace it with another symbol. The powerup is wasted if an empty tile is chosen."
 };
 
 class Inventory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        powerups: []
+        powerups: [7]
     };
   }
 
@@ -124,7 +124,7 @@ class Inventory extends React.Component {
     return (
       <div id="powerupList">
         <b>Your Powerups</b><br />
-        <i>Hover over a powerup to see more details!</i><br />
+        <i>Hover or hold over a powerup to see more details!</i><br />
         <i>Click on a powerup to use it!</i>
         <ul>{ listPowerups }</ul>
       </div>

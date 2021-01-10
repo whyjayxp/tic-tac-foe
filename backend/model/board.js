@@ -62,6 +62,10 @@ module.exports = class Board {
         }
     }
 
+    getPowerAt(i, j) {
+        return this.powers[i][j];
+    }
+
     fillBoxWith(i, j, val, cursedBy) {
         var result = {};
         var power = this.powers[i][j];
@@ -118,6 +122,10 @@ module.exports = class Board {
         this.symbols[i][j] = -1;
     }
 
+    clearPower(i, j) {
+        this.powers[i][j] = -1;
+    }
+
     placeBomb(i, j) {
         if (this.powers[i][j] == 4) {
             // TODO: MASSIVE EXPLOSION
@@ -128,11 +136,22 @@ module.exports = class Board {
     }
 
     randomizeReplaceBox(i, j, bucket) {
-        if (this.symbols[i][j] !== -1) {
-            bucket.splice(this.symbols[i][j], 1);
+        if (this.symbols[i][j] === -1) { // box was empty, powerup wasted
+            return null;
         }
+        var result = {};
+        result.from = this.symbols[i][j];
+        bucket.splice(this.symbols[i][j], 1); // remove existing symbol from the randomizer
         var symbol = this.getRandomFromBucket(bucket);
         this.symbols[i][j] = symbol;
+        result.to = symbol;
+        result.winner = this.getWinner();
+        if (result.winner != -1) {
+            result.hasEnded = true;
+        } else {
+            result.hasEnded = this.hasBoardEnded();
+        }
+        return result;
     }
 
     getWinner() {

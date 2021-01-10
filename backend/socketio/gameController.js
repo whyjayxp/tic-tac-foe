@@ -65,8 +65,18 @@ module.exports = (io, socket) => {
             io.to(roomId).emit('skipUsed', playerIdx);
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 7) {
-            room.randomizeReplacePiece(props);
-            io.to(roomId).emit('randomizeReplaceUsed', props);
+            // result = { from, to, gameOver, winner, hasEnded }
+            var result = room.randomizeReplacePiece(props);
+            if (result === null) return;
+            io.to(roomId).emit('randomizeReplaceUsed', { board: props.board, from: result.from, to: result.to });
+            if (result.gameOver) {
+                io.to(roomId).emit('gameOver', result.winner);
+                delete rooms[roomId]; 
+                return;
+            }
+            if (result.hasEnded) {
+                io.to(roomId).emit('boardOver', result.winner); // use for broadcast & update view
+            }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         }
     })

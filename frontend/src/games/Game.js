@@ -52,8 +52,8 @@ class Game extends React.Component {
             this.props.enqueueSnackbar(`A symbol has been removed from board ${board}!`, { autoHideDuration: 2000 });
         });
 
-        this.props.socket.on('randomizeReplaceUsed', ({ board, row, col }) => {
-            this.props.enqueueSnackbar(`A symbol has been randomly replaced on board ${board}!`, { autoHideDuration: 2000 });
+        this.props.socket.on('randomizeReplaceUsed', ({ board, from, to }) => {
+            this.props.enqueueSnackbar(`${this.props.room.players[from].symbol} has been replaced with ${this.props.room.players[to].symbol} on board ${board}!`, { autoHideDuration: 2000 });
         });
 
         this.props.socket.on('bombUsed', () => {
