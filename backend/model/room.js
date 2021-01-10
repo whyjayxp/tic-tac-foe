@@ -1,11 +1,12 @@
 const Board = require('../model/board.js');
 
 // default values
-const MAX_PLAYERS_DEFAULT = 6;
+const MAX_PLAYERS_DEFAULT = 9;
 const MAX_BOARDS_DEFAULT = 3;
 const NO_OF_BOARDS_TO_WIN_DEFAULT = 3;
 const BOARD_SIZE_DEFAULT = 3;
-const SYMBOLS = ['X', 'O', '@', '*', '&', '#']
+const SYMBOLS = ['X', 'O', '@', '*', '&', '#', '$', '%', 'Z']
+const EMOJIS = ['🐶', '🐱', '🐷', '🐹', '🐰', '🦊', '🐻', '🐼', '🐯']
 
 // room status, 0 and above indicate the respective user's turn
 const LOBBY = -1;
@@ -60,11 +61,15 @@ module.exports = class Room {
         this.numBoardsToWin = num;
     }
 
-    startGame() {
+    startGame(emojiMode = false) {
         if (this.status != LOBBY) return;
         // assign symbols to all players
         for (var i = 0; i < this.players.length; i++) {
-            this.players[i].setSymbol(SYMBOLS[i]);
+            if (emojiMode) {
+                this.players[i].setSymbol(EMOJIS[i]);
+            } else {
+                this.players[i].setSymbol(SYMBOLS[i]);
+            }
         }
         // generate boards
         for (var i = 0; i < this.maxConcurBoards; i++) {

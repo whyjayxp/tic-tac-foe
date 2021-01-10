@@ -1,9 +1,11 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { withSnackbar } from 'notistack';
 import Rules from './Rules'
 
@@ -16,7 +18,8 @@ class Waiting extends React.Component {
     this.pressLeave = this.pressLeave.bind(this);
     this.state = {
       concurBoards: 2,
-      boardsToWin: 3
+      boardsToWin: 3,
+      emojiMode: false
     };
   }
 
@@ -28,11 +31,15 @@ class Waiting extends React.Component {
       this.setState({ boardsToWin: event.target.value })
   };
 
+  handleEmojiModeChange = (event) => {
+    this.setState({ emojiMode: event.target.checked })
+  }
+
   pressStart() {
     if (this.props.room.players.length < 2) {
       this.props.enqueueSnackbar("There must be at least 2 players to start!", { autoHideDuration: 2000 });
     } else {
-      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin);
+      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin, this.state.emojiMode);
     }
   }
 
@@ -67,7 +74,7 @@ class Waiting extends React.Component {
 
   render() {
     const boardsMenuItems = []
-    for (let i = 1; i < MAX_BOARDS; i++) {
+    for (let i = 1; i <= MAX_BOARDS; i++) {
         boardsMenuItems.push(<MenuItem className="menuItem" key={i} value={i}>{i}</MenuItem>)
     }
     const listPlayers = this.props.room.players.map((player) =>
@@ -97,7 +104,23 @@ class Waiting extends React.Component {
             onChange={this.handleNumWinningBoardsChange}>
             {boardsMenuItems}
             </Select>
-          </FormControl><br/>
+          </FormControl>
+          <br/>
+          <FormControl>
+            <FormControlLabel
+            control={
+              <Switch
+                checked={this.state.emojiMode}
+                onChange={this.handleEmojiModeChange}
+                color="default"
+                name="emoji"
+                inputProps={{ 'aria-label':  'primary checkbox' }}
+              />
+            }
+            label={<span style={ {font: '14px Century Gothic, Futura, sans-serif'} }>Emoji Mode</span>}
+            />
+          </FormControl>
+          <br />
         <Button variant="outlined" onClick={this.pressStart}>
             Start Game!
         </Button>
