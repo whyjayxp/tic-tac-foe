@@ -23,7 +23,7 @@ class Inventory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        powerups: [7]
+        powerups: []
     };
   }
 
