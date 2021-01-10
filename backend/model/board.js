@@ -119,7 +119,9 @@ module.exports = class Board {
     }
 
     clearBox(i, j) {
+        var symbol = this.symbols[i][j];
         this.symbols[i][j] = -1;
+        return symbol;
     }
 
     clearPower(i, j) {

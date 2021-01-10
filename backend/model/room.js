@@ -134,7 +134,7 @@ module.exports = class Room {
 
     removePiece(props) {
         // props: { board, row, col }
-        this.boards[props.board].clearBox(props.row, props.col);
+        return this.boards[props.board].clearBox(props.row, props.col);
     }
 
     placeBomb(props) {

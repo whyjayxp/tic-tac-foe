@@ -46,15 +46,15 @@ class Inventory extends React.Component {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
         } else {
             if (pow === 1) {
-              this.props.enqueueSnackbar('Choose a symbol on the boards to remove it!', { autoHideDuration: 2000 });
+              this.props.enqueueSnackbar('Choose a symbol on the boards to remove it!', { autoHideDuration: 3000 });
             } else if (pow === 2) {
-              this.props.enqueueSnackbar('Choose an empty box on the boards to plant a bomb!', { autoHideDuration: 2000 });
+              this.props.enqueueSnackbar('Choose an empty box on the boards to plant a bomb!', { autoHideDuration: 3000 });
             } else if (pow === 3) {
-              this.props.enqueueSnackbar('Choose a player to curse!', { autoHideDuration: 2000 });
+              this.props.enqueueSnackbar('Choose a player to curse!', { autoHideDuration: 3000 });
             } else if (pow === 6) {
-              this.props.enqueueSnackbar('Choose a player to skip their turn!', { autoHideDuration: 2000 });
+              this.props.enqueueSnackbar('Choose a player to skip their turn!', { autoHideDuration: 3000 });
             } else if (pow === 7) {
-              this.props.enqueueSnackbar('Choose a symbol on the boards to randomly replace it!', { autoHideDuration: 2000 });
+              this.props.enqueueSnackbar('Choose a symbol on the boards to randomly replace it!', { autoHideDuration: 3000 });
             }
             this.props.updateStatus(`use_power_${pow}`);
         }
@@ -74,27 +74,33 @@ class Inventory extends React.Component {
         }
         if (pow === 4) {
             this.props.enqueueSnackbar('A bomb was on this tile! Your symbol has exploded :(', { autoHideDuration: 2000 });
+            this.props.addToLog('A bomb was on this tile! Your symbol has exploded :(');
             return;
         }
 
         if (pow === 5) {
             this.props.enqueueSnackbar('A joker was hiding on this tile! Your symbol was placed randomly :p', { autoHideDuration: 2000 });
+            this.props.addToLog('A joker was hiding on this tile! Your symbol was placed randomly :p');
             return;
         }
         this.props.enqueueSnackbar('You got a powerup!', { autoHideDuration: 2000 });
+        this.props.addToLog('You got a powerup!');
         this.setState({ powerups: this.state.powerups.concat([pow]) });
     });
 
     this.props.socket.on('bombed', (user) => {
         this.props.enqueueSnackbar(`${user} got bombed! Their symbol is gone :(`, { autoHideDuration: 2000 });
+        this.props.addToLog(`${user} got bombed! Their symbol is gone :(`);
     });
 
     this.props.socket.on('joked', (user) => {
         this.props.enqueueSnackbar(`${user} encountered the joker! Their symbol was placed randomly :p`, { autoHideDuration: 2000 });
+        this.props.addToLog(`${user} encountered the joker! Their symbol was placed randomly :p`);
     })
 
     this.props.socket.on('cursed', (user, by) => {
         this.props.enqueueSnackbar(`${user} was cursed by ${ this.props.room.players[by].username }!`, { autoHideDuration: 2000 });
+        this.props.addToLog(`${user} was cursed by ${ this.props.room.players[by].username }!`);
     });
 
   }

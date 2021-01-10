@@ -55,8 +55,8 @@ module.exports = (io, socket) => {
             io.to(roomId).emit('skipUsed', playerIdx); // can use to broadcast who got skipped & update view
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 1) {
-            room.removePiece(props);
-            io.to(roomId).emit('removeUsed', props); // can use to broadcast & update view
+            var symbol = room.removePiece(props);
+            io.to(roomId).emit('removeUsed', { board: props.board, symbol }); // can use to broadcast & update view
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 2) {
             room.placeBomb(props);

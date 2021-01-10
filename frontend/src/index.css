@@ -41,10 +41,15 @@ body {
   line-height: 25px;
 }
 
-#logList {
+.logList {
   text-align: left;
   padding: 5px;
   line-height: 25px;
+}
+
+#logs {
+  text-align: center;
+  min-width: 80vw;
 }
 
 /* waitingRoom.js */
