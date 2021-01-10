@@ -45,7 +45,7 @@ class Waiting extends React.Component {
 
   pressLeave() {
     this.props.socket.emit('leaveRoom', this.props.room.roomId);
-    this.props.updateStatus('home');
+    this.props.resetRoom(this.props.room.roomId);
     // window.location.reload();
   }
 

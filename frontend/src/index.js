@@ -72,7 +72,7 @@ class App extends React.Component {
         if (status === 'home') {
             page = <Create socket={socket} joinRoom={this.joinRoom} />
         } else if (status === 'lobby') {
-            page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} updateStatus={this.updateStatus} />
+            page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} updateStatus={this.updateStatus} resetRoom={this.resetRoom} />
         } else {
             page = <Game room={room} socket={socket} status={status} updateRoom={this.updateRoom} updateStatus={this.updateStatus} resetRoom={this.resetRoom} />
         }

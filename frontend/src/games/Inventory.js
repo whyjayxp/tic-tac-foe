@@ -105,9 +105,9 @@ class Inventory extends React.Component {
       <li>You do not have any powerups :(<br />You might find some hidden on the board!</li>
     ) : 
     (this.state.powerups.map((power, idx) =>
-    <span>
+    <span key={idx}>
       <Tooltip arrow title={DESCS[power]}>
-    <Button key={idx} onClick={() => this.pressPowerup(idx)}>
+    <Button onClick={() => this.pressPowerup(idx)}>
       <li><b>{POWERS[power]}</b> <img src={`/images/${power}.svg`} alt={"power"} height={'20'} margin-left="10px"/></li>
       
     </Button>

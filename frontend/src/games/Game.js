@@ -1,4 +1,5 @@
 import React from 'react'
+import Button from '@material-ui/core/Button';
 import Players from './Players'
 import Inventory from './Inventory'
 import Boards from './Boards'
@@ -7,9 +8,15 @@ import { withSnackbar } from 'notistack';
 class Game extends React.Component {
     constructor(props) {
         super(props);
+        this.pressLeave = this.pressLeave.bind(this);
         this.state = {
+            winner: { symbol: "X", username: "YJ" }
         };
       }
+
+    pressLeave() {
+        this.props.resetRoom(this.props.room.roomId);
+    }
 
     componentDidMount() {
         this.props.socket.on('newGameState', (roomId, gameState) => {
@@ -24,15 +31,14 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('gameOver', (winner) => {
-            alert(`${this.props.room.players[winner].username} is the winner!`);
-            this.props.updateStatus('home');
-            this.props.resetRoom(this.props.room.roomId);
+            this.setState({ winner: this.props.room.players[winner] });
+            this.props.updateStatus('gameover');
+            // this.props.resetRoom(this.props.room.roomId);
             // window.location.reload();
         });
 
         this.props.socket.on('disconnectedPlayer', (burden) => {
             alert(`${burden} disconnected. Moving back to home page...`);
-            this.props.updateStatus('home');
             this.props.resetRoom(this.props.room.roomId);
             // window.location.reload();
         });
@@ -67,10 +73,24 @@ class Game extends React.Component {
     }
 
     render() {
+        const gameEnded = (this.props.status === "gameover" && this.state.winner !== null) ? (
+            <div id="gameOver">
+                <b>Game Over</b><br />
+                The winner is
+                <div id="winnerGrid">
+                    <div id="playerSymbol">{this.state.winner.symbol}</div> 
+                    <div>{this.state.winner.username}</div> 
+                </div><br />
+                <Button variant="contained" onClick={this.pressLeave}>
+                    Back to Home
+                </Button><br />
+            </div>
+        ) : null;
         return (
         <div className="game">
             <Players socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             <Inventory socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
+            {gameEnded}
             <Boards socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
         </div>
         );
