@@ -13,7 +13,7 @@ class Logs extends React.Component {
     <li key={idx}>{log}</li>
     );
     return (
-      <Dialog onClose={this.props.onClose} open={ this.props.open }>
+      <Dialog maxWidth={false} onClose={this.props.onClose} open={ this.props.open }>
         <div id="logs">
         <div style={{ 'max-height': '50vh', 'overflow-y': 'auto', 'margin-bottom': '10px' }}>
             <ul className="rulesList">{ logItems }</ul>
