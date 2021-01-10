@@ -4,7 +4,7 @@ function Rules() {
     return (
         <div id="rules">
           <b>How To Play Tic Tac Foe</b>
-          <ul class="rulesList">
+          <ul className="rulesList">
             <li>Get 3 in a row to win a board</li>
             <li>Play multiple boards at the same time</li>
             <li>Win as many boards as possible</li>

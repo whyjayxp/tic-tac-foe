@@ -19,7 +19,8 @@ class Waiting extends React.Component {
     this.state = {
       concurBoards: 2,
       boardsToWin: 3,
-      emojiMode: false
+      emojiMode: false,
+      startingPowerup: false
     };
   }
 
@@ -35,11 +36,15 @@ class Waiting extends React.Component {
     this.setState({ emojiMode: event.target.checked })
   }
 
+  handleStartingPowerupChange = (event) => {
+    this.setState({ startingPowerup: event.target.checked })
+  }
+
   pressStart() {
     if (this.props.room.players.length < 2) {
       this.props.enqueueSnackbar("There must be at least 2 players to start!", { autoHideDuration: 2000 });
     } else {
-      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin, this.state.emojiMode);
+      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin, this.state.emojiMode, this.state.startingPowerup);
     }
   }
 
@@ -118,6 +123,20 @@ class Waiting extends React.Component {
               />
             }
             label={<span style={ {font: '14px Century Gothic, Futura, sans-serif'} }>Emoji Mode</span>}
+            />
+          </FormControl>
+          <FormControl>
+            <FormControlLabel
+            control={
+              <Switch
+                checked={this.state.startingPowerup}
+                onChange={this.handleStartingPowerupChange}
+                color="default"
+                name="emoji"
+                inputProps={{ 'aria-label':  'primary checkbox' }}
+              />
+            }
+            label={<span style={ {font: '14px Century Gothic, Futura, sans-serif'} }>Starting Powerup</span>}
             />
           </FormControl>
           <br />

@@ -92,7 +92,7 @@ class Create extends React.Component {
             </Button>
         </form>
         <br /><br />
-        <center>Created by <a target="_blank" href="https://github.com/whyjayxp">Yue Jun</a> & <a target="_blank" href="https://github.com/qing-yuan">Qing Yuan</a> for HackNRoll 2021</center>
+        <center>Created by <a target="_blank" rel="noreferrer" href="https://github.com/whyjayxp">Yue Jun</a> & <a target="_blank" rel="noreferrer" href="https://github.com/qing-yuan">Qing Yuan</a> for HackNRoll 2021</center>
         <Changelog />
       </div>
     );

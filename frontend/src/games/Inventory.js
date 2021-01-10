@@ -23,7 +23,7 @@ class Inventory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        powerups: [7]
+        powerups: []
     };
   }
 
@@ -62,9 +62,10 @@ class Inventory extends React.Component {
   }
 
   componentDidMount() {
-    this.props.socket.on('itsYourTurn', () => {
-      this.props.updateStatus('turn');
-      this.props.enqueueSnackbar('It\'s your turn!', { autoHideDuration: 2000 });
+    this.props.socket.on('startingPowerup', () => {
+      var keys = Object.keys(POWERS);
+      var startPower = Number(keys[keys.length * Math.random() << 0]);
+      this.setState({ powerups: [startPower] });
     });
 
     this.props.socket.on('newPower', (pow) => {
@@ -99,7 +100,7 @@ class Inventory extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.socket.off('itsYourTurn');
+    this.props.socket.off('startingPowerup');
     this.props.socket.off('newPower');
     this.props.socket.off('bombed');
     this.props.socket.off('joked');

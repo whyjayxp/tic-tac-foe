@@ -24,6 +24,16 @@ class Game extends React.Component {
           this.props.updateRoom(room);
         });
 
+        this.props.socket.on('itsYourTurn', () => {
+            this.props.updateStatus('turn');
+            this.props.enqueueSnackbar('It\'s your turn!', { autoHideDuration: 2000 });
+          });
+
+        this.props.socket.on('numBoardsToWin', (numBoards) => {
+            console.log('test');
+            this.props.enqueueSnackbar(`You need to clear ${numBoards} boards to win the game!`, { autoHideDuration: 2000, variant: 'info' });
+        });
+
         this.props.socket.on('boardOver', (winner) => {
             if (winner > -1) {
                 this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 2000 });
@@ -67,6 +77,8 @@ class Game extends React.Component {
 
     componentWillUnmount() {
         this.props.socket.off('newGameState');
+        this.props.socket.off('itsYourTurn');
+        this.props.socket.off('numBoardsToWin');
         this.props.socket.off('boardOver');
         this.props.socket.off('gameOver');
         this.props.socket.off('disconnectedPlayer');
