@@ -199,7 +199,8 @@ module.exports = class Room {
                     return result;
                 }
             }
-            this.boards[props.board] = new Board(this.boardSize, this.boardSize);
+            result.prevBoard = this.boards[board].symbols;
+            this.boards[board] = new Board(this.boardSize, this.boardSize, this.powersToUse);
         }
         return result;
     }

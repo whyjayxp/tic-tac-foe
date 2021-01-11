@@ -20,7 +20,7 @@ module.exports = (io, socket) => {
     socket.on('chooseGrid', (roomId, props) => {
         var room = rooms[roomId];
         var result = room.chooseGrid(props);
-        // result:{ power, winner, hasEnded, cursedBy, gameOver }
+        // result:{ power, winner, hasEnded, cursedBy, gameOver, prevBoard }
         if (result.gameOver) {
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
             io.to(roomId).emit('gameOver', result.winner);
@@ -93,7 +93,7 @@ module.exports = (io, socket) => {
             }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 7) {
-            // result = { from, to, gameOver, winner, hasEnded }
+            // result = { from, to, gameOver, winner, hasEnded, prevBoard }
             var result = room.randomizeReplacePiece(props);
             if (result === null) return;
             io.to(roomId).emit('randomizeReplaceUsed', { board: props.board, from: result.from, to: result.to });
@@ -104,7 +104,7 @@ module.exports = (io, socket) => {
                 return;
             }
             if (result.hasEnded) {
-                io.to(roomId).emit('boardOver', result.winner); // use for broadcast & update view
+                io.to(roomId).emit('boardOver', result.winner, result.prevBoard); // use for broadcast & update view
             }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 8) {
