@@ -10,6 +10,9 @@ module.exports = (io, socket) => {
         io.to(roomId).emit('startGame', roomId, room.getGameState());
         io.to(roomId).emit('numBoardsToWin', numBoardsToWin);
         if (startingPowerup) io.to(roomId).emit('startingPowerup');
+        // room.players.forEach((player, idx) => {
+        //     io.to(player.socket.id).emit('youAreTheNthPlayer', idx);
+        // })
         io.to(firstPlayer).emit('itsYourTurn');
     });
 
@@ -57,6 +60,9 @@ module.exports = (io, socket) => {
             // res { from, to, shield }
             var res = room.skipNextPlayer();
             io.to(roomId).emit('skipUsed', res); // can use to broadcast who got skipped & update view
+            if (res.shield) {
+                io.to(room.players[res.to].socket.id).emit('shieldUsed');
+            }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 1) {
             var symbol = room.removePiece(props);
@@ -67,11 +73,17 @@ module.exports = (io, socket) => {
             io.to(roomId).emit('bombUsed'); // can use to broadcast
         } else if (pow == 3) {
             var res = room.placeCurse(props);
+            if (res.shield) {
+                io.to(room.players[res.to].socket.id).emit('shieldUsed');
+            }
             io.to(roomId).emit('curseUsed', res); // can use to broadcast
         } else if (pow == 6) {
             // res { from, to, shield }
             var res = room.skipPlayer(props.onIdx);
             io.to(roomId).emit('skipUsed', res);
+            if (res.shield) {
+                io.to(room.players[res.to].socket.id).emit('shieldUsed');
+            }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
         } else if (pow == 7) {
             // result = { from, to, gameOver, winner, hasEnded }

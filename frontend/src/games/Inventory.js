@@ -29,7 +29,8 @@ class Inventory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        powerups: [9]
+        powerups: [],
+        isShieldActive: false
     };
   }
 
@@ -43,6 +44,7 @@ class Inventory extends React.Component {
         if (pow === 0 || pow === 9 || pow === 10) {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
             if (pow === 9) {
+              this.setState({ isShieldActive: true });
               this.props.enqueueSnackbar('Shield has been activated!', { autoHideDuration: 2000 });
               this.props.addToLog('Shield has been activated!');
             } else if (pow === 10) {
@@ -124,6 +126,10 @@ class Inventory extends React.Component {
         this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
         this.props.addToLog(msg);
     });
+
+    this.props.socket.on('shieldUsed', () => {
+      this.setState({ isShieldActive: false });
+    })
   }
 
   componentWillUnmount() {
@@ -133,9 +139,13 @@ class Inventory extends React.Component {
     this.props.socket.off('joked');
     this.props.socket.off('cursed');
     this.props.socket.off('unboxResult');
+    this.props.socket.off('shieldUsed');
   }
 
   render() {
+    const shieldActive = (this.state.isShieldActive) ? (
+      <div style={{ marginBottom: '10px' }}>[ <img src={`/images/9.svg`} alt={"power"} height={'15'} margin-left="10px" /> ACTIVE ]</div>
+    ) : null;
     const listPowerups = (this.state.powerups.length === 0) ? (
       <li>You do not have any powerups :(<br />You might find some hidden on the board!</li>
     ) : 
@@ -152,6 +162,7 @@ class Inventory extends React.Component {
     ));
     return (
       <div id="powerupList">
+        { shieldActive }
         <b>Your Powerups</b><br />
         <i>Hover or hold over a powerup to see more details!</i><br />
         <i>Click on a powerup before placing your symbol to use it!</i>
