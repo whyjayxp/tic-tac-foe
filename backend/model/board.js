@@ -1,4 +1,5 @@
-const POWER_PROB = [0.1, 0.05, 0.2, 0.1, 0.1, 0.2, 0.1, 0.15]; // 0-7 only currently
+// const POWER_PROB = [0.1, 0.05, 0.2, 0.1, 0.1, 0.2, 0.1, 0.15]; // 0-7 only currently
+const POWER_PROB = [0.1, 0.05, 0.1, 0.1, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
     // 0 : skip next player
     // 1 : remove piece
     // 2 : good bomb
@@ -15,7 +16,7 @@ const CHECKS = [  // only for 3x3
     [[0,0], [1,0], [2,0]], [[0,1], [1,1], [2,1]], [[0,2], [1,2], [2,2]], // cols
     [[0,0], [1,1], [2,2]], [[0,2], [1,1], [2,0]] // diagonals
 ];
-const NUM_OF_POWERS = 5;
+const NUM_OF_POWERS = 6;
 
 module.exports = class Board {
     constructor(row, col) {

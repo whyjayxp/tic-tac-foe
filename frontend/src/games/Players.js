@@ -14,7 +14,7 @@ class Players extends React.Component {
         this.props.socket.emit('usePowerup', this.props.room.roomId, 3, { cursedBy: this.props.room.turn, onIdx: idx});
         this.props.updateStatus('turn');
     } else if (this.props.status === 'use_power_6') {
-        this.props.socket.emit('usePowerup', this.props.room.roomId, 6, { onIdx: idx });
+        this.props.socket.emit('usePowerup', this.props.room.roomId, 6, { skippedBy: this.props.room.turn, onIdx: idx });
         this.props.updateStatus('turn');
     } else {
         // do nothing

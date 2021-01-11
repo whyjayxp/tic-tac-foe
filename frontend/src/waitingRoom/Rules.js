@@ -19,6 +19,7 @@ function Rules() {
             <li><img src={`/images/7.svg`} alt={"home"} height={'20'} /> <b>Replace</b>: Replace an existing symbol with another random symbol</li>
             <li><img src={`/images/8.svg`} alt={"home"} height={'20'} /> <b>Unbox</b>: Reveal what is hidden underneath the chosen box</li>
             <li><img src={`/images/9.svg`} alt={"home"} height={'20'} /> <b>Shield</b>: Protect against Skip and Curse attacks</li>
+            <li><img src={`/images/10.svg`} alt={"home"} height={'20'} /> <b>Deflect</b>: Deflect Skip and Curse attacks to the attacker</li>
             <br />
             <li><i>Traps</i> are immediately applied when you place your symbol</li>
             <li><img src={`/images/clown.svg`} alt={"home"} height={'20'} /> <b>Joker</b>: Randomly places your symbol</li>

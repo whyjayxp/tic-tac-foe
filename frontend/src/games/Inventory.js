@@ -30,7 +30,8 @@ class Inventory extends React.Component {
     super(props);
     this.state = {
         powerups: [],
-        isShieldActive: false
+        isShieldActive: false,
+        isDeflectActive: false
     };
   }
 
@@ -48,6 +49,7 @@ class Inventory extends React.Component {
               this.props.enqueueSnackbar('Shield has been activated!', { autoHideDuration: 2000 });
               this.props.addToLog('Shield has been activated!');
             } else if (pow === 10) {
+              this.setState({ isDeflectActive: true })
               this.props.enqueueSnackbar('Deflect has been activated!', { autoHideDuration: 2000 });
               this.props.addToLog('Deflect has been activated!');
             }
@@ -129,6 +131,11 @@ class Inventory extends React.Component {
 
     this.props.socket.on('shieldUsed', () => {
       this.setState({ isShieldActive: false });
+    });
+
+    this.props.socket.on('deflectUsed', (powerId, options) => {
+      this.setState({ isDeflectActive: false });
+      this.props.socket.emit('usePowerup', this.props.room.roomId, powerId, options);
     })
   }
 
@@ -140,9 +147,13 @@ class Inventory extends React.Component {
     this.props.socket.off('cursed');
     this.props.socket.off('unboxResult');
     this.props.socket.off('shieldUsed');
+    this.props.socket.off('deflectUsed');
   }
 
   render() {
+    const deflectActive = (this.state.isDeflectActive) ? (
+      <div style={{ marginBottom: '10px' }}>[ <img src={`/images/10.svg`} alt={"power"} height={'15'} margin-left="10px" /> ACTIVE ]</div>
+    ) : null;
     const shieldActive = (this.state.isShieldActive) ? (
       <div style={{ marginBottom: '10px' }}>[ <img src={`/images/9.svg`} alt={"power"} height={'15'} margin-left="10px" /> ACTIVE ]</div>
     ) : null;
@@ -162,6 +173,7 @@ class Inventory extends React.Component {
     ));
     return (
       <div id="powerupList">
+        { deflectActive }
         { shieldActive }
         <b>Your Powerups</b><br />
         <i>Hover or hold over a powerup to see more details!</i><br />

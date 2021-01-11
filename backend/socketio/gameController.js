@@ -28,7 +28,6 @@ module.exports = (io, socket) => {
         }
         if (result.hasEnded) {
             // result.prevBoard contains the prev board to display winning line
-            console.log(result.prevBoard);
             io.to(roomId).emit('boardOver', result.winner, result.prevBoard); // use for broadcast & update view
         }
         if (result.cursedBy > -1) {
@@ -50,17 +49,19 @@ module.exports = (io, socket) => {
         // 1 : remove piece  { board, row, col }
         // 2 : good bomb     { board, row, col }
         // 3 : good curse    { cursedBy, onIdx }
-        // 6 : skip any player { onIdx }
+        // 6 : skip any player { skippedBy, onIdx }
         // 7 : randomize replace { board, row, col }
         // 8 : unbox the box { board, row, col }
         // 9 : shield
         // 10 : deflect
         var room = rooms[roomId];
         if (pow == 0) {
-            // res { from, to, shield }
+            // res { from, to, shield, deflect }
             var res = room.skipNextPlayer();
             io.to(roomId).emit('skipUsed', res); // can use to broadcast who got skipped & update view
-            if (res.shield) {
+            if (res.deflect) {
+                io.to(room.players[res.to].socket.id).emit('deflectUsed', 6, { skippedBy: res.to, onIdx: res.from });
+            } else if (res.shield) {
                 io.to(room.players[res.to].socket.id).emit('shieldUsed');
             }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
@@ -72,16 +73,21 @@ module.exports = (io, socket) => {
             room.placeBomb(props);
             io.to(roomId).emit('bombUsed'); // can use to broadcast
         } else if (pow == 3) {
+            // res { from, to, shield, deflect }
             var res = room.placeCurse(props);
-            if (res.shield) {
+            if (res.deflect) {
+                io.to(room.players[res.to].socket.id).emit('deflectUsed', 3, { cursedBy: res.to, onIdx: res.from });
+            } else if (res.shield) {
                 io.to(room.players[res.to].socket.id).emit('shieldUsed');
             }
             io.to(roomId).emit('curseUsed', res); // can use to broadcast
         } else if (pow == 6) {
-            // res { from, to, shield }
-            var res = room.skipPlayer(props.onIdx);
+            // res { from, to, shield, deflect }
+            var res = room.skipPlayer(props);
             io.to(roomId).emit('skipUsed', res);
-            if (res.shield) {
+            if (res.deflect) {
+                io.to(room.players[res.to].socket.id).emit('deflectUsed', 6, { skippedBy: res.to, onIdx: res.from });
+            } else if (res.shield) {
                 io.to(room.players[res.to].socket.id).emit('shieldUsed');
             }
             io.to(roomId).emit('newGameState', roomId, room.getGameState());

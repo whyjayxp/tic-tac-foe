@@ -94,11 +94,13 @@ class Game extends React.Component {
         });
 
 
-        this.props.socket.on('skipUsed', ({ from, to, shield }) => {
+        this.props.socket.on('skipUsed', ({ from, to, shield, deflect }) => {
             var fromName = this.props.room.players[from].username;
             var toName = this.props.room.players[to].username;
             var msg;
-            if (shield) {
+            if (deflect) {
+                msg = `${toName} deflected ${fromName}'s skip!`;
+            } else if (shield) {
                 msg = `${toName} was shielded from ${fromName}'s skip!`;
             } else {
                 msg = `${fromName} skipped ${toName}'s turn!`;
@@ -122,11 +124,13 @@ class Game extends React.Component {
             this.addToLog(`A bomb has been planted!`);
         });
 
-        this.props.socket.on('curseUsed', ({ from, to, shield }) => {
+        this.props.socket.on('curseUsed', ({ from, to, shield, deflect }) => {
             var fromName = this.props.room.players[from].username;
             var toName = this.props.room.players[to].username;
             var msg;
-            if (shield) {
+            if (deflect) {
+                msg = `${toName} deflected ${fromName}'s curse!`;
+            } else if (shield) {
                 msg = `${toName} was shielded from ${fromName}'s curse!`;
             } else {
                 msg = `A curse has been applied!`;

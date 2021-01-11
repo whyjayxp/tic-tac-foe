@@ -131,23 +131,29 @@ module.exports = class Room {
     skipNextPlayer() {
         var playerIdx = (this.status + 1) % this.players.length;
         var nextPlayer = this.players[playerIdx];
-        if (nextPlayer.checkShield()) {
+        if (nextPlayer.checkDeflect()) {
+            nextPlayer.setDeflect(false);
+            return { from: this.status, to: playerIdx, shield: false, deflect: true };
+        } else if (nextPlayer.checkShield()) {
             nextPlayer.setShield(false);
-            return { from: this.status, to: playerIdx, shield: true };
+            return { from: this.status, to: playerIdx, shield: true, deflect: false };
         } else {
             nextPlayer.addSkip();
-            return { from: this.status, to: playerIdx, shield: false };
+            return { from: this.status, to: playerIdx, shield: false, deflect: false };
         }
     }
 
-    skipPlayer(onIdx) {
-        var player = this.players[onIdx];
-        if (player.checkShield()) {
+    skipPlayer(props) {
+        var player = this.players[props.onIdx];
+        if (player.checkDeflect()) {
+            player.setDeflect(false);
+            return { from: props.skippedBy, to: props.onIdx, shield: false, deflect: true };
+        } else if (player.checkShield()) {
             player.setShield(false);
-            return { from: this.status, to: onIdx, shield: true };
+            return { from: props.skippedBy, to: props.onIdx, shield: true, deflect: false };
         } else {
             player.addSkip();
-            return { from: this.status, to: onIdx, shield: false };
+            return { from: props.skippedBy, to: props.onIdx, shield: false, deflect: false };
         }
     }
 
@@ -162,12 +168,15 @@ module.exports = class Room {
 
     placeCurse(props) {
         var player = this.players[props.onIdx];
-        if (player.checkShield()) {
+        if (player.checkDeflect()) {
+            player.setDeflect(false);
+            return { from: props.cursedBy, to: props.onIdx, shield: false, deflect: true };
+        } else if (player.checkShield()) {
             player.setShield(false);
-            return { from: props.cursedBy, to: props.onIdx, shield: true };
+            return { from: props.cursedBy, to: props.onIdx, shield: true, deflect: false };
         } else {
             player.setCurse(props.cursedBy);
-            return { from: props.cursedBy, to: props.onIdx, shield: false };
+            return { from: props.cursedBy, to: props.onIdx, shield: false, deflect: false };
         }
     }
 
