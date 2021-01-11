@@ -2,14 +2,15 @@ const Room = require('../model/room.js');
 const Player = require('../model/player.js');
 
 module.exports = (io, socket) => {
-    socket.on('startGame', (roomId, concurrBoards, numBoardsToWin, emojiMode, startingPowerup) => {
+    socket.on('startGame', (roomId, concurrBoards, numBoardsToWin, emojiMode, startingPowerup, powersToUse) => {
         var room = rooms[roomId];
         room.setConcurBoards(concurrBoards);
         room.setNumBoardsToWin(numBoardsToWin);
+        room.setPowersToUse(powersToUse);
         var firstPlayer = room.startGame(emojiMode);
         io.to(roomId).emit('startGame', roomId, room.getGameState());
         io.to(roomId).emit('numBoardsToWin', numBoardsToWin);
-        if (startingPowerup) io.to(roomId).emit('startingPowerup');
+        if (startingPowerup) io.to(roomId).emit('startingPowerup', powersToUse);
         // room.players.forEach((player, idx) => {
         //     io.to(player.socket.id).emit('youAreTheNthPlayer', idx);
         // })

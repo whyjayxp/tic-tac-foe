@@ -4,6 +4,8 @@ import Switch from '@material-ui/core/Switch';
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
+import Checkbox from '@material-ui/core/Checkbox'
+import FormGroup from '@material-ui/core/FormGroup'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { withSnackbar } from 'notistack';
@@ -20,7 +22,8 @@ class Waiting extends React.Component {
       concurBoards: 2,
       boardsToWin: 3,
       emojiMode: false,
-      startingPowerup: false
+      startingPowerup: false,
+      powersToUse: new Array(11).fill(true)
     };
   }
 
@@ -40,11 +43,16 @@ class Waiting extends React.Component {
     this.setState({ startingPowerup: event.target.checked })
   }
 
+  handlePowerupChange = (event, i) => {
+    // handle both skips together
+    this.setState({ powersToUse: this.state.powersToUse.map((x,j) => (i === j || (i === 0 && j === 6)) ? event.target.checked : x) })
+  }
+
   pressStart() {
     if (this.props.room.players.length < 2) {
       this.props.enqueueSnackbar("There must be at least 2 players to start!", { autoHideDuration: 2000 });
     } else {
-      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin, this.state.emojiMode, this.state.startingPowerup);
+      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin, this.state.emojiMode, this.state.startingPowerup, this.state.powersToUse);
     }
   }
 
@@ -137,8 +145,26 @@ class Waiting extends React.Component {
             }
             label={<span style={ {font: '14px Century Gothic, Futura, sans-serif'} }>Starting Powerup</span>}
             />
-          </FormControl>
-          <br />
+          </FormControl><br />
+          <FormControl>
+            <center>Powerups In Game</center>
+            <FormGroup aria-label="position" row>
+              {
+              Array.apply(0, Array(11)).map((x,i) => (
+                (i === 6) ? null :
+              <FormControlLabel
+                key={i}
+                style={{ margin: '5px' }}
+                checked={this.state.powersToUse[i]}
+                onChange={(e) => this.handlePowerupChange(e, i)}
+                control={<Checkbox color="default" />}
+                label={<img src={`/images/${i}.svg`} alt={"home"} height={'20'} />}
+                labelPlacement="bottom" />
+              ))
+              }
+              </FormGroup>
+            </FormControl>
+          <br /><br />
         <Button variant="outlined" onClick={this.pressStart}>
             Start Game
         </Button>

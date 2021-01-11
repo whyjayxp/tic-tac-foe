@@ -73,8 +73,8 @@ class Inventory extends React.Component {
   }
 
   componentDidMount() {
-    this.props.socket.on('startingPowerup', () => {
-      var keys = Object.keys(POWERS);
+    this.props.socket.on('startingPowerup', (powersToUse) => {
+      var keys = Object.keys(POWERS).filter(x => powersToUse[x]);
       var startPower = Number(keys[keys.length * Math.random() << 0]);
       this.setState({ powerups: [startPower] });
     });

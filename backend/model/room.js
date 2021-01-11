@@ -25,6 +25,7 @@ module.exports = class Room {
         this.maxConcurBoards = MAX_BOARDS_DEFAULT;
         this.numBoardsToWin = NO_OF_BOARDS_TO_WIN_DEFAULT;
         this.boardSize = BOARD_SIZE_DEFAULT;
+        this.powersToUse = new Array(11).fill(true);
 
         // board info
         this.boards = [];
@@ -70,6 +71,10 @@ module.exports = class Room {
         this.numBoardsToWin = num;
     }
 
+    setPowersToUse(arr) {
+        this.powersToUse = arr;
+    }
+
     startGame(emojiMode = false) {
         if (this.status != LOBBY) return;
         // assign symbols to all players
@@ -82,7 +87,7 @@ module.exports = class Room {
         }
         // generate boards
         for (var i = 0; i < this.maxConcurBoards; i++) {
-            this.boards.push(new Board(this.boardSize, this.boardSize));
+            this.boards.push(new Board(this.boardSize, this.boardSize, this.powersToUse));
         }
         this.status = 0; // first player's turn
         return this.players[0].socket.id;
@@ -112,7 +117,7 @@ module.exports = class Room {
                 }
             }
             result.prevBoard = this.boards[board].symbols;
-            this.boards[board] = new Board(this.boardSize, this.boardSize);
+            this.boards[board] = new Board(this.boardSize, this.boardSize, this.powersToUse);
         }
         return result;
     }

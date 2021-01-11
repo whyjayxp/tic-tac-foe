@@ -1,5 +1,5 @@
 // const POWER_PROB = [0.1, 0.05, 0.2, 0.1, 0.1, 0.2, 0.1, 0.15]; // 0-7 only currently
-const POWER_PROB = [0.1, 0.05, 0.1, 0.1, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
+const POWER_PROB = [0.05, 0.025, 0.1, 0.1, 0.075, 0.1, 0.05, 0.1, 0.15, 0.125, 0.125];
     // 0 : skip next player
     // 1 : remove piece
     // 2 : good bomb
@@ -19,12 +19,12 @@ const CHECKS = [  // only for 3x3
 const NUM_OF_POWERS = 6;
 
 module.exports = class Board {
-    constructor(row, col) {
+    constructor(row, col, powersToUse) {
         this.symbols = this.createBoard(row, col);
         this.powers = this.createBoard(row, col);
         this.row = row;
         this.col = col;
-        this.randomizePowers();
+        this.randomizePowers(powersToUse);
         // this.symbols = Array.from(Array(options.row), () => new Array(options.col));
     }
 
@@ -44,25 +44,29 @@ module.exports = class Board {
         return bucket.splice(idx, 1)[0];
     }
 
-    getRandomPower() {
+    getRandomPower(probs) {
         var r = Math.random();
         var sum = 0;
-        for (var i in POWER_PROB) {
-            sum += POWER_PROB[i];
+        for (var i in probs) {
+            if (probs[i] === 0) continue;
+            sum += probs[i];
             if (r <= sum) return Number(i);
         }
     }
 
-    randomizePowers() {
+    randomizePowers(powersToUse = POWER_PROB) {
         var buckets = [];
         for (var i = 0; i < this.row * this.col; i++) {
             buckets.push(i);
         }
+        var rawProbs = POWER_PROB.map((x,i) => (powersToUse[i]) ? x : 0);
+        var sumProbs = rawProbs.reduce((x,y) => x+y, 0);
+        var probs = rawProbs.map(x => (x === 0) ? 0 : x/sumProbs);
         for (var i = 0; i < NUM_OF_POWERS; i++) {
             var nextBox = this.getRandomFromBucket(buckets);
             var r = Math.floor(nextBox / this.col);
             var c = nextBox % this.col;
-            this.powers[r][c] = this.getRandomPower();
+            this.powers[r][c] = this.getRandomPower(probs);
         }
     }
 

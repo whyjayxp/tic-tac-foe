@@ -22,8 +22,8 @@ function Rules() {
             <li><img src={`/images/10.svg`} alt={"home"} height={'20'} /> <b>Deflect</b>: Deflect Skip and Curse attacks to the attacker</li>
             <br />
             <li><i>Traps</i> are immediately applied when you place your symbol</li>
-            <li><img src={`/images/clown.svg`} alt={"home"} height={'20'} /> <b>Joker</b>: Randomly places your symbol</li>
-            <li><img src={`/images/mine.svg`} alt={"home"} height={'20'} /> <b>Bomb trap</b>: Destroys the symbol that you placed on it</li>
+            <li><img src={`/images/5.svg`} alt={"home"} height={'20'} /> <b>Joker</b>: Randomly places your symbol</li>
+            <li><img src={`/images/4.svg`} alt={"home"} height={'20'} /> <b>Bomb trap</b>: Destroys the symbol that you placed on it</li>
           </ul>
         </div>
     );
