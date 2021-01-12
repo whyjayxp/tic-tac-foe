@@ -47,4 +47,75 @@ module.exports = (io, socket) => {
             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers());
         }
     });
+
+    socket.on('leaveRoom', (roomId) => {
+        var room = rooms[roomId];
+        socket.leave(roomId);
+        if (!room) return;
+        room.removePlayer(socket.player);
+        if (room.isEmpty()) {
+            delete rooms[roomId];
+        } else {
+            socket.to(roomId).emit('playerLeft', socket.player.username);
+            socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
+            io.to(room.getHost()).emit('youAreTheHost');
+        }
+    });
+
+    socket.on('playAgain', (roomId) => {
+        if (socket.player === null || socket.player === undefined) return;
+        var room = rooms[roomId];
+        if (!room) return;
+        var nextRoomId = room.getNextRoomId();
+        if (nextRoomId !== '') {
+            var nextRoom = rooms[nextRoomId];
+            if (!nextRoom) {
+                socket.emit('errorRejoiningRoom', `The room does not exist!`);
+            } else if (nextRoom.isGameOver()) {
+                socket.emit('errorRejoiningRoom', `The room has finished the game!`);
+            } else if (!nextRoom.isLobby()) {
+                socket.emit('errorRejoiningRoom', `The room has already started the game!`);
+            } else if (nextRoom.isFull()) {
+                socket.emit('errorRejoiningRoom', `The room is full!`);
+            } else {
+                room.removePlayer(socket.player);
+                socket.leave(roomId);
+                socket.join(nextRoomId);
+                var username = socket.player.username;
+                var player = new Player({ socket, username });
+                nextRoom.addPlayer(player);
+                socket.player = player;
+                socket.room = nextRoomId;
+                socket.to(roomId).emit('playerLeft', username);
+                socket.emit('successRejoiningRoom', nextRoomId, nextRoom.getPlayers(), false);
+                socket.to(nextRoomId).emit('updatePlayers', nextRoomId, nextRoom.getPlayers());
+                if (room.isEmpty()) {
+                    delete rooms[roomId];
+                }
+            }
+        } else {
+            // create room
+            while (true) {
+                nextRoomId = Math.random().toString(36).substring(2, 6).toUpperCase();
+                if (!io.sockets.adapter.rooms.has(nextRoomId)) break;
+            }
+            room.removePlayer(socket.player);
+            room.setNextRoomId(nextRoomId);
+            socket.leave(roomId);
+            socket.join(nextRoomId);
+            var nextRoom = new Room({ io, nextRoomId });
+            var username = socket.player.username;
+            var player = new Player({ socket, username });
+            nextRoom.addPlayer(player);
+            socket.player = player;
+            socket.room = nextRoomId;
+            rooms[nextRoomId] = nextRoom;
+            socket.to(roomId).emit('playerLeft', username);
+            socket.emit('successRejoiningRoom', nextRoomId, nextRoom.getPlayers(), true);
+            socket.to(nextRoomId).emit('updatePlayers', nextRoomId, nextRoom.getPlayers());
+            if (room.isEmpty()) {
+                delete rooms[roomId];
+            }
+        }     
+    });
 };

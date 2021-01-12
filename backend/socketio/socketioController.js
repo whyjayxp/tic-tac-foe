@@ -12,19 +12,6 @@ module.exports = server => {
         initLobby(io, socket);
         initGame(io, socket);
 
-        socket.on('leaveRoom', (roomId) => {
-            var room = rooms[roomId];
-            socket.leave(roomId);
-            if (!room) return;
-            room.removePlayer(socket.player);
-            if (room.isEmpty()) {
-                delete rooms[roomId];
-            } else {
-                socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
-                io.to(room.getHost()).emit('youAreTheHost');
-            }
-        });
-
         socket.on('newMessage', (roomId, msg) => {
             io.to(roomId).emit('newMessage', `${socket.player.username}: ${msg}`);
         });

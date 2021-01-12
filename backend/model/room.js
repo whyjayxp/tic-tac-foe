@@ -19,6 +19,7 @@ module.exports = class Room {
         this.roomId = options.roomId;
         this.players = [];
         this.status = LOBBY;
+        this.nextRoomId = '';
 
         // room settings
         this.maxPlayers = MAX_PLAYERS_DEFAULT;
@@ -244,5 +245,13 @@ module.exports = class Room {
 
     isGameOver() {
         return this.status == GAMEOVER;
+    }
+
+    setNextRoomId(room) {
+        this.nextRoomId = room;
+    }
+
+    getNextRoomId() {
+        return this.nextRoomId;
     }
 };

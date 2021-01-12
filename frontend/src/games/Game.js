@@ -14,6 +14,7 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.pressLeave = this.pressLeave.bind(this);
+        this.pressPlayAgain = this.pressPlayAgain.bind(this);
         this.closeDialog = this.closeDialog.bind(this);
         this.closeLogs = this.closeLogs.bind(this);
         this.closeChat = this.closeChat.bind(this);
@@ -32,6 +33,10 @@ class Game extends React.Component {
 
     pressLeave() {
         this.props.resetRoom(this.props.room.roomId);
+    }
+
+    pressPlayAgain() {
+        this.props.socket.emit('playAgain', this.props.room.roomId);
     }
 
     closeDialog() {
@@ -56,6 +61,14 @@ class Game extends React.Component {
     }
 
     componentDidMount() {
+        this.props.socket.on('errorRejoiningRoom', (msg) => {
+            this.props.enqueueSnackbar(msg, { autoHideDuration: 3000 });
+          });
+      
+          this.props.socket.on('successRejoiningRoom', (roomId, players, isHost) => {
+            this.props.joinRoom(roomId, players, isHost);
+          });
+
         this.props.socket.on('newGameState', (roomId, gameState) => {
           var room = {roomId, players: gameState.players, boards: gameState.boards, turn: gameState.turn};
           this.props.updateRoom(room);
@@ -95,6 +108,10 @@ class Game extends React.Component {
             // window.location.reload();
         });
 
+        this.props.socket.on('playerLeft', (burden) => {
+            this.props.enqueueSnackbar(`${burden} has left the room.`, { autoHideDuration: 3000 });
+            this.addToLog(`${burden} has left the room.`);
+        });
 
         this.props.socket.on('skipUsed', ({ from, to, shield, deflect }) => {
             var fromName = this.props.room.players[from].username;
@@ -143,12 +160,15 @@ class Game extends React.Component {
     }
 
     componentWillUnmount() {
+        this.props.socket.off('errorRejoiningRoom');
+        this.props.socket.off('successRejoiningRoom');
         this.props.socket.off('newGameState');
         this.props.socket.off('itsYourTurn');
         this.props.socket.off('numBoardsToWin');
         this.props.socket.off('boardOver');
         this.props.socket.off('gameOver');
         this.props.socket.off('disconnectedPlayer');
+        this.props.socket.off('playerLeft');
         this.props.socket.off('skipUsed');
         this.props.socket.off('removeUsed');
         this.props.socket.off('randomizeReplaceUsed');
@@ -165,9 +185,14 @@ class Game extends React.Component {
                     <div id="playerSymbol">{this.state.winner.symbol}</div> 
                     <div>{this.state.winner.username}</div> 
                 </div><br />
-                <Button variant="contained" onClick={this.pressLeave}>
+                <div>
+                <Button variant="contained" style={{ 'marginRight': '5px' }} onClick={this.pressPlayAgain}>
+                    Play Again
+                </Button>
+                <Button variant="contained" style={{ 'marginLeft': '5px' }} onClick={this.pressLeave}>
                     Back to Home
-                </Button><br />
+                </Button>
+                </div><br />
             </div>
         ) : null;
         const newMsg = (this.state.hasNewMsg === 0) ? (

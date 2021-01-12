@@ -13,7 +13,7 @@ class Changelog extends React.Component {
         <div id="changelog" onClick={() => (this.state.showItems) ? this.setState({showItems: false}) : this.setState({showItems: true})}>
           <b>Changelog (click to show/hide)</b>
           <ul className="logList" style={{ display: (this.state.showItems) ? 'block' : 'none' }}>
-            <li><b>v1.6 (12 Jan 2021)</b>: Powerups can now be unselected. Improved Chat Room experience. Bug fixes.</li>
+            <li><b>v1.6 (12 Jan 2021)</b>: Powerups can now be unselected. Option to return to the same waiting room. Improved Chat Room experience. Bug fixes.</li>
             <li><b>v1.5 (11 Jan 2021)</b>: New powerups: Unbox, Shield, Deflect. Host can now decide which powerups to include in the game.</li>
             <li><b>v1.4 (11 Jan 2021)</b>: Chat Room and Logs. Game can now go on even when a player disconnects.</li>
             <li><b>v1.3 (10 Jan 2021)</b>: Highly requested feature: the winning boards are now displayed. 🙂</li>

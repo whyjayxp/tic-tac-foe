@@ -21,7 +21,7 @@ class App extends React.Component {
         this.state = {
             socket: socketClient(SERVER, {transports: ["websocket"]}),
             room: null,
-            status: 'home'
+            status: 'home' // home, lobby, game, turn, gameover, use_power_{idx}
         };
     }
 
@@ -74,7 +74,7 @@ class App extends React.Component {
         } else if (status === 'lobby') {
             page = <Waiting room={room} socket={socket} updateRoom={this.updateRoom} startGame={this.startGame} updateStatus={this.updateStatus} resetRoom={this.resetRoom} />
         } else {
-            page = <Game room={room} socket={socket} status={status} updateRoom={this.updateRoom} updateStatus={this.updateStatus} resetRoom={this.resetRoom} />
+            page = <Game room={room} socket={socket} status={status} updateRoom={this.updateRoom} updateStatus={this.updateStatus} resetRoom={this.resetRoom} joinRoom={this.joinRoom} />
         }
         return (<div>
                 { page }
