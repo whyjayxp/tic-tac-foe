@@ -28,12 +28,12 @@ class Board extends React.Component {
                 this.props.enqueueSnackbar(`This box is already taken!`, { autoHideDuration: 3000 });
             }
         } else if (this.props.status === 'use_power_1') { // remove piece
-            // if (hasSymbol) {
+            if (hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 1, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
-            // } else {
-            //     this.props.enqueueSnackbar(`This box has no symbol to remove!`, { autoHideDuration: 3000 });
-            // }
+            } else {
+                this.props.enqueueSnackbar(`This box has no symbol to remove!`, { autoHideDuration: 3000 });
+            }
         } else if (this.props.status === 'use_power_2') { // plant bomb
             if (!hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 2, { board: this.props.idx, row, col });
@@ -42,12 +42,12 @@ class Board extends React.Component {
                 this.props.enqueueSnackbar(`Bomb must be planted on an empty box!`, { autoHideDuration: 3000 });
             }
         } else if (this.props.status === 'use_power_7') { // randomize replace
-            // if (hasSymbol) {
+            if (hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 7, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
-            // } else {
-            //     this.props.enqueueSnackbar(`This box has no symbol to randomly replace!`, { autoHideDuration: 3000 });
-            // }
+            } else {
+                this.props.enqueueSnackbar(`This box has no symbol to randomly replace!`, { autoHideDuration: 3000 });
+            }
         } else if (this.props.status === 'use_power_8') { // unbox the box
             if (!hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 8, { board: this.props.idx, row, col });

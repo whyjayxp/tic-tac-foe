@@ -56,6 +56,7 @@ module.exports = (io, socket) => {
         // 9 : shield
         // 10 : deflect
         var room = rooms[roomId];
+        socket.emit('powerupUsed');
         if (pow == 0) {
             // res { from, to, shield, deflect }
             var res = room.skipNextPlayer();

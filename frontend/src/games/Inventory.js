@@ -15,11 +15,11 @@ const POWERS = {
   10: "Activate Deflect" };
 const DESCS = {
   0: "The next player will lose a turn.",
-  1: "Choose any existing symbol on the board to remove. The powerup is wasted if an empty tile is chosen.",
+  1: "Choose any existing symbol on the board to remove.",
   2: "Choose any empty tile on the board to plant a bomb. The next symbol placed there will disappear.",
   3: "Choose any player to curse. The next tile placed by that player will become your symbol instead.",
   6: "Choose any player to skip so that they will lose a turn.",
-  7: "Choose any existing symbol on the board to randomly replace it with another symbol. The powerup is wasted if an empty tile is chosen.",
+  7: "Choose any existing symbol on the board to randomly replace it with another symbol.",
   8: "Choose any empty tile on the board to reveal what is hidden underneath.",
   9: "Protect against a Skip or Curse powerup from other players. Effect cannot be stacked.",
   10: "The next player who tries to use a Skip or Curse powerup against you will have the power used against them instead. Effect cannot be stacked."
@@ -31,16 +31,18 @@ class Inventory extends React.Component {
     this.state = {
         powerups: [],
         isShieldActive: false,
-        isDeflectActive: false
+        isDeflectActive: false,
+        selectedToUse: -1
     };
   }
 
   pressPowerup(idx) {
-    if (this.props.status !== 'turn') {
+    if (this.props.status === 'game') {
         this.props.enqueueSnackbar('You can only use powerups during your turn!', { autoHideDuration: 3000 });
-    } else {
+    } else if (this.props.status === 'turn') {
         var pow = this.state.powerups[idx];
-        this.setState({ powerups: this.state.powerups.filter((v, i) => i !== idx) });
+        if (this.state.selectedToUse !== -1) return; // in the process of using a powerup
+        this.setState({ selectedToUse: idx });
 
         if (pow === 0 || pow === 9 || pow === 10) {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
@@ -69,6 +71,14 @@ class Inventory extends React.Component {
             }
             this.props.updateStatus(`use_power_${pow}`);
         }
+    } else if (this.props.status.startsWith('use_power_')) {
+      if (idx === this.state.selectedToUse) {
+        // unselect
+        this.setState({ selectedToUse: -1 });
+        this.props.updateStatus('turn');
+      } else {
+        this.props.enqueueSnackbar('Please unselect the current powerup first to use another one!', { autoHideDuration: 3000 });
+      }
     }
   }
 
@@ -136,7 +146,12 @@ class Inventory extends React.Component {
     this.props.socket.on('deflectUsed', (powerId, options) => {
       this.setState({ isDeflectActive: false });
       this.props.socket.emit('usePowerup', this.props.room.roomId, powerId, options);
-    })
+    });
+
+    this.props.socket.on('powerupUsed', () => {
+      var selected = this.state.selectedToUse;
+      this.setState({ powerups: this.state.powerups.filter((v, i) => i !== selected), selectedToUse: -1 });
+    });
   }
 
   componentWillUnmount() {
@@ -148,6 +163,7 @@ class Inventory extends React.Component {
     this.props.socket.off('unboxResult');
     this.props.socket.off('shieldUsed');
     this.props.socket.off('deflectUsed');
+    this.props.socket.off('powerupUsed');
   }
 
   render() {
@@ -163,7 +179,7 @@ class Inventory extends React.Component {
     (this.state.powerups.map((power, idx) =>
     <span key={idx}>
       <Tooltip arrow title={DESCS[power]}>
-    <Button onClick={() => this.pressPowerup(idx)}>
+    <Button variant={ (this.state.selectedToUse === idx) ? "contained" : "text" } color={ (this.state.selectedToUse === idx) ? "primary" : "default" } onClick={() => this.pressPowerup(idx)}>
       <li><b>{POWERS[power]}</b> <img src={`/images/${power}.svg`} alt={"power"} height={'20'} margin-left="10px"/></li>
       
     </Button>
