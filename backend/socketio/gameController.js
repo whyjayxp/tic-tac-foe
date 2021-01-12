@@ -24,7 +24,6 @@ module.exports = (io, socket) => {
         if (result.gameOver) {
             io.to(roomId).emit('newGameState', roomId, room.getGameState());
             io.to(roomId).emit('gameOver', result.winner);
-            delete rooms[roomId]; 
             return;
         }
         if (result.hasEnded) {
@@ -101,7 +100,6 @@ module.exports = (io, socket) => {
             if (result.gameOver) {
                 io.to(roomId).emit('newGameState', roomId, room.getGameState());
                 io.to(roomId).emit('gameOver', result.winner);
-                delete rooms[roomId]; 
                 return;
             }
             if (result.hasEnded) {

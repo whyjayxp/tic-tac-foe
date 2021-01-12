@@ -241,4 +241,8 @@ module.exports = class Room {
     isLobby() {
         return this.status == LOBBY;
     }
+
+    isGameOver() {
+        return this.status == GAMEOVER;
+    }
 };

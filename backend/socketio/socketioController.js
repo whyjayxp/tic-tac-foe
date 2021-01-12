@@ -38,8 +38,22 @@ module.exports = server => {
                         if (!room) return; // game ended, room disappeared
                         if (room.isLobby()) {
                             room.removePlayer(socket.player);
-                            socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
-                            io.to(room.getHost()).emit('youAreTheHost');
+                            if (room.isEmpty()) {
+                                console.log("empty room");
+                                delete rooms[roomId];
+                            } else {
+                                socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
+                                io.to(room.getHost()).emit('youAreTheHost');
+                            }
+                            return;
+                        }
+                        if (room.isGameOver()) {
+                            room.removePlayer(socket.player);
+                            if (room.isEmpty()) {
+                                delete rooms[roomId];
+                            } else {
+                                socket.to(roomId).emit('disconnectedPlayer', socket.player.username);
+                            }
                             return;
                         }
                         if (room.isLastPerson()) {
