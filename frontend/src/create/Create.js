@@ -26,12 +26,12 @@ class Create extends React.Component {
 
   createRoom() {
     if (this.props.socket.disconnected) {
-      this.props.enqueueSnackbar("Server is down! :(", { autoHideDuration: 2000, variant: 'error' });
+      this.props.enqueueSnackbar("Server is down! :(", { autoHideDuration: 3000, variant: 'error' });
       return;
     }
     const username = this.state.username;
     if (username === '') {
-      this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 2000 });
+      this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 3000 });
       return;
     }
     this.setState({ isHost: true });
@@ -40,17 +40,17 @@ class Create extends React.Component {
 
   joinRoom() {
     if (this.props.socket.disconnected) {
-      this.props.enqueueSnackbar("Server is down! :(", { autoHideDuration: 2000, variant: 'error' });
+      this.props.enqueueSnackbar("Server is down! :(", { autoHideDuration: 3000, variant: 'error' });
       return;
     }
     const username = this.state.username;
     const roomId = this.state.roomId.toUpperCase();
     if (username === '') {
-      this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 2000 });
+      this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 3000 });
       return;
     }
     if (roomId === '') {
-      this.props.enqueueSnackbar("Please input a room ID!", { autoHideDuration: 2000 });
+      this.props.enqueueSnackbar("Please input a room ID!", { autoHideDuration: 3000 });
       return;
     }
     this.setState({ isHost: false });
@@ -59,7 +59,7 @@ class Create extends React.Component {
 
   componentDidMount() {
     this.props.socket.on('errorJoiningRoom', (msg) => {
-      this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
+      this.props.enqueueSnackbar(msg, { autoHideDuration: 3000 });
     });
 
     this.props.socket.on('successJoiningRoom', (roomId, players) => {

@@ -25,35 +25,35 @@ class Board extends React.Component {
                 this.props.socket.emit('chooseGrid', this.props.room.roomId, { board: this.props.idx, row, col });
                 this.props.updateStatus('game');
             } else {
-                this.props.enqueueSnackbar(`This box is already taken!`, { autoHideDuration: 2000 });
+                this.props.enqueueSnackbar(`This box is already taken!`, { autoHideDuration: 3000 });
             }
         } else if (this.props.status === 'use_power_1') { // remove piece
             // if (hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 1, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
             // } else {
-            //     this.props.enqueueSnackbar(`This box has no symbol to remove!`, { autoHideDuration: 2000 });
+            //     this.props.enqueueSnackbar(`This box has no symbol to remove!`, { autoHideDuration: 3000 });
             // }
         } else if (this.props.status === 'use_power_2') { // plant bomb
             if (!hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 2, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
             } else {
-                this.props.enqueueSnackbar(`Bomb must be planted on an empty box!`, { autoHideDuration: 2000 });
+                this.props.enqueueSnackbar(`Bomb must be planted on an empty box!`, { autoHideDuration: 3000 });
             }
         } else if (this.props.status === 'use_power_7') { // randomize replace
             // if (hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 7, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
             // } else {
-            //     this.props.enqueueSnackbar(`This box has no symbol to randomly replace!`, { autoHideDuration: 2000 });
+            //     this.props.enqueueSnackbar(`This box has no symbol to randomly replace!`, { autoHideDuration: 3000 });
             // }
         } else if (this.props.status === 'use_power_8') { // unbox the box
             if (!hasSymbol) {
                 this.props.socket.emit('usePowerup', this.props.room.roomId, 8, { board: this.props.idx, row, col });
                 this.props.updateStatus('turn');
             } else {
-                this.props.enqueueSnackbar(`You can only unbox a box without a symbol!`, { autoHideDuration: 2000 });
+                this.props.enqueueSnackbar(`You can only unbox a box without a symbol!`, { autoHideDuration: 3000 });
             }
         }
     }

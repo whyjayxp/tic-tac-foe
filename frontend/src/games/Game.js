@@ -1,6 +1,7 @@
 import React from 'react'
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import Badge from '@material-ui/core/Badge';
 import Players from './Players'
 import Inventory from './Inventory'
 import Boards from './Boards'
@@ -24,7 +25,7 @@ class Game extends React.Component {
             winner: { },
             logs: [],
             logsOpen: false,
-            hasNewMsg: false,
+            hasNewMsg: 0,
             chatOpen: false
         };
       }
@@ -42,7 +43,7 @@ class Game extends React.Component {
     }
 
     closeChat() {
-        this.setState({ chatOpen: false, hasNewMsg: false });
+        this.setState({ chatOpen: false, hasNewMsg: 0 });
     }
 
     addToLog(msg) {
@@ -50,7 +51,8 @@ class Game extends React.Component {
     }
 
     showNewMsg() {
-        this.setState({ hasNewMsg: true });
+        if (this.state.chatOpen) return;
+        this.setState({ hasNewMsg: this.state.hasNewMsg + 1 });
     }
 
     componentDidMount() {
@@ -61,7 +63,7 @@ class Game extends React.Component {
 
         this.props.socket.on('itsYourTurn', () => {
             this.props.updateStatus('turn');
-            this.props.enqueueSnackbar('It\'s your turn!', { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar('It\'s your turn!', { autoHideDuration: 3000 });
           });
 
         this.props.socket.on('numBoardsToWin', (numBoards) => {
@@ -74,7 +76,7 @@ class Game extends React.Component {
             if (winner > -1) {
                 this.setState({ winner: this.props.room.players[winner], prevBoard: prevBoard, dialogOpen: true });
                 this.addToLog(`${this.props.room.players[winner].username} cleared a board!`);
-                // this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 2000 });
+                // this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 3000 });
             }
         });
 
@@ -86,7 +88,7 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('disconnectedPlayer', (burden) => {
-            this.props.enqueueSnackbar(`${burden} has disconnected.`, { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar(`${burden} has disconnected.`, { autoHideDuration: 3000 });
             this.addToLog(`${burden} has disconnected.`);
             // alert(`${burden} disconnected. Moving back to home page...`);
             // this.props.resetRoom(this.props.room.roomId);
@@ -105,22 +107,22 @@ class Game extends React.Component {
             } else {
                 msg = `${fromName} skipped ${toName}'s turn!`;
             }
-            this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar(msg, { autoHideDuration: 3000 });
             this.addToLog(msg);
         });
 
         this.props.socket.on('removeUsed', ({ board, symbol }) => {
-            this.props.enqueueSnackbar(`${this.props.room.players[symbol].symbol} has been removed from board ${board + 1}!`, { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar(`${this.props.room.players[symbol].symbol} has been removed from board ${board + 1}!`, { autoHideDuration: 3000 });
             this.addToLog(`${this.props.room.players[symbol].symbol} has been removed from board ${board + 1}!`);
         });
 
         this.props.socket.on('randomizeReplaceUsed', ({ board, from, to }) => {
-            this.props.enqueueSnackbar(`${this.props.room.players[from].symbol} has been replaced with ${this.props.room.players[to].symbol} on board ${board + 1}!`, { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar(`${this.props.room.players[from].symbol} has been replaced with ${this.props.room.players[to].symbol} on board ${board + 1}!`, { autoHideDuration: 3000 });
             this.addToLog(`${this.props.room.players[from].symbol} has been replaced with ${this.props.room.players[to].symbol} on board ${board + 1}!`);
         });
 
         this.props.socket.on('bombUsed', () => {
-            this.props.enqueueSnackbar(`A bomb has been planted!`, { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar(`A bomb has been planted!`, { autoHideDuration: 3000 });
             this.addToLog(`A bomb has been planted!`);
         });
 
@@ -135,7 +137,7 @@ class Game extends React.Component {
             } else {
                 msg = `A curse has been applied!`;
             }
-            this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar(msg, { autoHideDuration: 3000 });
             this.addToLog(msg);
         });
     }
@@ -168,6 +170,17 @@ class Game extends React.Component {
                 </Button><br />
             </div>
         ) : null;
+        const newMsg = (this.state.hasNewMsg === 0) ? (
+            <Button style={{ 'marginLeft': '5px' }} variant="outlined" color="default" onClick={() => this.setState({ chatOpen: true, hasNewMsg: 0 })}>
+                    Open Chat
+            </Button>
+        ) : (
+            <Badge badgeContent={this.state.hasNewMsg} color="error">
+                <Button style={{ 'marginLeft': '5px' }} variant="contained" color="primary" onClick={() => this.setState({ chatOpen: true, hasNewMsg: 0 })}>
+                        Open Chat
+                </Button>
+            </Badge>
+        );
         return (
         <div className="game">
             <Dialog onClose={this.closeDialog} open={ this.state.dialogOpen }>
@@ -182,9 +195,7 @@ class Game extends React.Component {
             <Button style={{ 'marginRight': '5px' }} variant="outlined" onClick={() => this.setState({ logsOpen: true })}>
                     Check Logs
             </Button>
-            <Button style={{ 'marginLeft': '5px' }} variant={ (this.state.hasNewMsg) ? "contained" : "outlined"} color={ (this.state.hasNewMsg) ? "primary" : "default"} onClick={() => this.setState({ chatOpen: true })}>
-                    Open Chat
-            </Button>
+            { newMsg }
             </div>
             <br />
             <Inventory socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} addToLog={this.addToLog} />

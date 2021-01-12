@@ -37,7 +37,7 @@ class Inventory extends React.Component {
 
   pressPowerup(idx) {
     if (this.props.status !== 'turn') {
-        this.props.enqueueSnackbar('You can only use powerups during your turn!', { autoHideDuration: 2000 });
+        this.props.enqueueSnackbar('You can only use powerups during your turn!', { autoHideDuration: 3000 });
     } else {
         var pow = this.state.powerups[idx];
         this.setState({ powerups: this.state.powerups.filter((v, i) => i !== idx) });
@@ -46,11 +46,11 @@ class Inventory extends React.Component {
             this.props.socket.emit('usePowerup', this.props.room.roomId, pow, {});
             if (pow === 9) {
               this.setState({ isShieldActive: true });
-              this.props.enqueueSnackbar('Shield has been activated!', { autoHideDuration: 2000 });
+              this.props.enqueueSnackbar('Shield has been activated!', { autoHideDuration: 3000 });
               this.props.addToLog('Shield has been activated!');
             } else if (pow === 10) {
               this.setState({ isDeflectActive: true })
-              this.props.enqueueSnackbar('Deflect has been activated!', { autoHideDuration: 2000 });
+              this.props.enqueueSnackbar('Deflect has been activated!', { autoHideDuration: 3000 });
               this.props.addToLog('Deflect has been activated!');
             }
         } else {
@@ -84,33 +84,33 @@ class Inventory extends React.Component {
             return;
         }
         if (pow === 4) {
-            this.props.enqueueSnackbar('A bomb was on this tile! Your symbol has exploded :(', { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar('A bomb was on this tile! Your symbol has exploded :(', { autoHideDuration: 3000 });
             this.props.addToLog('A bomb was on this tile! Your symbol has exploded :(');
             return;
         }
 
         if (pow === 5) {
-            this.props.enqueueSnackbar('A joker was hiding on this tile! Your symbol was placed randomly :p', { autoHideDuration: 2000 });
+            this.props.enqueueSnackbar('A joker was hiding on this tile! Your symbol was placed randomly :p', { autoHideDuration: 3000 });
             this.props.addToLog('A joker was hiding on this tile! Your symbol was placed randomly :p');
             return;
         }
-        this.props.enqueueSnackbar('You got a powerup!', { autoHideDuration: 2000 });
+        this.props.enqueueSnackbar('You got a powerup!', { autoHideDuration: 3000 });
         this.props.addToLog('You got a powerup!');
         this.setState({ powerups: this.state.powerups.concat([pow]) });
     });
 
     this.props.socket.on('bombed', (user) => {
-        this.props.enqueueSnackbar(`${user} got bombed! Their symbol is gone :(`, { autoHideDuration: 2000 });
+        this.props.enqueueSnackbar(`${user} got bombed! Their symbol is gone :(`, { autoHideDuration: 3000 });
         this.props.addToLog(`${user} got bombed! Their symbol is gone :(`);
     });
 
     this.props.socket.on('joked', (user) => {
-        this.props.enqueueSnackbar(`${user} encountered the joker! Their symbol was placed randomly :p`, { autoHideDuration: 2000 });
+        this.props.enqueueSnackbar(`${user} encountered the joker! Their symbol was placed randomly :p`, { autoHideDuration: 3000 });
         this.props.addToLog(`${user} encountered the joker! Their symbol was placed randomly :p`);
     })
 
     this.props.socket.on('cursed', (user, by) => {
-        this.props.enqueueSnackbar(`${user} was cursed by ${ this.props.room.players[by].username }!`, { autoHideDuration: 2000 });
+        this.props.enqueueSnackbar(`${user} was cursed by ${ this.props.room.players[by].username }!`, { autoHideDuration: 3000 });
         this.props.addToLog(`${user} was cursed by ${ this.props.room.players[by].username }!`);
     });
 
@@ -125,7 +125,7 @@ class Inventory extends React.Component {
         } else {
           msg = `A "${POWERS[res]}" powerup is hiding underneath the chosen box.`;
         }
-        this.props.enqueueSnackbar(msg, { autoHideDuration: 2000 });
+        this.props.enqueueSnackbar(msg, { autoHideDuration: 3000 });
         this.props.addToLog(msg);
     });
 
