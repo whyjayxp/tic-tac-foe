@@ -7,9 +7,10 @@ class ChatRoom extends React.Component {
   constructor(props) {
     super(props);
     this.sendMessage = this.sendMessage.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
     this.state = {
       msgs: [],
-      msg: ""
+      msg: "",
     };
   }
 
@@ -26,10 +27,19 @@ class ChatRoom extends React.Component {
     this.setState({ msg: e.target.value });
   }
 
+  scrollToBottom() {
+    if (!this.messageList) return;
+    const scrollHeight = this.messageList.scrollHeight;
+    const height = this.messageList.clientHeight;
+    const maxScrollTop = scrollHeight - height;
+    this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+  }
+
   componentDidMount() {
     this.props.socket.on('newMessage', (msg) => {
       this.props.showNewMsg();
       this.addToChat(msg);
+      this.scrollToBottom();
     });
   }
 
@@ -42,9 +52,9 @@ class ChatRoom extends React.Component {
     <li key={idx}>{msg}</li>
     );
     return (
-      <Dialog maxWidth={false} onClose={this.props.onClose} open={ this.props.open }>
+      <Dialog maxWidth={false} onEnter={this.scrollToBottom} onClose={this.props.onClose} open={ this.props.open }>
         <div id="logs">
-        <div style={{ 'maxHeight': '50vh', 'overflowY': 'auto', 'marginBottom': '10px' }}>
+        <div style={{ 'maxHeight': '50vh', 'overflowY': 'auto', 'marginBottom': '10px' }} ref={(div) => { this.messageList = div; } }>
             <ul className="logList">{ chatItems }</ul>
         </div>
         <form className="chatRoom" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
