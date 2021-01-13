@@ -27,7 +27,8 @@ class Game extends React.Component {
             logs: [],
             logsOpen: false,
             hasNewMsg: 0,
-            chatOpen: false
+            chatOpen: false,
+            lightUp: null
         };
       }
 
@@ -69,8 +70,9 @@ class Game extends React.Component {
             this.props.joinRoom(roomId, players, isHost);
           });
 
-        this.props.socket.on('newGameState', (roomId, gameState) => {
+        this.props.socket.on('newGameState', (roomId, gameState, info) => {
           var room = {roomId, players: gameState.players, boards: gameState.boards, turn: gameState.turn};
+          this.setState({ lightUp: info });
           this.props.updateRoom(room);
         });
 
@@ -85,11 +87,14 @@ class Game extends React.Component {
             this.addToLog(`You need to clear ${numBoards} ${board} to win the game!`);
         });
 
-        this.props.socket.on('boardOver', (winner, prevBoard) => {
+        this.props.socket.on('boardOver', (winner, boardNum, prevBoard) => {
             if (winner > -1) {
                 this.setState({ winner: this.props.room.players[winner], prevBoard: prevBoard, dialogOpen: true });
-                this.addToLog(`${this.props.room.players[winner].username} cleared a board!`);
+                this.addToLog(`${this.props.room.players[winner].username} cleared board ${ boardNum + 1 }!`);
                 // this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 3000 });
+            } else {
+                this.props.enqueueSnackbar(`Board ${ boardNum + 1 } was cleared without any winner.`, { autoHideDuration: 3000 });
+                this.addToLog(`Board ${ boardNum + 1 } was cleared without any winner.`);
             }
         });
 
@@ -225,7 +230,7 @@ class Game extends React.Component {
             <br />
             <Inventory socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} addToLog={this.addToLog} />
             {gameEnded}
-            <Boards socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
+            <Boards socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} lightUp={this.state.lightUp} />
         </div>
         );
     }

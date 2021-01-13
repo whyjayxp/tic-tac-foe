@@ -12,7 +12,7 @@ class Boards extends React.Component {
     // const symbols = this.props.room.players.map(player => player.symbol);
     const boards = this.props.room.boards.map((board, idx) =>
     <span key={idx}>
-      <Board display="flex" justify-content="center" idx={idx} socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
+      <Board display="flex" justify-content="center" idx={idx} socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} lightUp={this.props.lightUp} />
     </span>
     );
     return (

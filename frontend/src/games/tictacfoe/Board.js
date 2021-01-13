@@ -63,7 +63,8 @@ class Board extends React.Component {
         const symbols = this.props.room.players.map(player => player.symbol);
         const row = Math.floor(i / 3);
         const col = i % 3;
-        return <Square isWin={isWin}
+        const isLightUp = this.props.lightUp !== null && this.props.lightUp.board === this.props.idx && this.props.lightUp.row === row && this.props.lightUp.col === col;
+        return <Square isWin={isWin} isLightUp={isLightUp}
             value={symbols[board[row][col]]}
             onClick={() => this.handleClick(i)}
         />;

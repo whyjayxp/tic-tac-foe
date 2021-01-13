@@ -19,16 +19,16 @@ module.exports = (io, socket) => {
 
     socket.on('chooseGrid', (roomId, props) => {
         var room = rooms[roomId];
-        var result = room.chooseGrid(props);
+        var result = room.chooseGrid(props); // props: {board, row, col}
         // result:{ power, winner, hasEnded, cursedBy, gameOver, prevBoard }
         if (result.gameOver) {
-            io.to(roomId).emit('newGameState', roomId, room.getGameState());
+            io.to(roomId).emit('newGameState', roomId, room.getGameState(), null);
             io.to(roomId).emit('gameOver', result.winner);
             return;
         }
         if (result.hasEnded) {
             // result.prevBoard contains the prev board to display winning line
-            io.to(roomId).emit('boardOver', result.winner, result.prevBoard); // use for broadcast & update view
+            io.to(roomId).emit('boardOver', result.winner, props.board, result.prevBoard); // use for broadcast & update view
         }
         if (result.cursedBy > -1) {
             io.to(roomId).emit('cursed', socket.player.username, result.cursedBy);
@@ -40,7 +40,7 @@ module.exports = (io, socket) => {
             socket.to(roomId).emit('joked', socket.player.username);
         }
         var nextPlayer = room.nextTurn();
-        io.to(roomId).emit('newGameState', roomId, room.getGameState());
+        io.to(roomId).emit('newGameState', roomId, room.getGameState(), (result.hasEnded) ? null : props);
         io.to(nextPlayer).emit('itsYourTurn');
     });
 
@@ -65,11 +65,11 @@ module.exports = (io, socket) => {
             } else if (res.shield) {
                 io.to(room.players[res.to].socket.id).emit('shieldUsed');
             }
-            io.to(roomId).emit('newGameState', roomId, room.getGameState());
+            io.to(roomId).emit('newGameState', roomId, room.getGameState(), null);
         } else if (pow == 1) {
             var symbol = room.removePiece(props);
             io.to(roomId).emit('removeUsed', { board: props.board, symbol }); // can use to broadcast & update view
-            io.to(roomId).emit('newGameState', roomId, room.getGameState());
+            io.to(roomId).emit('newGameState', roomId, room.getGameState(), props);
         } else if (pow == 2) {
             room.placeBomb(props);
             io.to(roomId).emit('bombUsed'); // can use to broadcast
@@ -91,21 +91,23 @@ module.exports = (io, socket) => {
             } else if (res.shield) {
                 io.to(room.players[res.to].socket.id).emit('shieldUsed');
             }
-            io.to(roomId).emit('newGameState', roomId, room.getGameState());
+            io.to(roomId).emit('newGameState', roomId, room.getGameState(), null);
         } else if (pow == 7) {
             // result = { from, to, gameOver, winner, hasEnded, prevBoard }
             var result = room.randomizeReplacePiece(props);
             if (result === null) return;
             io.to(roomId).emit('randomizeReplaceUsed', { board: props.board, from: result.from, to: result.to });
             if (result.gameOver) {
-                io.to(roomId).emit('newGameState', roomId, room.getGameState());
+                io.to(roomId).emit('newGameState', roomId, room.getGameState(), null);
                 io.to(roomId).emit('gameOver', result.winner);
                 return;
             }
             if (result.hasEnded) {
-                io.to(roomId).emit('boardOver', result.winner, result.prevBoard); // use for broadcast & update view
+                io.to(roomId).emit('newGameState', roomId, room.getGameState(), null);
+                io.to(roomId).emit('boardOver', result.winner, props.board, result.prevBoard); // use for broadcast & update view
+                return;
             }
-            io.to(roomId).emit('newGameState', roomId, room.getGameState());
+            io.to(roomId).emit('newGameState', roomId, room.getGameState(), props);
         } else if (pow == 8) {
             var power = room.getPowerAt(props);
             socket.emit('unboxResult', power);
