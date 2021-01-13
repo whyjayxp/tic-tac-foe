@@ -53,7 +53,7 @@ module.exports = server => {
                             io.to(nextPlayer).emit('itsYourTurn');
                         }
                         socket.to(roomId).emit('disconnectedPlayer', socket.player.username);
-                        socket.to(roomId).emit('newGameState', roomId, room.getGameState());
+                        socket.to(roomId).emit('newGameState', roomId, room.getGameState(), null);
                     }
                 });
             }
