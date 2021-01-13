@@ -11,8 +11,9 @@ class Changelog extends React.Component {
   render() {
     return (
         <div id="changelog" onClick={() => (this.state.showItems) ? this.setState({showItems: false}) : this.setState({showItems: true})}>
-          <b>Changelog (click to show/hide)</b>
+          <b>Changelog (click to show/hide)</b><br />
           <ul className="logList" style={{ display: (this.state.showItems) ? 'block' : 'none' }}>
+            <li><i>Why is there a changelog? Isn't this a 24 hour hackathon?</i> Yes, but being the perfectionist he is, Yue Jun decided to continue developing it into a more polished game to play with his friends (and now you can too).</li><br />
             <li><b>v1.6 (12 Jan 2021)</b>: Powerups can now be unselected. Option to return to the same waiting room. Improved Chat Room experience. Bug fixes.</li>
             <li><b>v1.5 (11 Jan 2021)</b>: New powerups: Unbox, Shield, Deflect. Host can now decide which powerups to include in the game.</li>
             <li><b>v1.4 (11 Jan 2021)</b>: Chat Room and Logs. Game can now go on even when a player disconnects.</li>
