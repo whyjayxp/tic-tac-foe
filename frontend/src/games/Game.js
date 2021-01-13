@@ -6,6 +6,7 @@ import Players from './Players'
 import Inventory from './Inventory'
 import Boards from './Boards'
 import Logs from './Logs'
+import Rules from '../waitingRoom/Rules'
 import ChatRoom from './ChatRoom'
 import StaticBoard from './tictacfoe/StaticBoard'
 import { withSnackbar } from 'notistack';
@@ -17,6 +18,7 @@ class Game extends React.Component {
         this.pressPlayAgain = this.pressPlayAgain.bind(this);
         this.closeDialog = this.closeDialog.bind(this);
         this.closeLogs = this.closeLogs.bind(this);
+        this.closeRules = this.closeRules.bind(this);
         this.closeChat = this.closeChat.bind(this);
         this.addToLog = this.addToLog.bind(this);
         this.showNewMsg = this.showNewMsg.bind(this);
@@ -26,6 +28,7 @@ class Game extends React.Component {
             winner: { },
             logs: [],
             logsOpen: false,
+            rulesOpen: false,
             hasNewMsg: 0,
             chatOpen: false,
             lightUp: null
@@ -47,6 +50,11 @@ class Game extends React.Component {
     closeLogs() {
         this.setState({ logsOpen: false });
     }
+
+    closeRules() {
+        this.setState({ rulesOpen: false });
+    }
+
 
     closeChat() {
         this.setState({ chatOpen: false, hasNewMsg: 0 });
@@ -219,11 +227,18 @@ class Game extends React.Component {
                     <center><i>Click outside to dismiss</i></center>
             </Dialog>
             <Logs onClose={this.closeLogs} open={ this.state.logsOpen } logs={ this.state.logs } />
+            <Dialog onClose={this.closeRules} open={ this.state.rulesOpen }>
+                    <Rules />
+                    <center><i>Click outside to dismiss</i></center>
+            </Dialog>
             <ChatRoom socket={this.props.socket} roomId={this.props.room.roomId} onClose={this.closeChat} open={ this.state.chatOpen } showNewMsg={ this.showNewMsg } />
             <Players socket={this.props.socket} room={this.props.room} status={this.props.status} updateStatus={this.props.updateStatus} />
             <div>
             <Button style={{ 'marginRight': '5px' }} variant="outlined" onClick={() => this.setState({ logsOpen: true })}>
-                    Check Logs
+                    Logs
+            </Button>
+            <Button style={{ 'marginRight': '5px', 'marginLeft': '5px' }} variant="outlined" onClick={() => this.setState({ rulesOpen: true })}>
+                    Rules
             </Button>
             { newMsg }
             </div>
