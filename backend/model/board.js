@@ -97,6 +97,8 @@ module.exports = class Board {
             } else {
                 this.symbols[Math.floor(box / 3)][box % 3] = cursedBy;
             }
+            result.jokerRow = Math.floor(box / 3);
+            result.jokerCol = Math.floor(box % 3);
         } else { // boring box
             if (cursedBy == -1) {
                 this.symbols[i][j] = val;

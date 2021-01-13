@@ -38,6 +38,7 @@ module.exports = (io, socket) => {
             socket.to(roomId).emit('bombed', socket.player.username);
         } else if (result.power === 5) {
             socket.to(roomId).emit('joked', socket.player.username);
+            props = { board: props.board, row: result.jokerRow, col: result.jokerCol };
         }
         var nextPlayer = room.nextTurn();
         io.to(roomId).emit('newGameState', roomId, room.getGameState(), (result.hasEnded) ? null : props);
