@@ -55,6 +55,7 @@ module.exports = class Board {
     }
 
     randomizePowers(powersToUse = POWER_PROB) {
+        if (powersToUse.filter(x => x).length === 0) return;
         var buckets = [];
         for (var i = 0; i < this.row * this.col; i++) {
             buckets.push(i);
@@ -153,7 +154,9 @@ module.exports = class Board {
         }
         var result = {};
         result.from = this.symbols[i][j];
-        bucket.splice(this.symbols[i][j], 1); // remove existing symbol from the randomizer
+        bucket = bucket.filter(x => x !== this.symbols[i][j]);
+        // bucket.splice(this.symbols[i][j], 1); // remove existing symbol from the randomizer
+        if (bucket.length === 0) return null;
         var symbol = this.getRandomFromBucket(bucket);
         this.symbols[i][j] = symbol;
         result.to = symbol;

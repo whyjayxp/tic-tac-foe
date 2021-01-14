@@ -187,7 +187,7 @@ module.exports = class Room {
     }
 
     randomizeReplacePiece(props) {
-        var players = this.players.map((x,i) => i);
+        var players = this.players.map((x,i) => i).filter(x => this.players[x].online);
         //  result { from, to, winner, hasEnded }
         var result = this.boards[props.board].randomizeReplaceBox(props.row, props.col, players);
         if (result === null) return null;
