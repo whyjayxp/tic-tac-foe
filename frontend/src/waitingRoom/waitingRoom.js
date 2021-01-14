@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
+import Badge from '@material-ui/core/Badge';
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
@@ -10,6 +11,7 @@ import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { withSnackbar } from 'notistack';
 import Rules from './Rules'
+import ChatRoom from '../games/ChatRoom'
 
 const MAX_BOARDS = 15;
 
@@ -18,7 +20,11 @@ class Waiting extends React.Component {
     super(props);
     this.pressStart = this.pressStart.bind(this);
     this.pressLeave = this.pressLeave.bind(this);
+    this.closeChat = this.closeChat.bind(this);
+    this.showNewMsg = this.showNewMsg.bind(this);
     this.state = {
+      hasNewMsg: 0,
+      chatOpen: false,
       concurBoards: 2,
       boardsToWin: 3,
       emojiMode: false,
@@ -27,25 +33,40 @@ class Waiting extends React.Component {
     };
   }
 
+  closeChat() {
+    this.setState({ chatOpen: false, hasNewMsg: 0 });
+  }
+
+  showNewMsg() {
+    if (this.state.chatOpen) return;
+    this.setState({ hasNewMsg: this.state.hasNewMsg + 1 });
+  }
+
   handleNumBoardsChange = (event) => {
-      this.setState({ concurBoards: event.target.value })
+      this.setState({ concurBoards: event.target.value });
+      this.props.socket.emit('hostUpdate', this.props.room.roomId, { concurBoards: event.target.value });
   };
 
   handleNumWinningBoardsChange = (event) => {
-      this.setState({ boardsToWin: event.target.value })
+      this.setState({ boardsToWin: event.target.value });
+      this.props.socket.emit('hostUpdate', this.props.room.roomId, { boardsToWin: event.target.value });
   };
 
   handleEmojiModeChange = (event) => {
-    this.setState({ emojiMode: event.target.checked })
+    this.setState({ emojiMode: event.target.checked });
+    this.props.socket.emit('hostUpdate', this.props.room.roomId, { emojiMode: event.target.checked });
   }
 
   handleStartingPowerupChange = (event) => {
-    this.setState({ startingPowerup: event.target.checked })
+    this.setState({ startingPowerup: event.target.checked });
+    this.props.socket.emit('hostUpdate', this.props.room.roomId, { startingPowerup: event.target.checked });
   }
 
   handlePowerupChange = (event, i) => {
     // handle both skips together
-    this.setState({ powersToUse: this.state.powersToUse.map((x,j) => (i === j || (i === 0 && j === 6)) ? event.target.checked : x) })
+    var newArr = this.state.powersToUse.map((x,j) => (i === j || (i === 0 && j === 6)) ? event.target.checked : x);
+    this.setState({ powersToUse: newArr });
+    this.props.socket.emit('hostUpdate', this.props.room.roomId, { powersToUse: newArr });
   }
 
   pressStart() {
@@ -76,12 +97,17 @@ class Waiting extends React.Component {
     this.props.socket.on('startGame', (roomId, gameState) => {
       this.props.startGame(roomId, gameState);
     });
+
+    this.props.socket.on('hostUpdated', (settings) => {
+      this.setState(settings);
+    });
   }
 
   componentWillUnmount() {
     this.props.socket.off('youAreTheHost');
     this.props.socket.off('updatePlayers');
     this.props.socket.off('startGame');
+    this.props.socket.off('hostUpdated');
   }
 
   render() {
@@ -92,15 +118,27 @@ class Waiting extends React.Component {
     const listPlayers = this.props.room.players.map((player, i) =>
       <li key={player.username}>{player.username} { (i === 0) ? "(Host)" : ""}</li>
     );
-    const hostFeatures = this.props.room.isHost ? (
+    const newMsg = (this.state.hasNewMsg === 0) ? (
+      <Button style={{ 'marginLeft': '5px' }} variant="outlined" color="default" onClick={() => this.setState({ chatOpen: true, hasNewMsg: 0 })}>
+              Open Chat
+      </Button>
+    ) : (
+      <Badge badgeContent={this.state.hasNewMsg} color="error">
+          <Button style={{ 'marginLeft': '5px' }} variant="contained" color="primary" onClick={() => this.setState({ chatOpen: true, hasNewMsg: 0 })}>
+                  Open Chat
+          </Button>
+      </Badge>
+    );
+    const hostFeatures = (
       <form className="waiting" noValidate autoComplete="off">
           {/* <FormControl className={classes.formControl}> */}
-          <b>Host Settings</b><br />
+          <b>Host Settings</b><span><i>{ (!this.props.room.isHost) ? "Only the host can modify these settings!" : "" }</i></span><br />
           <FormControl>
             Concurrent Boards: <InputLabel id="demo-simple-select-label" />
             <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
+            disabled={ !this.props.room.isHost }
             value={this.state.concurBoards}
             onChange={this.handleNumBoardsChange}>
             {boardsMenuItems}
@@ -112,6 +150,7 @@ class Waiting extends React.Component {
             <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
+            disabled={ !this.props.room.isHost }
             value={this.state.boardsToWin}
             onChange={this.handleNumWinningBoardsChange}>
             {boardsMenuItems}
@@ -123,6 +162,7 @@ class Waiting extends React.Component {
             control={
               <Switch
                 checked={this.state.emojiMode}
+                disabled={ !this.props.room.isHost }
                 onChange={this.handleEmojiModeChange}
                 color="default"
                 name="emoji"
@@ -137,6 +177,7 @@ class Waiting extends React.Component {
             control={
               <Switch
                 checked={this.state.startingPowerup}
+                disabled={ !this.props.room.isHost }
                 onChange={this.handleStartingPowerupChange}
                 color="default"
                 name="emoji"
@@ -157,7 +198,7 @@ class Waiting extends React.Component {
                 style={{ margin: '5px' }}
                 checked={this.state.powersToUse[i]}
                 onChange={(e) => this.handlePowerupChange(e, i)}
-                control={<Checkbox color="default" />}
+                control={<Checkbox color="default" disabled={ !this.props.room.isHost } />}
                 label={<img src={`/images/${i}.svg`} alt={"home"} height={'20'} />}
                 labelPlacement="bottom" />
               ))
@@ -165,19 +206,21 @@ class Waiting extends React.Component {
               </FormGroup>
             </FormControl>
           <br /><br />
-        <Button variant="outlined" onClick={this.pressStart}>
+        <Button variant="outlined" onClick={this.pressStart} disabled={ !this.props.room.isHost }>
             Start Game
         </Button>
     </form>
-    ) : null;
+    );
     return (
       <div>
+        <ChatRoom socket={this.props.socket} roomId={this.props.room.roomId} onClose={this.closeChat} open={ this.state.chatOpen } showNewMsg={ this.showNewMsg } />
         <div id="roomId">{ this.props.room.roomId }</div>
         <ul id="playerList">{ listPlayers }</ul>
         <div id="leaveRoomButton">
-        <Button variant="outlined" onClick={this.pressLeave}>
+        <Button style={{ 'marginRight': '5px' }} variant="outlined" onClick={this.pressLeave}>
             Leave Room
         </Button>
+        { newMsg }
         </div>
         { hostFeatures }
         <Rules />

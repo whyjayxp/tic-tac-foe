@@ -45,6 +45,13 @@ module.exports = (io, socket) => {
             socket.room = roomId;
             socket.emit('successJoiningRoom', roomId, room.getPlayers());
             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers());
+            socket.emit('hostUpdated', {
+                concurBoards: room.maxConcurBoards,
+                boardsToWin: room.numBoardsToWin,
+                emojiMode: room.emojiMode,
+                startingPowerup: room.startingPowerup,
+                powersToUse: room.powersToUse
+            });
         }
     });
 
@@ -60,6 +67,17 @@ module.exports = (io, socket) => {
             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
             io.to(room.getHost()).emit('youAreTheHost');
         }
+    });
+
+    socket.on('hostUpdate', (roomId, settings) => {
+        var room = rooms[roomId];
+        if (room.players[0].socket !== socket) return; // only host can change! user probably modified client-side
+        socket.to(roomId).emit('hostUpdated', settings);
+        if (settings.hasOwnProperty('concurBoards')) room.setConcurBoards(settings.concurBoards);
+        if (settings.hasOwnProperty('boardsToWin')) room.setNumBoardsToWin(settings.boardsToWin);
+        if (settings.hasOwnProperty('emojiMode')) room.setEmojiMode(settings.emojiMode);
+        if (settings.hasOwnProperty('startingPowerup')) room.setStartingPowerup(settings.startingPowerup);
+        if (settings.hasOwnProperty('powersToUse')) room.setPowersToUse(settings.powersToUse);
     });
 
     socket.on('playAgain', (roomId) => {

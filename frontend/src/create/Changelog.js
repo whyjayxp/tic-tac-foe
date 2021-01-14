@@ -14,6 +14,7 @@ class Changelog extends React.Component {
           <b>Changelog (click to show/hide)</b><br />
           <ul className="logList" style={{ display: (this.state.showItems) ? 'block' : 'none' }}>
             <li><i>Why is there a changelog? Isn't this a 24 hour hackathon?</i> Yes, but being the perfectionist he is, Yue Jun decided to continue developing it into a more polished game to play with his friends (and now you can too).</li><br />
+            <li><b>v1.9 (14 Jan 2021)</b>: Waiting Room enhancements. Now everyone can see the room settings and chat.</li>
             <li><b>v1.8 (14 Jan 2021)</b>: Minor bug fixes - Randomized Replace no longer includes offline players (and will have no effect if there is no other symbol to change to). Prevent undefined powerups from showing if host unselects all powerups.</li>
             <li><b>v1.7 (13 Jan 2021)</b>: Add rules to game page for easier reference. Board now highlights the box that was previously modified.</li>
             <li><b>v1.6 (12 Jan 2021)</b>: Powerups can now be unselected. Option to return to the same waiting room. Improved Chat Room experience. Bug fixes.</li>

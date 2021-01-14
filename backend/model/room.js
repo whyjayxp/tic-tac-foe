@@ -2,7 +2,7 @@ const Board = require('../model/board.js');
 
 // default values
 const MAX_PLAYERS_DEFAULT = 9;
-const MAX_BOARDS_DEFAULT = 3;
+const MAX_BOARDS_DEFAULT = 2;
 const NO_OF_BOARDS_TO_WIN_DEFAULT = 3;
 const BOARD_SIZE_DEFAULT = 3;
 const SYMBOLS = ['X', 'O', '@', '*', '&', '#', '$', '%', 'Z']
@@ -25,6 +25,8 @@ module.exports = class Room {
         this.maxPlayers = MAX_PLAYERS_DEFAULT;
         this.maxConcurBoards = MAX_BOARDS_DEFAULT;
         this.numBoardsToWin = NO_OF_BOARDS_TO_WIN_DEFAULT;
+        this.emojiMode = false;
+        this.startingPowerup = false;
         this.boardSize = BOARD_SIZE_DEFAULT;
         this.powersToUse = new Array(11).fill(true);
 
@@ -70,6 +72,14 @@ module.exports = class Room {
 
     setNumBoardsToWin(num) {
         this.numBoardsToWin = num;
+    }
+
+    setEmojiMode(yesNo) {
+        this.emojiMode = yesNo;
+    }
+
+    setStartingPowerup(yesNo) {
+        this.startingPowerup = yesNo;
     }
 
     setPowersToUse(arr) {

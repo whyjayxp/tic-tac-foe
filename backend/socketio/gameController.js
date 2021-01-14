@@ -4,8 +4,11 @@ const Player = require('../model/player.js');
 module.exports = (io, socket) => {
     socket.on('startGame', (roomId, concurrBoards, numBoardsToWin, emojiMode, startingPowerup, powersToUse) => {
         var room = rooms[roomId];
+        if (room.players[0].socket !== socket) return; // only host can change! user probably modified client-side
         room.setConcurBoards(concurrBoards);
         room.setNumBoardsToWin(numBoardsToWin);
+        room.setEmojiMode(emojiMode);
+        room.setStartingPowerup(startingPowerup);
         room.setPowersToUse(powersToUse);
         var firstPlayer = room.startGame(emojiMode);
         io.to(roomId).emit('startGame', roomId, room.getGameState());
