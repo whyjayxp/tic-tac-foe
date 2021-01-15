@@ -58,7 +58,7 @@ class ChatRoom extends React.Component {
             <ul className="logList">{ chatItems }</ul>
         </div>
         <form className="chatRoom" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-          <TextField fullWidth inputProps={{ maxLength: 50 }} size="small" label="Message" variant="filled" value={this.state.msg} onChange={(e) => this._updateMessage(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.sendMessage() }}} />
+          <TextField fullWidth inputProps={{ maxLength: 280 }} size="small" label="Message" variant="filled" value={this.state.msg} onChange={(e) => this._updateMessage(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.sendMessage() }}} />
           <Button className="home-button" variant="outlined" onClick={this.sendMessage}>
                 Send
           </Button>

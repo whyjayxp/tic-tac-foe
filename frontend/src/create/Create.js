@@ -80,7 +80,7 @@ class Create extends React.Component {
             <h1>Welcome To Tic Tac Foe!</h1>
         </div><br />
         <form className="create" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-          <TextField inputProps={{ maxLength: 6 }} size="small" label="User Name" variant="filled" value={this.state.username} onChange={(e) => this._updateUsername(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.createRoom() }}} />
+          <TextField inputProps={{ maxLength: 10 }} size="small" label="User Name" variant="filled" value={this.state.username} onChange={(e) => this._updateUsername(e)} onKeyDown={(e) => {if (e.key === "Enter") { this.createRoom() }}} />
           <Button style={{width:'150px'}} className="home-button" variant="outlined" onClick={this.createRoom}>
                 Create Room
           </Button>
