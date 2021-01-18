@@ -20,8 +20,8 @@ const NUM_OF_POWERS = 6;
 
 module.exports = class Board {
     constructor(row, col, powersToUse) {
-        this.symbols = this.createBoard(row, col);
-        this.powers = this.createBoard(row, col);
+        this.symbols = this.createBoard(row, col, '');
+        this.powers = this.createBoard(row, col, -1);
         this.row = row;
         this.col = col;
         this.randomizePowers(powersToUse);
@@ -81,7 +81,7 @@ module.exports = class Board {
         result.power = power;
         if (power == 0 || power == 1 || power == 2 || power == 3) {
             //this.players[this.status].addPowerup(power);
-            if (cursedBy == -1) {
+            if (cursedBy == '') {
                 this.symbols[i][j] = val;
             } else {
                 this.symbols[i][j] = cursedBy;
@@ -93,7 +93,7 @@ module.exports = class Board {
             // joker (jump to random box)
             var buckets = this.getEmptyBoxes();
             var box = this.getRandomFromBucket(buckets);
-            if (cursedBy == -1) {
+            if (cursedBy == '') {
                 this.symbols[Math.floor(box / 3)][box % 3] = val;
             } else {
                 this.symbols[Math.floor(box / 3)][box % 3] = cursedBy;
@@ -101,7 +101,7 @@ module.exports = class Board {
             result.jokerRow = Math.floor(box / 3);
             result.jokerCol = Math.floor(box % 3);
         } else { // boring box
-            if (cursedBy == -1) {
+            if (cursedBy == '') {
                 this.symbols[i][j] = val;
             } else {
                 this.symbols[i][j] = cursedBy;
@@ -109,7 +109,7 @@ module.exports = class Board {
         }
         this.powers[i][j] = -1; // remove the power
         result.winner = this.getWinner();
-        if (result.winner != -1) {
+        if (result.winner !== '') {
             result.hasEnded = true;
         } else {
             result.hasEnded = this.hasBoardEnded();
@@ -121,7 +121,7 @@ module.exports = class Board {
         var boxes = [];
         for (var i = 0; i < this.row; i++) {
             for (var j = 0; j < this.col; j++) {
-                if (this.symbols[i][j] == -1) {
+                if (this.symbols[i][j] == '') {
                     boxes.push(i * 3 + j);
                 }
             }
@@ -131,7 +131,7 @@ module.exports = class Board {
 
     clearBox(i, j) {
         var symbol = this.symbols[i][j];
-        this.symbols[i][j] = -1;
+        this.symbols[i][j] = '';
         return symbol;
     }
 
@@ -149,7 +149,7 @@ module.exports = class Board {
     }
 
     randomizeReplaceBox(i, j, bucket) {
-        if (this.symbols[i][j] === -1) { // box was empty, powerup wasted
+        if (this.symbols[i][j] === '') { // box was empty, powerup wasted
             return null;
         }
         var result = {};
@@ -161,7 +161,7 @@ module.exports = class Board {
         this.symbols[i][j] = symbol;
         result.to = symbol;
         result.winner = this.getWinner();
-        if (result.winner != -1) {
+        if (result.winner != '') {
             result.hasEnded = true;
         } else {
             result.hasEnded = this.hasBoardEnded();
@@ -175,18 +175,18 @@ module.exports = class Board {
             var toCheck = CHECKS[i];
             if (this.symbols[toCheck[0][0]][toCheck[0][1]] == this.symbols[toCheck[1][0]][toCheck[1][1]] &&
                 this.symbols[toCheck[1][0]][toCheck[1][1]] == this.symbols[toCheck[2][0]][toCheck[2][1]]) {
-                    if (this.symbols[toCheck[0][0]][toCheck[0][1]] != -1) {
+                    if (this.symbols[toCheck[0][0]][toCheck[0][1]] !== '') {
                         return this.symbols[toCheck[0][0]][toCheck[0][1]];
                     }
                 }
         }
-        return -1;
+        return '';
     }
 
     hasBoardEnded() {
         for (var i = 0; i < this.row; i++) {
             for (var j = 0; j < this.col; j++) {
-                if (this.symbols[i][j] == -1) {
+                if (this.symbols[i][j] == '') {
                     return false;
                 }
             }

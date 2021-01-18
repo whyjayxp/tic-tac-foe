@@ -16,26 +16,29 @@ class StaticBoard extends React.Component {
 
     renderSquare(i, isWin) {
         var board = this.props.grid;
-        const symbols = this.props.room.players.map(player => player.symbol);
+        // const symbols = this.props.room.players.map(player => player.symbol);
         const row = Math.floor(i / 3);
         const col = i % 3;
         return <Square isWin={isWin}
-            value={symbols[board[row][col]]} onClick={this.props.closeDialog}
+            value={board[row][col]} onClick={this.props.closeDialog}
         />;
     }
 
     getWinningLine() {
         var board = this.props.grid;
+        var winLine = [];
         for (var i = 0; i < CHECKS.length; i++) {
             var toCheck = CHECKS[i];
             if (board[toCheck[0][0]][toCheck[0][1]] === board[toCheck[1][0]][toCheck[1][1]] &&
                 board[toCheck[1][0]][toCheck[1][1]] === board[toCheck[2][0]][toCheck[2][1]]) {
-                    if (board[toCheck[0][0]][toCheck[0][1]] !== -1) {
-                        return [toCheck[0][0] * 3 + toCheck[0][1], toCheck[1][0] * 3 + toCheck[1][1], toCheck[2][0] * 3 + toCheck[2][1]];
+                    if (board[toCheck[0][0]][toCheck[0][1]] !== '') {
+                        winLine.push(toCheck[0][0] * 3 + toCheck[0][1]);
+                        winLine.push(toCheck[1][0] * 3 + toCheck[1][1]);
+                        winLine.push(toCheck[2][0] * 3 + toCheck[2][1]);
                     }
                 }
         }
-        return [];
+        return winLine;
     }
 
     render() {

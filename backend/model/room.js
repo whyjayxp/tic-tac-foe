@@ -5,7 +5,7 @@ const MAX_PLAYERS_DEFAULT = 9;
 const MAX_BOARDS_DEFAULT = 2;
 const NO_OF_BOARDS_TO_WIN_DEFAULT = 3;
 const BOARD_SIZE_DEFAULT = 3;
-const SYMBOLS = ['X', 'O', '@', '*', '&', '#', '$', '%', 'Z']
+const SYMBOLS = ['X', 'O', '@', '~', '&', '#', '$', '%', 'Z']
 const EMOJIS = ['🐶', '🐱', '🐷', '🐹', '🐰', '🦊', '🐻', '🐼', '🐯']
 
 // room status, 0 and above indicate the respective user's turn
@@ -110,17 +110,18 @@ module.exports = class Room {
         var result;
         if (thisPlayer.checkCurse()) {
             var cursedBy = thisPlayer.removeCurse();
-            result = this.boards[board].fillBoxWith(row, col, this.status, cursedBy);
+            result = this.boards[board].fillBoxWith(row, col, this.players[this.status].symbol, this.players[cursedBy].symbol);
             result.cursedBy = cursedBy;
         } else {
-            result = this.boards[board].fillBoxWith(row, col, this.status, -1);
+            result = this.boards[board].fillBoxWith(row, col, this.players[this.status].symbol, '');
             result.cursedBy = -1;
         }
         // result: { power, winner, hasEnded, cursedBy }
         result.gameOver = false;
         if (result.hasEnded) {
-            if (result.winner != -1) {
-                var wins = this.players[result.winner].addWin();
+            if (result.winner !== '') {
+                this.players.filter(x => x.symbol === result.winner).forEach(x => x.addWin());
+                var wins = this.players.filter(x => x.symbol === result.winner)[0].wins;
                 if (wins >= this.numBoardsToWin) {
                     this.status = GAMEOVER;
                     result.gameOver = true;
@@ -197,14 +198,16 @@ module.exports = class Room {
     }
 
     randomizeReplacePiece(props) {
-        var players = this.players.map((x,i) => i).filter(x => this.players[x].online);
+        // var players = this.players.map((x,i) => i).filter(x => this.players[x].online);
+        var players = this.players.filter(x => x.online).map(x => x.symbol);
         //  result { from, to, winner, hasEnded }
         var result = this.boards[props.board].randomizeReplaceBox(props.row, props.col, players);
         if (result === null) return null;
         result.gameOver = false;
         if (result.hasEnded) {
-            if (result.winner != -1) {
-                var wins = this.players[result.winner].addWin();
+            if (result.winner !== '') {
+                this.players.filter(x => x.symbol === result.winner).forEach(x => x.addWin());
+                var wins = this.players.filter(x => x.symbol === result.winner)[0].wins;
                 if (wins >= this.numBoardsToWin) {
                     this.status = GAMEOVER;
                     result.gameOver = true;

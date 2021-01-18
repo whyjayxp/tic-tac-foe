@@ -25,7 +25,7 @@ class Game extends React.Component {
         this.state = {
             prevBoard: [],
             dialogOpen: false,
-            winner: { },
+            winner: null,
             logs: [],
             logsOpen: false,
             rulesOpen: false,
@@ -96,10 +96,9 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('boardOver', (winner, boardNum, prevBoard) => {
-            if (winner > -1) {
-                this.setState({ winner: this.props.room.players[winner], prevBoard: prevBoard, dialogOpen: true });
-                this.addToLog(`${this.props.room.players[winner].username} cleared board ${ boardNum + 1 }!`);
-                // this.props.enqueueSnackbar(`${this.props.room.players[winner].username} cleared the board!`, { autoHideDuration: 3000 });
+            if (winner !== '') {
+                this.setState({ winner: winner, prevBoard: prevBoard, dialogOpen: true });
+                this.addToLog(`${winner} won board ${ boardNum + 1 }!`);
             } else {
                 this.props.enqueueSnackbar(`Board ${ boardNum + 1 } was cleared without any winner.`, { autoHideDuration: 3000 });
                 this.addToLog(`Board ${ boardNum + 1 } was cleared without any winner.`);
@@ -107,7 +106,7 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('gameOver', (winner) => {
-            this.setState({ winner: this.props.room.players[winner], prevBoard: [], dialogOpen: false });
+            this.setState({ winner: winner, prevBoard: [], dialogOpen: false });
             this.props.updateStatus('gameover');
             // this.props.resetRoom(this.props.room.roomId);
             // window.location.reload();
@@ -142,13 +141,13 @@ class Game extends React.Component {
         });
 
         this.props.socket.on('removeUsed', ({ board, symbol }) => {
-            this.props.enqueueSnackbar(`${this.props.room.players[symbol].symbol} has been removed from board ${board + 1}!`, { autoHideDuration: 3000 });
-            this.addToLog(`${this.props.room.players[symbol].symbol} has been removed from board ${board + 1}!`);
+            this.props.enqueueSnackbar(`${symbol} has been removed from board ${board + 1}!`, { autoHideDuration: 3000 });
+            this.addToLog(`${symbol} has been removed from board ${board + 1}!`);
         });
 
         this.props.socket.on('randomizeReplaceUsed', ({ board, from, to }) => {
-            this.props.enqueueSnackbar(`${this.props.room.players[from].symbol} has been replaced with ${this.props.room.players[to].symbol} on board ${board + 1}!`, { autoHideDuration: 3000 });
-            this.addToLog(`${this.props.room.players[from].symbol} has been replaced with ${this.props.room.players[to].symbol} on board ${board + 1}!`);
+            this.props.enqueueSnackbar(`${from} has been replaced with ${to} on board ${board + 1}!`, { autoHideDuration: 3000 });
+            this.addToLog(`${from} has been replaced with ${to} on board ${board + 1}!`);
         });
 
         this.props.socket.on('bombUsed', () => {
@@ -190,14 +189,18 @@ class Game extends React.Component {
     }
 
     render() {
+        const winners = (this.props.status === "gameover" && this.state.winner !== null) ? 
+            this.props.room.players.filter(x => x.symbol === this.state.winner).map((player, idx) => (
+                <li id="winnerGrid" key={idx}>
+                    <div id="playerSymbol">{player.symbol}</div> 
+                    <div>{player.username}</div> 
+                </li>
+            )) : null;
         const gameEnded = (this.props.status === "gameover" && this.state.winner !== null) ? (
             <div id="gameOver">
                 <b>Game Over</b><br />
-                The winner is
-                <div id="winnerGrid">
-                    <div id="playerSymbol">{this.state.winner.symbol}</div> 
-                    <div>{this.state.winner.username}</div> 
-                </div><br />
+                Congratulations to the winner!
+                <ul>{ winners }</ul><br />
                 <div>
                 <Button variant="contained" style={{ 'marginRight': '5px' }} onClick={this.pressPlayAgain}>
                     Play Again
@@ -222,7 +225,7 @@ class Game extends React.Component {
         return (
         <div className="game">
             <Dialog onClose={this.closeDialog} open={ this.state.dialogOpen }>
-                    <div style={{ "fontSize": "20px" }}><center><b>{ this.state.winner.username }</b> won a board!</center></div>
+                    <div style={{ "fontSize": "20px" }}><center><b>{ this.state.winner }</b> won a board!</center></div>
                     <StaticBoard display="flex" justify-content="center" closeDialog={this.closeDialog} grid={ this.state.prevBoard } room={this.props.room} />
                     <center><i>Click outside to dismiss</i></center>
             </Dialog>
