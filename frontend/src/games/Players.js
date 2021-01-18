@@ -27,7 +27,7 @@ class Players extends React.Component {
 
   render() {
     const listPlayers = this.props.room.players.map((player, idx) => 
-    (<Button key={player.symbol} onClick={() => this.pressPlayer(idx)}> 
+    (<Button key={idx} onClick={() => this.pressPlayer(idx)}> 
       <li id={(!player.isOnline) ? "playerGridOffline" : (idx === this.props.room.turn) ? "playerGridTurn" : "playerGrid"}>
         <div id="playerSymbol">{player.symbol}</div> 
         <div>{player.username}</div> 

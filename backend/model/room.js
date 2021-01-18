@@ -5,7 +5,7 @@ const MAX_PLAYERS_DEFAULT = 9;
 const MAX_BOARDS_DEFAULT = 2;
 const NO_OF_BOARDS_TO_WIN_DEFAULT = 3;
 const BOARD_SIZE_DEFAULT = 3;
-const SYMBOLS = ['X', 'O', '@', '~', '&', '#', '$', '%', 'Z']
+const SYMBOLS = ['X', 'O', '@', '#', '$', '%', '&', 'A', 'Z']
 const EMOJIS = ['🐶', '🐱', '🐷', '🐹', '🐰', '🦊', '🐻', '🐼', '🐯']
 
 // room status, 0 and above indicate the respective user's turn
@@ -29,6 +29,7 @@ module.exports = class Room {
         this.startingPowerup = false;
         this.boardSize = BOARD_SIZE_DEFAULT;
         this.powersToUse = new Array(11).fill(true);
+        this.teamMode = false;
 
         // board info
         this.boards = [];
@@ -86,14 +87,18 @@ module.exports = class Room {
         this.powersToUse = arr;
     }
 
-    startGame(emojiMode = false) {
+    setTeamMode(yesNo) {
+        this.teamMode = yesNo;
+    }
+
+    startGame() {
         if (this.status != LOBBY) return;
         // assign symbols to all players
         for (var i = 0; i < this.players.length; i++) {
-            if (emojiMode) {
-                this.players[i].setSymbol(EMOJIS[i]);
+            if (this.emojiMode) {
+                this.players[i].setSymbol(EMOJIS[(this.teamMode) ? i % 2 : i]);
             } else {
-                this.players[i].setSymbol(SYMBOLS[i]);
+                this.players[i].setSymbol(SYMBOLS[(this.teamMode) ? i % 2 : i]);
             }
         }
         // generate boards

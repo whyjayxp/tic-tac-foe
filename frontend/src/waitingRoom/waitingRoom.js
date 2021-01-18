@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import Badge from '@material-ui/core/Badge';
+import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
@@ -14,6 +15,8 @@ import Rules from './Rules'
 import ChatRoom from '../games/ChatRoom'
 
 const MAX_BOARDS = 15;
+const SYMBOLS = ['X', 'O', '@', '#', '$', '%', '&', 'A', 'Z']
+const EMOJIS = ['🐶', '🐱', '🐷', '🐹', '🐰', '🦊', '🐻', '🐼', '🐯']
 
 class Waiting extends React.Component {
   constructor(props) {
@@ -29,6 +32,7 @@ class Waiting extends React.Component {
       boardsToWin: 3,
       emojiMode: false,
       startingPowerup: false,
+      teamMode: false,
       powersToUse: new Array(11).fill(true)
     };
   }
@@ -62,6 +66,11 @@ class Waiting extends React.Component {
     this.props.socket.emit('hostUpdate', this.props.room.roomId, { startingPowerup: event.target.checked });
   }
 
+  handleTeamModeChange = (event) => {
+    this.setState({ teamMode: event.target.checked });
+    this.props.socket.emit('hostUpdate', this.props.room.roomId, { teamMode: event.target.checked });
+  }
+
   handlePowerupChange = (event, i) => {
     // handle both skips together
     var newArr = this.state.powersToUse.map((x,j) => (i === j || (i === 0 && j === 6)) ? event.target.checked : x);
@@ -73,7 +82,7 @@ class Waiting extends React.Component {
     if (this.props.room.players.length < 2) {
       this.props.enqueueSnackbar("There must be at least 2 players to start!", { autoHideDuration: 3000 });
     } else {
-      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin, this.state.emojiMode, this.state.startingPowerup, this.state.powersToUse);
+      this.props.socket.emit('startGame', this.props.room.roomId, this.state.concurBoards, this.state.boardsToWin, this.state.emojiMode, this.state.startingPowerup, this.state.teamMode, this.state.powersToUse);
     }
   }
 
@@ -116,7 +125,7 @@ class Waiting extends React.Component {
         boardsMenuItems.push(<MenuItem className="menuItem" key={i} value={i}>{i}</MenuItem>)
     }
     const listPlayers = this.props.room.players.map((player, i) =>
-      <li key={player.username}>{player.username} { (i === 0) ? "(Host)" : ""}</li>
+      <li key={player.username}><b>{ this.state.emojiMode ? EMOJIS[(this.state.teamMode ? i%2 : i)] : SYMBOLS[(this.state.teamMode ? i%2 : i)] }</b> {player.username} { (i === 0) ? "(Host)" : ""}</li>
     );
     const newMsg = (this.state.hasNewMsg === 0) ? (
       <Button style={{ 'marginLeft': '5px' }} variant="outlined" color="default" onClick={() => this.setState({ chatOpen: true, hasNewMsg: 0 })}>
@@ -176,11 +185,26 @@ class Waiting extends React.Component {
             <FormControlLabel
             control={
               <Switch
+                checked={this.state.teamMode}
+                disabled={ !this.props.room.isHost }
+                onChange={this.handleTeamModeChange}
+                color="default"
+                name="team"
+                inputProps={{ 'aria-label':  'primary checkbox' }}
+              />
+            }
+            label={<span style={ {font: '14px Century Gothic, Futura, sans-serif'} }>Team Mode</span>}
+            />
+          </FormControl>
+          <FormControl>
+            <FormControlLabel
+            control={
+              <Switch
                 checked={this.state.startingPowerup}
                 disabled={ !this.props.room.isHost }
                 onChange={this.handleStartingPowerupChange}
                 color="default"
-                name="emoji"
+                name="startPower"
                 inputProps={{ 'aria-label':  'primary checkbox' }}
               />
             }

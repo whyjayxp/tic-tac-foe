@@ -77,6 +77,7 @@ module.exports = (io, socket) => {
         if (settings.hasOwnProperty('boardsToWin')) room.setNumBoardsToWin(settings.boardsToWin);
         if (settings.hasOwnProperty('emojiMode')) room.setEmojiMode(settings.emojiMode);
         if (settings.hasOwnProperty('startingPowerup')) room.setStartingPowerup(settings.startingPowerup);
+        if (settings.hasOwnProperty('teamMode')) room.setTeamMode(settings.teamMode);
         if (settings.hasOwnProperty('powersToUse')) room.setPowersToUse(settings.powersToUse);
     });
 

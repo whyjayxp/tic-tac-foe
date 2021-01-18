@@ -191,15 +191,17 @@ class Game extends React.Component {
     render() {
         const winners = (this.props.status === "gameover" && this.state.winner !== null) ? 
             this.props.room.players.filter(x => x.symbol === this.state.winner).map((player, idx) => (
-                <li id="winnerGrid" key={idx}>
-                    <div id="playerSymbol">{player.symbol}</div> 
-                    <div>{player.username}</div> 
-                </li>
+                <Button key={idx}>
+                    <li id="winnerGrid">
+                        <div id="playerSymbol">{player.symbol}</div> 
+                        <div>{player.username}</div> 
+                    </li>
+                </Button>
             )) : null;
         const gameEnded = (this.props.status === "gameover" && this.state.winner !== null) ? (
             <div id="gameOver">
                 <b>Game Over</b><br />
-                Congratulations to the winner!
+                Congratulations to the { this.props.room.players.filter(x => x.symbol === this.state.winner).length > 1 ? "winners" : "winner" }!
                 <ul>{ winners }</ul><br />
                 <div>
                 <Button variant="contained" style={{ 'marginRight': '5px' }} onClick={this.pressPlayAgain}>
