@@ -50,6 +50,7 @@ module.exports = (io, socket) => {
                 boardsToWin: room.numBoardsToWin,
                 emojiMode: room.emojiMode,
                 startingPowerup: room.startingPowerup,
+                teamMode: room.teamMode,
                 powersToUse: room.powersToUse
             });
         }
