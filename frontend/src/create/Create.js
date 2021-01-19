@@ -1,7 +1,9 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 import Changelog from './Changelog'
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { withSnackbar } from 'notistack';
 
 class Create extends React.Component {
@@ -9,10 +11,12 @@ class Create extends React.Component {
     super(props);
     this.createRoom = this.createRoom.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
+    this.loadPublicRooms = this.loadPublicRooms.bind(this);
     this.state = {
       username: '',
       roomId: '',
-      isHost: false
+      isHost: false,
+      publicRooms: [] // array of { roomId, players, maxPlayers }
     };
   }
 
@@ -57,6 +61,24 @@ class Create extends React.Component {
     this.props.socket.emit('joinRoom', username, roomId);
   }
 
+  loadPublicRooms() {
+    this.props.socket.emit('getPublicRooms');
+  }
+
+  pressPublicRoom(roomId) {
+    if (this.props.socket.disconnected) {
+      this.props.enqueueSnackbar("Server is down! :(", { autoHideDuration: 3000, variant: 'error' });
+      return;
+    }
+    const username = this.state.username;
+    if (username === '') {
+      this.props.enqueueSnackbar("Please input your name!", { autoHideDuration: 3000 });
+      return;
+    }
+    this.setState({ isHost: false });
+    this.props.socket.emit('joinRoom', username, roomId);
+  }
+
   componentDidMount() {
     this.props.socket.on('errorJoiningRoom', (msg) => {
       this.props.enqueueSnackbar(msg, { autoHideDuration: 3000 });
@@ -65,14 +87,29 @@ class Create extends React.Component {
     this.props.socket.on('successJoiningRoom', (roomId, players) => {
       this.props.joinRoom(roomId, players, this.state.isHost);
     });
+
+    this.props.socket.on('showPublicRooms', (roomList) => {
+      this.setState({ publicRooms: roomList });
+    });
   }
 
   componentWillUnmount() {
     this.props.socket.off('errorJoiningRoom');
     this.props.socket.off('successJoiningRoom');
+    this.props.socket.off('showPublicRooms');
   }
 
   render() {
+    const roomItems = this.state.publicRooms.map((room, idx) => (
+      <Button onClick={() => this.pressPublicRoom(room.roomId)} key={idx}>
+          <li id="roomList">
+              <b>{room.roomId}</b> [{room.players}/{room.maxPlayers}] 
+          </li>
+      </Button>
+          ));
+    const publicRooms = (this.state.publicRooms.length > 0) ? (
+        <ul>{roomItems}</ul>
+    ) : (<div style={{ marginTop: '10px' }}><i>No rooms available :( Create one?</i></div>);
     return (
       <div>
         <div className="home">
@@ -91,7 +128,12 @@ class Create extends React.Component {
                 Join Room
             </Button>
         </form>
-        <br /><br />
+        <br />
+        <div id="publicRooms">
+          <b>Public Rooms</b> <Tooltip arrow title="Refresh List"><RefreshIcon onClick={this.loadPublicRooms} style={{ verticalAlign: 'bottom' }} /></Tooltip>
+          { publicRooms }
+        </div>
+        <br />
         <center>Created by <a target="_blank" rel="noreferrer" href="https://github.com/whyjayxp">Yue Jun</a> & <a target="_blank" rel="noreferrer" href="https://github.com/qing-yuan">Qing Yuan</a> for HackNRoll 2021</center>
         <Changelog />
       </div>

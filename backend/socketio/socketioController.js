@@ -2,15 +2,24 @@ const socketio = require('socket.io');
 const initLobby = require('./lobbyController');
 const initGame = require('./gameController');
 
+const getPublicRooms = () => {
+    return Object.keys(rooms).filter(x => rooms[x].publicRoom).map(x => { return { roomId: rooms[x].roomId, players: rooms[x].players.length, maxPlayers: rooms[x].maxPlayers } });
+};
+
 module.exports = server => {
     const options = {}; // for socketio server
     const io = socketio(server, options); 
     io.on('connection', (socket) => {
         console.log(`${socket.id} just connected`);
-        socket.emit('newConnection');
 
         initLobby(io, socket);
         initGame(io, socket);
+
+        socket.emit('showPublicRooms', getPublicRooms());
+
+        socket.on('getPublicRooms', () => {
+            socket.emit('showPublicRooms', getPublicRooms());
+        });
 
         socket.on('newMessage', (roomId, msg) => {
             io.to(roomId).emit('newMessage', `${socket.player.username}: ${msg}`);

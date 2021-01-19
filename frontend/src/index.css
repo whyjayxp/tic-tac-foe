@@ -35,6 +35,21 @@ body {
   padding: 20px;
 }
 
+#publicRooms {
+  text-align: center;
+  padding: 20px;
+}
+
+#roomList {
+  font-size: 20px;
+  text-align: center;
+  color: #000;
+  background: #ddd;
+  padding: 20px;
+  width: fit-content;
+  line-height: 25px;
+}
+
 .rulesList {
   text-align: center;
   padding: 5px;
@@ -189,7 +204,6 @@ body {
     background: rgb(245, 255, 187);
     margin-top: 10px;
     line-height: 25px;
-    width: fit-content;
     padding: 20px;
   }
 

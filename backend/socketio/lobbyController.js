@@ -1,6 +1,10 @@
 const Room = require('../model/room.js');
 const Player = require('../model/player.js');
 
+const getPublicRooms = () => {
+    return Object.keys(rooms).filter(x => rooms[x].publicRoom).map(x => { return { roomId: rooms[x].roomId, players: rooms[x].players.length, maxPlayers: rooms[x].maxPlayers } });
+};
+
 module.exports = (io, socket) => {
     socket.on('createRoom', (username) => {
         console.log('createRoom');
@@ -70,6 +74,7 @@ module.exports = (io, socket) => {
             socket.to(roomId).emit('updatePlayers', roomId, room.getPlayers()); // update player list
             io.to(room.getHost()).emit('youAreTheHost');
         }
+        socket.emit('showPublicRooms', getPublicRooms());
     });
 
     socket.on('hostUpdate', (roomId, settings) => {
