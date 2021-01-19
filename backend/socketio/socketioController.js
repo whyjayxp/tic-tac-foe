@@ -3,7 +3,7 @@ const initLobby = require('./lobbyController');
 const initGame = require('./gameController');
 
 const getPublicRooms = () => {
-    return Object.keys(rooms).filter(x => rooms[x].publicRoom).map(x => { return { roomId: rooms[x].roomId, players: rooms[x].players.length, maxPlayers: rooms[x].maxPlayers } });
+    return Object.keys(rooms).filter(x => rooms[x].publicRoom && rooms[x].isLobby()).map(x => { return { roomId: rooms[x].roomId, players: rooms[x].players.length, maxPlayers: rooms[x].maxPlayers } });
 };
 
 module.exports = server => {
