@@ -22,6 +22,7 @@ module.exports = class Room {
         this.nextRoomId = '';
 
         // room settings
+        this.publicRoom = false;
         this.maxPlayers = MAX_PLAYERS_DEFAULT;
         this.maxConcurBoards = MAX_BOARDS_DEFAULT;
         this.numBoardsToWin = NO_OF_BOARDS_TO_WIN_DEFAULT;
@@ -89,6 +90,14 @@ module.exports = class Room {
 
     setTeamMode(yesNo) {
         this.teamMode = yesNo;
+    }
+
+    setPublicRoom(yesNo) {
+        this.publicRoom = yesNo;
+    }
+
+    setMaxPlayers(num) {
+        this.maxPlayers = num;
     }
 
     startGame() {

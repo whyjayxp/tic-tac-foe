@@ -51,7 +51,9 @@ module.exports = (io, socket) => {
                 emojiMode: room.emojiMode,
                 startingPowerup: room.startingPowerup,
                 teamMode: room.teamMode,
-                powersToUse: room.powersToUse
+                powersToUse: room.powersToUse,
+                publicRoom: room.publicRoom,
+                maxPlayers: room.maxPlayers
             });
         }
     });
@@ -80,6 +82,8 @@ module.exports = (io, socket) => {
         if (settings.hasOwnProperty('startingPowerup')) room.setStartingPowerup(settings.startingPowerup);
         if (settings.hasOwnProperty('teamMode')) room.setTeamMode(settings.teamMode);
         if (settings.hasOwnProperty('powersToUse')) room.setPowersToUse(settings.powersToUse);
+        if (settings.hasOwnProperty('publicRoom')) room.setPublicRoom(settings.publicRoom);
+        if (settings.hasOwnProperty('maxPlayers')) room.setMaxPlayers(settings.maxPlayers);
     });
 
     socket.on('playAgain', (roomId) => {
@@ -133,6 +137,16 @@ module.exports = (io, socket) => {
             socket.to(roomId).emit('playerLeft', username);
             socket.emit('successRejoiningRoom', nextRoomId, nextRoom.getPlayers(), true);
             socket.to(nextRoomId).emit('updatePlayers', nextRoomId, nextRoom.getPlayers());
+            socket.emit('hostUpdated', {
+                concurBoards: nextRoom.maxConcurBoards,
+                boardsToWin: nextRoom.numBoardsToWin,
+                emojiMode: nextRoom.emojiMode,
+                startingPowerup: nextRoom.startingPowerup,
+                teamMode: nextRoom.teamMode,
+                powersToUse: nextRoom.powersToUse,
+                publicRoom: nextRoom.publicRoom,
+                maxPlayers: nextRoom.maxPlayers
+            });
             if (room.isEmpty()) {
                 delete rooms[roomId];
             }

@@ -2,7 +2,8 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import Badge from '@material-ui/core/Badge';
-import Tooltip from '@material-ui/core/Tooltip';
+// import ToggleButton from '@material-ui/lab/ToggleButton';
+// import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
@@ -15,6 +16,7 @@ import Rules from './Rules'
 import ChatRoom from '../games/ChatRoom'
 
 const MAX_BOARDS = 15;
+const MAX_PLAYERS = 9;
 const SYMBOLS = ['X', 'O', '@', '#', '$', '%', '&', 'A', 'Z']
 const EMOJIS = ['🐶', '🐱', '🐷', '🐹', '🐰', '🦊', '🐻', '🐼', '🐯']
 
@@ -33,6 +35,9 @@ class Waiting extends React.Component {
       emojiMode: false,
       startingPowerup: false,
       teamMode: false,
+      // team: 'X',
+      publicRoom: false,
+      maxPlayers: 9,
       powersToUse: new Array(11).fill(true)
     };
   }
@@ -70,6 +75,20 @@ class Waiting extends React.Component {
     this.setState({ teamMode: event.target.checked });
     this.props.socket.emit('hostUpdate', this.props.room.roomId, { teamMode: event.target.checked });
   }
+
+  // handleTeamChange = (event, newVal) => {
+  //   this.setState({ team: newVal });
+  // }
+
+  handlePublicRoomChange = (event) => {
+    this.setState({ publicRoom: event.target.checked });
+    this.props.socket.emit('hostUpdate', this.props.room.roomId, { publicRoom: event.target.checked });
+  }
+
+  handleMaxPlayersChange = (event) => {
+    this.setState({ maxPlayers: event.target.value });
+    this.props.socket.emit('hostUpdate', this.props.room.roomId, { maxPlayers: event.target.value });
+  };
 
   handlePowerupChange = (event, i) => {
     // handle both skips together
@@ -120,9 +139,21 @@ class Waiting extends React.Component {
   }
 
   render() {
+    // const teamSelection = (this.state.teamMode) ? (<ToggleButtonGroup
+    //   value={this.state.team}
+    //   exclusive
+    //   onChange={this.handleTeamChange}
+    //   aria-label="team">
+    //   <ToggleButton value="X" aria-label="X"><b style={{ 'fontSize': '20px' }}>{ (this.state.emojiMode) ? EMOJIS[0] : SYMBOLS[0] }</b></ToggleButton>
+    //   <ToggleButton value="O" aria-label="O"><b style={{ 'fontSize': '20px' }}>{ (this.state.emojiMode) ? EMOJIS[1] : SYMBOLS[1] }</b></ToggleButton>
+    // </ToggleButtonGroup>) : null;
     const boardsMenuItems = []
     for (let i = 1; i <= MAX_BOARDS; i++) {
         boardsMenuItems.push(<MenuItem className="menuItem" key={i} value={i}>{i}</MenuItem>)
+    }
+    const playersMenuItems = []
+    for (let i = 2; i <= MAX_PLAYERS; i++) {
+        playersMenuItems.push(<MenuItem className="menuItem" key={i} value={i}>{i}</MenuItem>)
     }
     const listPlayers = this.props.room.players.map((player, i) =>
       <li key={player.username}><b>{ this.state.emojiMode ? EMOJIS[(this.state.teamMode ? i%2 : i)] : SYMBOLS[(this.state.teamMode ? i%2 : i)] }</b> {player.username} { (i === 0) ? "(Host)" : ""}</li>
@@ -141,7 +172,34 @@ class Waiting extends React.Component {
     const hostFeatures = (
       <form className="waiting" noValidate autoComplete="off">
           {/* <FormControl className={classes.formControl}> */}
-          <b>Host Settings</b><span><i>{ (!this.props.room.isHost) ? "Only the host can modify these settings!" : "" }</i></span><br />
+          <b>Host Settings</b><span><i>{ (!this.props.room.isHost) ? "Only the host can modify these settings!" : "" }</i></span>
+          <FormControl>
+            <FormControlLabel
+            control={
+              <Switch
+                checked={this.state.publicRoom}
+                disabled={ !this.props.room.isHost }
+                onChange={this.handlePublicRoomChange}
+                color="default"
+                name="publicRoom"
+                inputProps={{ 'aria-label':  'primary checkbox' }}
+              />
+            }
+            label={<span style={ {font: '14px Century Gothic, Futura, sans-serif'} }>Public Room</span>}
+            />
+          </FormControl><br />
+          <FormControl>
+            Maximum Players: <InputLabel id="demo-simple-select-label" />
+            <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            disabled={ !this.props.room.isHost }
+            value={this.state.maxPlayers}
+            onChange={this.handleMaxPlayersChange}>
+            {playersMenuItems}
+            </Select>
+          </FormControl>
+          <br/>
           <FormControl>
             Concurrent Boards: <InputLabel id="demo-simple-select-label" />
             <Select
