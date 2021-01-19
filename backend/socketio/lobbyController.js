@@ -2,7 +2,7 @@ const Room = require('../model/room.js');
 const Player = require('../model/player.js');
 
 const getPublicRooms = () => {
-    return Object.keys(rooms).filter(x => rooms[x].publicRoom).map(x => { return { roomId: rooms[x].roomId, players: rooms[x].players.length, maxPlayers: rooms[x].maxPlayers } });
+    return Object.keys(rooms).filter(x => rooms[x].publicRoom && rooms[x].isLobby()).map(x => { return { roomId: rooms[x].roomId, players: rooms[x].players.length, maxPlayers: rooms[x].maxPlayers } });
 };
 
 module.exports = (io, socket) => {
@@ -118,6 +118,16 @@ module.exports = (io, socket) => {
                 socket.to(roomId).emit('playerLeft', username);
                 socket.emit('successRejoiningRoom', nextRoomId, nextRoom.getPlayers(), false);
                 socket.to(nextRoomId).emit('updatePlayers', nextRoomId, nextRoom.getPlayers());
+                socket.emit('hostUpdated', {
+                    concurBoards: nextRoom.maxConcurBoards,
+                    boardsToWin: nextRoom.numBoardsToWin,
+                    emojiMode: nextRoom.emojiMode,
+                    startingPowerup: nextRoom.startingPowerup,
+                    teamMode: nextRoom.teamMode,
+                    powersToUse: nextRoom.powersToUse,
+                    publicRoom: nextRoom.publicRoom,
+                    maxPlayers: nextRoom.maxPlayers
+                });
                 if (room.isEmpty()) {
                     delete rooms[roomId];
                 }
@@ -132,7 +142,7 @@ module.exports = (io, socket) => {
             room.setNextRoomId(nextRoomId);
             socket.leave(roomId);
             socket.join(nextRoomId);
-            var nextRoom = new Room({ io, nextRoomId });
+            var nextRoom = new Room({ io, roomId: nextRoomId });
             var username = socket.player.username;
             var player = new Player({ socket, username });
             nextRoom.addPlayer(player);
@@ -142,16 +152,6 @@ module.exports = (io, socket) => {
             socket.to(roomId).emit('playerLeft', username);
             socket.emit('successRejoiningRoom', nextRoomId, nextRoom.getPlayers(), true);
             socket.to(nextRoomId).emit('updatePlayers', nextRoomId, nextRoom.getPlayers());
-            socket.emit('hostUpdated', {
-                concurBoards: nextRoom.maxConcurBoards,
-                boardsToWin: nextRoom.numBoardsToWin,
-                emojiMode: nextRoom.emojiMode,
-                startingPowerup: nextRoom.startingPowerup,
-                teamMode: nextRoom.teamMode,
-                powersToUse: nextRoom.powersToUse,
-                publicRoom: nextRoom.publicRoom,
-                maxPlayers: nextRoom.maxPlayers
-            });
             if (room.isEmpty()) {
                 delete rooms[roomId];
             }

@@ -19,6 +19,7 @@ class ChatRoom extends React.Component {
   }
 
   sendMessage() {
+    if (this.state.msg === "") return;
     this.props.socket.emit('newMessage', this.props.roomId, this.state.msg);
     this.setState({msg: ''});
   }
